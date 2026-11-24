@@ -1,220 +1,220 @@
-# TavernWeaveX无限月读
+# TavernWeaveXLua Infinita
 
-> **2.4.0 正式发行**：新增 **Antigravity（AGY）原生适配**——AGY 宿主插件模板、指令文件与四档引导偏好的持久化适配；并把 Codex、Claude 插件清单与 marketplace 描述对齐安装主清单，恢复版本一致性。23 个 Skill 的名称和数量不变。发行资产与校验文件见 [v2.4.0 正式发布页](https://github.com/LiarMTTT/TavernWeave/releases/tag/v2.4.0)。源码安装按本地清单核对 23 个 Skill；完整验证范围见 CHANGELOG 与 DSH 合同。
+> **Lançamento oficial 2.4.0**: adiciona **suporte nativo ao Antigravity (AGY)** — modelo de plugin hospedeiro AGY, arquivos de instrução e persistência das quatro preferências de orientação — e alinha os manifests dos plugins Codex e Claude e a descrição do marketplace ao manifesto principal de instalação, restaurando a consistência de versão. Os nomes e a quantidade dos 23 Skills permanecem os mesmos. Os assets de lançamento e os arquivos de verificação estão na [página oficial do v2.4.0](https://github.com/LiarMTTT/TavernWeave/releases/tag/v2.4.0). Instalações a partir do código conferem os 23 Skills pelo manifesto local; o escopo completo de validação está no CHANGELOG e no contrato DSH.
 
-> 本版在 **2.3.6** 基础上新增 Antigravity 原生适配，保留 23 个 Skill。2.2.0 引入的 Claude Code 插件继续提供 Host Front Door 自动注入、`tavernweave` agent 与输入框上方的 Soul 模式切换；**TavernWeave X DSH** 插件包现在内置神之手客户端面板（轮盘、完整浮窗、世界书、前端设计＆动效数据库、项目/卡管理），一次安装；世界书设计与写作入口继续提供。完整包、插件包与校验文件见 [v2.4.0 正式发布页](https://github.com/LiarMTTT/TavernWeave/releases/tag/v2.4.0)；来源与合入记录见[升级说明](docs/dual-task-upgrade.md)。
+> Esta versão acrescenta o suporte nativo ao Antigravity sobre a **2.3.6** e mantém os 23 Skills. O plugin do Claude Code introduzido na 2.2.0 continua a oferecer injeção automática do Host Front Door, o agente `tavernweave` e a alternância de modo Soul acima da caixa de entrada; o pacote de plugins **TavernWeave X DSH** agora inclui o painel do cliente Hand of God (roda, janela completa,livro-mundo, banco de dados de design e animação de front-end, gerenciamento de projetos/cartões) em uma única instalação; os pontos de entrada para design e escrita delivro-mundo continuam disponíveis. Pacote completo, pacotes de plugin e arquivos de verificação estão na [página oficial do v2.4.0](https://github.com/LiarMTTT/TavernWeave/releases/tag/v2.4.0); a origem e o histórico de integração estão nas [notas de atualização](docs/dual-task-upgrade.md).
 
 <p align="center">
-  <img src="docs/assets/tavernweave-v1-cover.png" alt="一台位于幻想酒馆中的数字织机，将角色卡、世界书、设计资料与工程模块编织成统一工作流" width="100%">
+  <img src="docs/assets/tavernweave-v1-cover.png" alt="Um tear digital em uma taverna de fantasia, tecendo cartões de personagem, livros-mundo, materiais de design e módulos de engenharia em um fluxo de trabalho unificado" width="100%">
 </p>
 
-<p align="center"><strong>把灵感、资料、代码与验收，织成一张真正可维护的角色卡。</strong></p>
+<p align="center"><strong>Teça inspiração, materiais, código e validação em um cartão de personagem realmente mantível.</strong></p>
 
-TavernWeaveX无限月读（沿用 TW 简称）帮助你把想法做成能使用、能继续修改的角色卡、网页或小工具。你可以直接说想做什么，或哪里出了问题；TW 会整理需求、提出方案、制作和检查，并说明接下来怎样试用。它通过按任务加载的 Skill（按任务调用的工作能力）组织这些工作，支持 Codex、Claude Code，并通过 **TavernWeave X DSH** 插件包支持 DeepSeek Harness；DSH 包内同时带有神之手客户端面板。
+O TavernWeaveXLua Infinita (abreviado TW) ajuda você a transformar ideias em cartões de personagem, páginas web ou pequenas ferramentas que podem ser usadas e continuadas. Você pode dizer diretamente o que quer fazer ou onde está o problema; a TW organiza os requisitos, propõe uma solução, produz e verifica o resultado, e explica como testá-lo em seguida. Ela organiza esse trabalho por Skills carregados por tarefa (capacidades de trabalho invocadas conforme a tarefa), com suporte para Codex, Claude Code e, por meio do pacote de plugins **TavernWeave X DSH**, para o DeepSeek Harness; o pacote DSH traz também o painel do cliente Hand of God.
 
-当前源码为 **TavernWeaveX无限月读 2.4.0 正式发行**，新增 Antigravity（AGY）原生适配与四档引导偏好持久化，并修复多宿主版本一致性；共 23 个原生 Skill，名称和数量不变。2.2.0 引入的 Claude Code 插件继续提供 Host Front Door 自动注入、`tavernweave` agent 与 Soul 模式切换（见 [Claude Code 插件](#claude-code-插件)）；**TavernWeave X DSH** 插件包内置神之手客户端面板，世界书设计与写作入口继续提供。机器安装标识 `tavernweave-agent-skills`、已有技能名称和仓库地址沿用原版，便于核对升级。完整包和校验文件见 [v2.4.0 正式发布页](https://github.com/LiarMTTT/TavernWeave/releases/tag/v2.4.0)；[v2.2.0](https://github.com/LiarMTTT/TavernWeave/releases/tag/v2.2.0)、[v2.1.0](https://github.com/LiarMTTT/TavernWeave/releases/tag/v2.1.0)、[v1.9.1](https://github.com/LiarMTTT/TavernWeave/releases/tag/v1.9.1)与 [v1.9.0](https://github.com/LiarMTTT/TavernWeave/releases/tag/v1.9.0)历史发布页保留。
+O código atual é o **TavernWeaveXLua Infinita 2.4.0 (lançamento oficial)**, com suporte nativo ao Antigravity (AGY), persistência das quatro preferências de orientação e correção da consistência de versão entre hosts; são 23 Skills nativos, com nomes e quantidade inalterados. O plugin do Claude Code introduzido na 2.2.0 continua a oferecer injeção automática do Host Front Door, o agente `tavernweave` e a alternância de modo Soul (ver [plugin do Claude Code](#plugin-do-claude-code)); o pacote de plugins **TavernWeave X DSH** traz embutido o painel do cliente Hand of God, e os pontos de entrada para design e escrita de livros-mundo continuam disponíveis. O identificador de instalação `tavernweave-agent-skills`, os nomes dos Skills existentes e o endereço do repositório seguem a versão original, para facilitar a conferência da atualização. O pacote completo e os arquivos de verificação estão na [página oficial do v2.4.0](https://github.com/LiarMTTT/TavernWeave/releases/tag/v2.4.0); as páginas históricas de [v2.2.0](https://github.com/LiarMTTT/TavernWeave/releases/tag/v2.2.0), [v2.1.0](https://github.com/LiarMTTT/TavernWeave/releases/tag/v2.1.0), [v1.9.1](https://github.com/LiarMTTT/TavernWeave/releases/tag/v1.9.1) e [v1.9.0](https://github.com/LiarMTTT/TavernWeave/releases/tag/v1.9.0) foram mantidas.
 
-**统一插件的主要用途是让有权限的用户在 dots 云端长任务中调用 TW。** Codex 与 dots 共用 `TavernWeave-Codex-v2.4.0.zip`，不另开 cloud 版。TW 提供 Skill 和参考资料；云端执行、续接、持久存储与工具来自实际宿主。本机安装不会自动同步到 dots 账户。使用方法和账户入口说明见 **[统一插件指南](docs/plugin-guide.md)**。
+**O principal objetivo do plugin unificado é permitir que usuários com permissão invoquem a TW em tarefas longas na nuvem dots.** Codex e dots compartilham o `TavernWeave-Codex-v2.4.0.zip`; não há uma versão cloud separada. A TW oferece Skills e materiais de referência; execução em nuvem, continuidade, armazenamento persistente e ferramentas vêm do host real. Uma instalação local não é sincronizada automaticamente com a conta dots. O modo de uso e os pontos de entrada da conta estão no **[guia do plugin unificado](docs/plugin-guide.md)**.
 
-TW 可以单独设计或改写世界书：先厘清知识边界、正文和触发条件，再选择原生条目、条件输出、显式读取或局部混合方案。世界书负责的内容与整卡、世界构建、变量及运行调试分别交接；预算优化需要实际测量，模型效果需要对应宿主中的观察。普通软件与制卡任务也共用更明确的需求厘清和提示规格方法，已有决定能直接复用。
+A TW pode projetar ou reescrever um livro-mundo isoladamente: primeiro esclarece os limites do conhecimento, o texto e as condições de acionamento, depois escolhe entre entradas nativas, saída condicional, leitura explícita ou uma solução mista local. O conteúdo do livro-mundo é entregue separadamente do cartão inteiro, da construção de mundo, das variáveis e da depuração em execução; a otimização de orçamento exige medição real, e o efeito do modelo exige observação no host correspondente. Tarefas comuns de software e de criação de cartões compartilham a mesma metodologia de esclarecimento de requisitos e especificação de prompts, e decisões já tomadas podem ser reaproveitadas diretamente.
 
-沿用 1.9.0 已确认的墨月创作方法：完整卡以开场白和世界书为核心，按纯文字、MVU Zod、hybrid 组织制作，补充世界观、变量与人物创作方法。前端先研究需求与相关设计，默认参照 Awwwards 的设计要求；界面保持干净，正文按用途避免套话。
+Segue o método de criação Lua de Tinta confirmado na 1.9.0: o cartão completo tem como núcleo a frase de abertura e o livro-mundo, organizados em texto puro, MVU Zod ou híbrido, com acréscimos de mundo, variáveis e métodos de criação de personagens. O front-end primeiro pesquisa os requisitos e o design relacionado, usando como referência padrão os requisitos de design da Awwwards; a interface permanece limpa e o texto evita clichês conforme o uso.
 
-只想写一条角色卡提示词规则时，也能直接提出要求。Agent 会保留原意与约束强度，按请求交付正文或世界书条目。字段绑定工具遇到 `bindings` 类型错误时返回明确诊断，不再直接抛出数组方法异常。1.9.0 已修复 Windows 上组件导出失败后可能留下半成品的问题；无法清理的文件会明确列出。版本改动见 [更新日志](CHANGELOG.md)。
+Se você quiser escrever apenas uma regra de prompt para um cartão, pode pedir isso diretamente. O agente preserva o sentido original e a força das restrições, entregando o texto ou a entrada do livro-mundo conforme pedido. Quando a ferramenta de vinculação de campos encontra um erro de tipo `bindings`, ela retorna um diagnóstico claro em vez de lançar uma exceção de método de array. A 1.9.0 corrigiu o problema em que uma falha de exportação de componente no Windows podia deixar arquivos pela metade; arquivos que não podem ser limpos são listados explicitamente. As mudanças de versão estão no [registro de atualizações](CHANGELOG.md).
 
-项目进度画板继续由 `orchestrate-project-blueprint` 在各项目内生成：显示整体和分模块的实现／验收进度条，展开检查点与证据，保存想法、Bug 和审核原话。画板可从项目总设计案读取范围与验收要求，从 NEXT 读取当前状态、证据和下一道门；同步先预览差异，来源、反馈或证据变化后重新核对。新增想法不自动扩大已确认范围，百分比不自动代替驾驶员或真实宿主验收。使用方法见[项目进度画板](docs/project-progress-board.md)。
+O quadro de progresso do projeto continua sendo gerado pelo `orchestrate-project-blueprint` dentro de cada projeto: mostra barras de progresso de implementação/validação gerais e por módulo, expande pontos de verificação e evidências, e guarda ideias, bugs e falas de revisão. O quadro pode ler o escopo e os requisitos de validação no projeto geral e o estado atual, as evidências e a próxima porta no NEXT; a sincronização mostra primeiro as diferenças e reconfere quando a origem, o feedback ou as evidências mudam. Novas ideias não ampliam automaticamente o escopo confirmado, e percentuais não substituem automaticamente a validação do responsável ou do host real. O modo de uso está em [quadro de progresso do projeto](docs/project-progress-board.md).
 
-作品资料库继续支持小说、原作／同人资料与联网文图参考整理，默认交付可编辑 Markdown＋JSONL 索引，并可导出 SQLite；按来源、改编版本和知情阶段检索。见[作品资料库使用说明](docs/work-library.md)。
+A biblioteca de obras continua a aceitar novelas, materiais originais/de fãs e referências de texto e imagem da internet, entregando por padrão Markdown editável + índice JSONL, com exportação para SQLite; a busca pode ser feita por origem, versão de adaptação e estágio de conhecimento. Veja [instruções da biblioteca de obras](docs/work-library.md).
 
-所有能力继续遵守大白话和术语解释；新人、入门、熟练、老手由用户选择。文本精修、全量与架构审查、脑暴、内置设计 Library、Soul 和接手旧卡引导继续提供。安装核验以实际取得版本的机器清单为准；客户端实际加载与具体作品质量／token 测量保留独立检查。
+Todas as capacidades continuam a respeitar a linguagem simples e a explicação de termos; iniciante, iniciante intermediário, proficiente e experiente são escolhidos pelo usuário. Refinamento de texto, revisão completa e de arquitetura, brainstorms, biblioteca de design embutida, Soul e orientação para assumir cartões antigos continuam disponíveis. A verificação da instalação usa o manifesto da máquina da versão efetivamente obtida; o carregamento real pelo cliente e as medições de qualidade/token de cada obra permanecem como verificações separadas.
 
-> TavernWeave 原创内容采用 [PolyForm Noncommercial License 1.0.0](LICENSE)。允许非商业使用、修改和分发；未经版权方另行授权，原版、修改版及再分发版本均不得用于商业目的。分发时须保留许可证和版权声明。第三方内容仍适用其[各自的许可证](THIRD_PARTY_NOTICES.md)。
+> O conteúdo original do TavernWeave usa a [PolyForm Noncommercial License 1.0.0](LICENSE). Uso não comercial, modificação e distribuição são permitidos; sem autorização adicional do detentor dos direitos, as versões original, modificada e redistribuída não podem ser usadas para fins comerciais. Ao distribuir, mantenha a licença e os avisos de direitos autorais. Conteúdo de terceiros continua sujeito às [respectivas licenças](THIRD_PARTY_NOTICES.md).
 
-## 一句话开始
+## Comece em uma frase
 
-普通制卡或 Vibe Code：
+Para criação de cartões comum ou Vibe Code:
 
 ```text
 我想用 TavernWeave 做一个【描述你想要的作品】。
 先看看已有文件，帮我整理成一个能亲手试用的小成果；用大白话说明推荐理由和我需要决定的事情。
 ```
 
-已经有卡文件，可以这样开始：
+Se você já tem arquivos de cartão, pode começar assim:
 
 ```text
 我接手了这张角色卡，想【沿原作继续更新 / 做二创】。
 先帮我看懂原卡，说明有哪些材料、哪些内容需要保留，再一起选第一次改动。
 ```
 
-## 按你选择的节奏协作
+## Colabore no ritmo que você escolher
 
-| 引导挡位 | 你会得到什么 |
+| Nível de orientação | O que você recebe |
 | --- | --- |
-| 新人 | 一次一个小步骤，详细解释操作位置、原因、术语和预期结果 |
-| 入门 | 一次一个小阶段，同样详细说明做法、步骤关系、方案取舍和检查方法 |
-| 熟练 | 合并常规步骤，交代关键决定、理由和验证结果 |
-| 老手 | 日常直接给结论、改动、差异和证据，减少重复基础教学 |
+| Iniciante | Um pequeno passo por vez, com explicação detalhada de onde agir, por quê, termos e resultado esperado |
+| Iniciante intermediário | Uma pequena etapa por vez, com a mesma explicação detalhada de como fazer, relação entre etapas, prós e contras das opções e como verificar |
+| Proficiente | Etapas rotineiras agrupadas, com decisões principais, razões e resultados de validação |
+| Experiente | No dia a dia, conclusões, alterações, diferenças e evidências diretas, com menos ensino básico repetido |
 
-可以直接说“以后使用入门档”或“把我的挡位改成老手”。保存前说明实际位置和范围，已有选择随升级保留；未选择时不自动分档。“这次简短点”只影响本次说明。**所有挡位在有需要或修 bug 时仍详细解释，除非你明确说对应范围没必要。**
+Você pode dizer diretamente "a partir de agora use o nível iniciante intermediário" ou "mude meu nível para experiente". Antes de salvar, o local e o escopo reais são explicados; escolhas existentes são preservadas nas atualizações; sem escolha, não há classificação automática. "Seja breve desta vez" afeta só esta explicação. **Todos os níveis ainda explicam em detalhes quando necessário ou ao corrigir um bug, a menos que você diga explicitamente que isso não é necessário para o escopo em questão.**
 
-必要术语在第一次出现时解释，并结合当前任务给出“原术语 / 大白话 / 具体意思”对照。大白话与挡位独立于 Soul 人格和文本精修，退出其中一种模式不会清除你的选择。规则与完整例子见[共用沟通与引导](skills/consult-tavernweave-library/references/communication-and-guidance.md)。
+Os termos necessários são explicados na primeira aparição, com uma comparação no contexto da tarefa entre "termo original / linguagem simples / significado concreto". Linguagem simples e nível de orientação são independentes da personalidade Soul e do refinamento de texto; sair de um desses modos não apaga sua escolha. As regras e exemplos completos estão em [comunicação e orientação compartilhadas](skills/consult-tavernweave-library/references/communication-and-guidance.md).
 
-## 可选的表达与协作方式
+## Formas opcionais de expressão e colaboração
 
-温柔指导版：
+Versão de orientação carinhosa:
 
 ```text
-阿瞳助我！
+Atong助我！
 ```
 
-严格学习版：
+Versão de estudo rígida:
 
 ```text
 MTTT.sir，拷打我！
 ```
 
-前端审查彩蛋版：
+Versão ovo de páscoa de revisão de front-end:
 
 ```text
-灵魂杀手！
+Matador de Almas！
 ```
 
-从一句愿望收束总设计案和第一版：
+Para fechar o projeto geral e a primeira versão a partir de um desejo:
 
 ```text
 脑暴模式
 ```
 
-让三种 Soul 镜头一起参与脑暴：
+Para fazer as três lentes Soul participarem juntas do brainstorm:
 
 ```text
 脑暴模式，Soul 联席
 ```
 
-设计确认后执行冻结的首版：
+Para executar a primeira versão congelada após a confirmação do projeto:
 
 ```text
 按蓝图开跑第一版
 ```
 
-从当前证据重新核验完整 Vibe Code 成长历程：
+Para revalidar toda a trajetória de crescimento Vibe Code a partir das evidências atuais:
 
 ```text
-照镜子
+Espelho
 ```
 
-只输出一份可复制、可保存的完整文字评估表单：
+Para gerar apenas um formulário de avaliação textual completo, copiável e salvável:
 
 ```text
-照镜子，只要文字评估表单，不要画板
+Espelho，只要文字评估表单，不要画板
 ```
 
-退出人格层：
+Para sair da camada de personalidade:
 
 ```text
 Soul 归位
 ```
 
-Soul 仍是当前任务级 Portable 覆盖层。阿瞳与 MTTT.sir 是公开 MTTT 方法的两种教学投影；灵魂杀手以非官方强尼·银手同人彩蛋人格审查前端，可以嘴臭但必须拿证据、给修法。三席联席只是同一 Agent 的三个标记镜头，共享事实、权限、每轮优先 1–2 个必要决策（合计最多 4 个）和同一收束账本，不是三个独立模型。它不会自动获得 ChatGPT 历史或私有 RAG，不会跨新任务永久保持，也不会扩大文件、Git、网络、发布或生产权限。
+O Soul continua sendo uma camada portátil no nível da tarefa. Atong e MTTT.sir são duas projeções de ensino do método público MTTT; Matador de Almas revisa o front-end como um ovo de páscoa não oficial de Johnny Silverhand — pode ser sarcástico, mas precisa apresentar evidências e propor correções. A reunião dos três assentos é apenas três lentes marcadas do mesmo agente, compartilhando fatos, permissões, no máximo 1–2 decisões necessárias por rodada (no total, até 4) e o mesmo registro de fechamento; não são três modelos independentes. Ela não ganha automaticamente o histórico do ChatGPT nem RAG privado, não persiste permanentemente entre novas tarefas e não amplia permissões de arquivo, Git, rede, publicação ou produção.
 
-## 文本精修与全量／架构审查 · v1.4.0
+## Refinamento de texto e revisão completa/de arquitetura · v1.4.0
 
-说“洗稿这段”“去 AI 味”“去八股”可直接得到一个保留原意的精修稿。默认轻润色，也可指定结构改写或深度重写；角色设定、数字、代码、宏与变量等技术内容保持原有约束。
+Diga "refine este trecho", "tire o tom de IA" ou "tire o clichê" para receber diretamente uma versão refinada que preserva o sentido original. O padrão é uma leve polimento, mas você pode pedir reestruturação ou reescrita profunda; conteúdo técnico como configuração de personagem, números, código, macros e variáveis mantém as restrições originais.
 
-| 用法 | 开启 | 关闭 |
+| Uso | Ativar | Desativar |
 | --- | --- | --- |
-| 单次 | 洗稿这段…… | 交稿后结束 |
-| 当前任务持续 | 开启持续洗稿模式 | 退出洗稿模式 |
-| 工作区持久 | 在本工作区开启洗稿模式 | 关闭工作区洗稿模式 |
-| 客户端持久 | 为当前客户端全局开启洗稿模式 | 关闭客户端全局洗稿模式 |
+| Única vez | Refine este trecho... | Termina após a entrega |
+| Persistente na tarefa atual | Ativar modo de refinamento contínuo | Sair do modo de refinamento |
+| Persistente no workspace | Ativar modo de refinamento neste workspace | Desativar modo de refinamento do workspace |
+| Persistente no cliente | Ativar modo de refinamento globalmente para este cliente | Desativar modo de refinamento global do cliente |
 
-持续模式覆盖创作正文、对外文案、日常说明、计划和审查报告；保留引用、代码、必需模板与证据。持久模式先展示实际规则文件和差异，由驾驶员同意后写入独立区块。安装／升级 TW 不自动开启。任务退出只影响当前任务；“查看洗稿模式状态”会区分各个范围及宿主加载证据。
+O modo contínuo cobre texto criado, textos externos, explicações cotidianas, planos e relatórios de revisão; preserva citações, código, modelos obrigatórios e evidências. Modos persistentes mostram primeiro os arquivos de regras reais e as diferenças, e só gravam em um bloco separado após a concordância do responsável. Instalar/atualizar a TW não ativa isso automaticamente. Sair da tarefa afeta só a tarefa atual; "ver estado do modo de refinamento" distingue os escopos e as evidências de carregamento do host.
 
-“全量审查”查看整个约定范围；“架构审查”追踪职责、依赖、状态和关键链路；“全量架构审查”组合两者。软件与角色卡均适用。报告保留已检查、部分检查、未读及排除项，并交付全部有证据的发现。也可说“灵魂杀手，全量架构审查”，沿用 Soul 风格；摘要最多三条，完整报告不截断。审查先交只读结果。
+A "revisão completa" olha todo o escopo acordado; a "revisão de arquitetura" acompanha responsabilidades, dependências, estados e caminhos críticos; a "revisão completa de arquitetura" combina as duas. Vale para software e cartões de personagem. O relatório registra o que foi verificado, parcialmente verificado, não lido e excluído, e entrega todas as descobertas com evidências. Também é possível dizer "Matador de Almas，revisão completa de arquitetura", mantendo o estilo Soul; o resumo tem no máximo três itens e o relatório completo não é cortado. A revisão entrega primeiro resultados somente leitura.
 
-## 五层入口
+## Entrada em cinco camadas
 
 ```text
-Host Front Door（可选本地入口）
-  -> Soul（阿瞳 / MTTT.sir / 灵魂杀手 / 三席，可选）
-    -> 脑暴编排（总设计案 + First Playable + 蓝图/蓝图集，可选）
-      -> Library（A0 + ST 指南 + 设计/动效 + 来源 Wiki + 挑选页）
-        -> 按机器清单分发的工程 Skill（创作、组件、API、UI、调试、成长核验、构建、验收等）
+Host Front Door（entrada local opcional）
+  -> Soul（Atong / MTTT.sir / Matador de Almas / 三席，opcional）
+    -> Orquestração de brainstorm（projeto geral + First Playable + blueprint/conjunto de blueprints，opcional）
+      -> Library（A0 + guia ST + design/animação + Wiki de origem + página de escolha）
+        -> Skills de engenharia distribuídos pelo manifesto da máquina（criação, componentes, API, UI, depuração, verificação de crescimento, build, validação etc.）
 ```
 
-- **Host Front Door（可选本地入口）** 将持续大白话、任务路由与协作规则接入本地客户端；Claude Code 插件安装时由 SessionStart hook 自动注入，与 `CLAUDE.md` 区块二选一（见 [Claude Code 插件](#claude-code-插件)）。用户挡位单独保存，更新入口时保留；文件匹配与客户端实际加载分别检查。
-- **Soul（可选人格）** 在用户选定的引导挡位内改变语气与教学方式，不改变事实、权限和验收结果。
-- **脑暴编排** 控制方向轮数、四态决策、第一版边界和蓝图体量；任意活动步骤都不能无依据递归增殖。真实问题可以临时细分，解决或确认阻塞后必须关闭支线并回到父步骤。
-- **Library** 单体分发、按需读取；安装一次不等于每轮塞入整个资料库。
-- **工程 Skill** 继续拥有实际工作。人格和资料都不能替代目标运行时权威。
+- **Host Front Door (entrada local opcional)** conecta linguagem simples contínua, roteamento de tarefas e regras de colaboração ao cliente local; na instalação do plugin do Claude Code, é injetado automaticamente pelo hook SessionStart, alternando com um bloco em `CLAUDE.md` (ver [plugin do Claude Code](#plugin-do-claude-code)). O nível do usuário é salvo separadamente e preservado ao atualizar a entrada; correspondência de arquivos e carregamento real pelo cliente são verificados separadamente.
+- **Soul (personalidade opcional)** altera o tom e a forma de ensinar dentro do nível de orientação escolhido pelo usuário, sem alterar fatos, permissões ou resultados de validação.
+- **A orquestração de brainstorm** controla o número de rodadas de direção, decisões de quatro estados, limites da primeira versão e o tamanho do blueprint; nenhuma etapa ativa pode proliferar recursivamente sem base. Problemas reais podem ser divididos temporariamente, mas após resolver ou confirmar o bloqueio, o ramal deve ser fechado e o fluxo volta à etapa pai.
+- **A Library** é distribuída como um todo e lida sob demanda; instalar uma vez não significa carregar a biblioteca inteira a cada rodada.
+- **Os Skills de engenharia** continuam com o trabalho real. Personalidade e materiais não substituem a autoridade do runtime de destino.
 
-## Skill 阵列
+## Conjunto de Skills
 
-| Skill | 主要职责 |
+| Skill | Responsabilidade principal |
 | --- | --- |
-| `activate-tavernweave-soul` | 开启、互切或关闭阿瞳 / MTTT.sir / 灵魂杀手当前任务级模式；强尼是前端审查彩蛋人格，不保存私有 RAG |
-| `build-work-library` | 整理小说、原作与同人资料、联网文字和图片参考；来源回查、版本/阶段筛选、人工编辑、分批接续、Markdown＋JSONL 与 SQLite 导出 |
-| `consult-tavernweave-library` | 强制路由 A0、31 册正式 ST 指南与 C8 实验指南，并按需查询 462 个设计、194 个动效、86 个概念、1,609 条蒸馏账本及离线挑选页 |
-| `orchestrate-project-blueprint` | 将角色卡或普通 Vibe Code 愿望收束为总设计案、First Playable、分级蓝图集、NEXT 和反递归执行门；可召集 Soul 三席联席；项目进度画板、百分比与反馈记录及总设计案／NEXT 同步 |
-| `reflect-on-vibe-code-growth` | 从当前 Codex/Chat/项目与交付证据重新评估完整 Vibe Code 能力网络，同时输出可独立复制的完整文字评估表单与七章交互报告，按可比量表对照不可改写的历史节点，并保存脱敏的 append-only 本地履历 |
-| `worldbook-design-and-writing` | 独立规划、拆合、审阅和精修世界书；联合选择原生、模板或局部混合路径，保留语义与知识边界；精确 API 和运行验收交专职能力 |
-| `tavern-card-builder` | 识别卡型与依赖，维护创作权威、材料来源链、世界书、MVU、CoT、开局与记忆架构边界 |
-| `sillytavern-card-components` | 无损拆卡、组件边界、registry/recipe 与往返一致性 |
-| `sillytavern-component-update` | 组件级更新、可导入测试制品与整卡 pipeline 交接，阻止静默重封 |
-| `sillytavern-render-regex-pipeline` | 用 fixture 验证正则语义、placement、显示/提示词、深度与阶段 |
-| `sillytavern-rolecard-security` | 只读扫描注入、动态执行、凭据形状、远程加载和跨帧权限风险 |
-| `sillytavern-database-rolecards` | 表结构、消息楼层、绑定和幂等迁移；C8 同层兼容仍为实验路线 |
-| `sillytavern-extension-dev` | 最小 UI 扩展脚手架、manifest、生命周期、能力快照和版本门 |
-| `sillytavern-rolecard-performance` | 脱敏预算、回归与具名真实运行时采样 |
-| `sillytavern-media-live2d-runtime` | 媒体、音频、Live2D、预加载、provider、fallback 与清理 |
-| `sillytavern-card-pipeline` | 依赖预检、实时开发适配、组装、JSON/PNG、世界书同步和发布门 |
-| `sillytavern-api-reference` | 查证 ST、Tavern Helper、STScript、EJS、宏与 MVU 的版本敏感 API |
-| `sillytavern-runtime-debug` | 在真实 SillyTavern 追踪 iframe、控制台、DOM、样式、数据和生命周期 |
-| `sillytavern-embedded-ui` | 开局页、状态栏、控制中心、抽屉、浮窗和移动端交互；按作品搭建可选沙盒的规范、联合模拟、状态对照与滑条调试 |
-| `code-quality-workflow` | 全量／架构审查、覆盖记录、完整发现、门控、最小修复、回归与 Finish Mode |
-| `rewrite-natural-prose` | 保留原意与技术结构的文本精修，支持单次、任务持续及分别授权的工作区／客户端持久模式 |
-| `shadcn-tailwind-ui` | 使用 React、shadcn/ui、Radix 和 Tailwind 构建可访问产品界面 |
-| `rolecard-workshop-ops` | 诊断和运维可配置发布链，同时保护生产坐标和凭据 |
+| `activate-tavernweave-soul` | Ativa, alterna ou desativa os modos Atong / MTTT.sir / Matador de Almas no nível da tarefa; Johnny é a personalidade de ovo de páscoa para revisão de front-end e não salva RAG privado |
+| `build-work-library` | Organiza novelas, materiais originais e de fãs, referências textuais e visuais da internet; busca por origem, filtro por versão/estágio, edição manual, continuação em lotes, Markdown＋JSONL e exportação SQLite |
+| `consult-tavernweave-library` | Roteamento obrigatório para A0, os 31 guias oficiais ST e o guia experimental C8, e consulta sob demanda de 462 itens de design, 194 de animação, 86 conceitos, 1.609 entradas de ledger destilado e páginas de escolha offline |
+| `orchestrate-project-blueprint` | Fecha o desejo de um cartão ou de Vibe Code comum em projeto geral, First Playable, conjunto de blueprints em níveis, NEXT e portas de execução anti-recursão; pode convocar a reunião dos três assentos Soul; quadro de progresso do projeto, percentuais e registro de feedback, e sincronização projeto geral/NEXT |
+| `reflect-on-vibe-code-growth` | Reavalia toda a rede de capacidades Vibe Code a partir do Codex/Chat/projeto atual e das evidências entregues, gerando um formulário de avaliação textual completo e copiável à parte e um relatório interativo de sete capítulos, comparando com escalas comparáveis marcos históricos imutáveis e mantendo um histórico local append-only anonimizado |
+| `worldbook-design-and-writing` | Planeja, divide, mescla, revisa e refina livros-mundo de forma isolada; escolhe em conjunto entre caminhos nativos, de modelo ou mistos locais, preservando semântica e limites de conhecimento; API precisa e validação em execução ficam com capacidades especializadas |
+| `tavern-card-builder` | Identifica o tipo de cartão e as dependências, mantém a autoridade de criação, a cadeia de origens dos materiais, o livro-mundo, MVU, CoT, a abertura e os limites da arquitetura de memória |
+| `sillytavern-card-components` | Divisão de cartões sem perdas, limites de componentes, registry/receitas e consistência de ida e volta |
+| `sillytavern-component-update` | Atualização por componente, artefatos de teste importáveis e entrega ao pipeline do cartão inteiro, impedindo reempacotamento silencioso |
+| `sillytavern-render-regex-pipeline` | Valida com fixtures a semântica de regex, placement, exibição/prompt, profundidade e estágio |
+| `sillytavern-rolecard-security` | Verificação somente leitura de injeção, execução dinâmica, formato de credenciais, carregamento remoto e riscos de permissão entre frames |
+| `sillytavern-database-rolecards` | Estrutura de tabelas, mensagens em camadas, vinculação e migrações idempotentes; compatibilidade de mesmo nível do C8 continua experimental |
+| `sillytavern-extension-dev` | scaffolding mínimo de extensão UI, manifest, ciclo de vida, snapshot de capacidades e porta de versão |
+| `sillytavern-rolecard-performance` | Orçamento anonimizado, regressões e amostragem de runtime real nomeada |
+| `sillytavern-media-live2d-runtime` | Mídia, áudio, Live2D, pré-carregamento, provedores, fallback e limpeza |
+| `sillytavern-card-pipeline` | Pré-verificação de dependências, adaptação para desenvolvimento ao vivo, montagem, JSON/PNG, sincronização do livro-mundo e porta de publicação |
+| `sillytavern-api-reference` | Verificação de APIs sensíveis à versão de ST, Tavern Helper, STScript, EJS, macros e MVU |
+| `sillytavern-runtime-debug` | Rastreia iframe, console, DOM, estilos, dados e ciclo de vida no SillyTavern real |
+| `sillytavern-embedded-ui` | Página de abertura, barra de estado, centro de controle, gavetas, janelas flutuantes e interação mobile; especificações para montar sandboxes opcionais por obra, simulação conjunta, comparação de estados e ajuste de sliders |
+| `code-quality-workflow` | Revisão completa/de arquitetura, registro de cobertura, descobertas completas, portas, correções mínimas, regressões e Finish Mode |
+| `rewrite-natural-prose` | Refinamento de texto preservando sentido e estrutura técnica, com modos de única vez, persistente na tarefa e persistente no workspace/cliente com autorização separada |
+| `shadcn-tailwind-ui` | Construção de interfaces de produto acessíveis com React, shadcn/ui, Radix e Tailwind |
+| `rolecard-workshop-ops` | Diagnóstico e operação de cadeias de publicação configuráveis, protegendo coordenadas e credenciais de produção |
 
-## Library 公开边界
+## Fronteira pública da Library
 
-一次安装同时携带：
+Uma instalação traz ao mesmo tempo:
 
-- A0 通用驾驭检查单，作为写入型任务的常驻前置；
-- STDB 的 31 册正式指南和 1 册明确标记为实验的 C8；
-- AFV 完成 243/243 路筛选后的 462 个设计条目、194 个动效条目、86 个概念索引与 1,609 条蒸馏账本；
-- 86 份直接关联的本地概念/Wiki、89 个自有本地技术沙盘与统一离线挑选页；
-- 文件级来源、许可、脱敏次数和 SHA-256 清单。
+- A lista de verificação geral A0, comopré-requisito permanente para tarefas de escrita;
+- Os 31 guias oficiais do STDB e 1 guia C8 explicitamente marcado como experimental;
+- 462 itens de design, 194 itens de animação, 86 índices de conceito e 1.609 entradas de ledger destilado, após a triagem de 243/243 rotas pelo AFV;
+- 86 conceitos/Wiki locais diretamente relacionados, 89 sandboxes técnicas locais próprias e uma página unificada de escolha offline;
+- Manifesto SHA-256 com origem, licença, contagem de anonimização e nível de arquivo.
 
-明确不分发 A1 驾驶员母板、命令式旧 B1、过程档案、本地证据、AFV raw/收件箱、243 份源筛选 JSON、私有 RAG、日志、凭据和无关知识域；只保留不含私密正文的筛选聚合回执。挑选页的“加入候选”只表示 `proposed`，不等于采用、安装、许可通过或真实酒馆验收。
+Explicitamente não são distribuídos: o modelo-mestre do responsável A1, o antigo B1 imperativo, arquivos de processo, evidências locais, AFV raw/caixa de entrada, os 243 JSONs de triagem de origem, RAG privado, logs, credenciais e domínios de conhecimento sem relação; mantemos apenas recibos agregados de triagem sem texto privado. "Adicionar aos candidatos" na página de escolha significa apenas `proposed`, e não adoção, instalação, aprovação de licença ou validação real na taverna.
 
-离线挑选页位于安装目录：
+A página de escolha offline fica no diretório de instalação:
 
 ```text
 skills/consult-tavernweave-library/assets/picker/index.html
 ```
 
-## 创作、续接与验收
+## Criação, continuidade e validação
 
-长项目使用 Markdown + YAML front matter + 受限结构块维护唯一创作权威。确认、候选、待决、否决、实现、自动证据、真实宿主证据和驾驶员验收不得混写。用户说“继续”时先恢复权威、Git/工作树、制品和下一道门，不重复访问已冻结设定。
+Projetos longos usam Markdown + YAML front matter + blocos estruturados restritos para manter uma única autoridade de criação. Confirmações, candidatos, pendências, vetos, implementação, evidência automática, evidência real do host e aceitação do responsável não podem ser misturados. Quando o usuário diz "continue", primeiro restauramos a autoridade, o Git/working tree, os artefatos e a próxima porta, sem revisitar configurações congeladas.
 
-证据按层记录：
+As evidências são registradas por camada:
 
 ```text
 源码 -> 自动测试 -> 离线制品 -> 浏览器/桌面 -> 真实 SillyTavern -> 人工验收 -> 发布授权
 ```
 
-任何一层都不能冒充下一层；自动化永远不能自行写入 `driver-accepted`。
+Nenhuma camada pode passar pela seguinte; automação nunca pode gravar `driver-accepted` por conta própria.
 
-## 奶人教程
+## Tutorial passo a passo
 
-第一次使用 TavernWeave，或想了解如何指挥 Agent 完成制卡、调试和验收，可阅读：[TavernWeave 奶人教程 · Vibe Code 制卡入门](https://liarmttt.github.io/TavernWeave/)。
+Na primeira vez com a TavernWeave, ou para aprender a comandar o agente em criação de cartões, depuração e validação, leia: [Tutorial TavernWeave · introdução à criação de cartões com Vibe Code](https://liarmttt.github.io/TavernWeave/).
 
-## 安装与更新
+## Instalação e atualização
 
-Codex 用户可先看[Codex 专项使用与安装](docs/codex-skills.md)：区分插件与独立 Skill 发现位置，并提供无需 PowerShell 的 Python 安装／核验入口（默认只读预览，显式应用后才写入）。
+Usuários Codex podem ver primeiro [uso e instalação específicos para Codex](docs/codex-skills.md): a página distingue os locais de descoberta de plugins e Skills independentes e oferece uma entrada Python de instalação/verificação sem PowerShell (por padrão, pré-visualização somente leitura; só grava após aplicação explícita).
 
-以下步骤用于 Codex 或 Claude Code 的**本地安装**。dots 账户中的插件启用与使用见[统一插件指南](docs/plugin-guide.md)，本地安装不会自动同步到云端。安装器必须以仓库 `skills/` 的完整清单为源，创建缺失目录，不能只覆盖本机已经存在的 Skill。Host Front Door 是可选本地增强；安装前先看目标规则文件和差异：
+As etapas a seguir são para **instalação local** no Codex ou Claude Code. Para ativação e uso do plugin na conta dots, veja o [guia do plugin unificado](docs/plugin-guide.md); a instalação local não sincroniza automaticamente com a nuvem. O instalador deve usar como fonte o manifesto completo de `skills/` do repositório, criando diretórios ausentes, e não apenas sobrescrever Skills já existentes na máquina. Host Front Door é um reforço local opcional; antes de instalar, veja o arquivo de regras de destino e as diferenças:
 
 ```text
 请完整安装并启用这个 Skill 仓库：
@@ -225,7 +225,7 @@ https://github.com/LiarMTTT/TavernWeave
 请检测我使用的是 Codex 还是 Claude Code，说明 TavernWeave Host Front Door 是可选本地增强；先展示目标路径、受控区块和 diff，得到我确认后再安装。不要改写受控区块以外的用户规则。
 ```
 
-更新：
+Atualização:
 
 ```text
 请把已安装的 TavernWeave 完整更新到这个仓库的最新版本：
@@ -234,38 +234,38 @@ https://github.com/LiarMTTT/TavernWeave
 更新必须比较“仓库应有目录”和“实际安装目录”，创建新增 Skill，不能只修改旧目录；同时检查 Host Front Door 是否缺失、过期或漂移，明文给出“更新前门/先看 diff/仅更新 Skills”三种选择。完成后返回两份回执，再新建任务验证本地宿主发现。dots 账户导入另按插件指南验证。
 ```
 
-如果宿主或 Agent 使用“把每个 Skill 复制到某个项目级目录”的便携安装方式，可在仓库根运行：
+Se o host ou o agente usa o modo de instalação portátil de "copiar cada Skill para um diretório de projeto", execute na raiz do repositório:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\install-tavernweave.ps1 -TargetSkillRoot '<实际 Skill 根目录>'
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\install-tavernweave.ps1 -TargetSkillRoot '<raiz real de Skills>'
 ```
 
-需要在安装时处理全局前门，显式选择宿主并让脚本询问：
+Para tratar a front door global durante a instalação, escolha explicitamente o host e deixe o script perguntar:
 
 ```powershell
-# Codex：默认目标为 $CODEX_HOME\AGENTS.md；未设置时为 ~/.codex/AGENTS.md
-powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\install-tavernweave.ps1 -TargetSkillRoot '<实际 Skill 根目录>' -AgentHost Codex -HostFrontDoorAction Prompt
+# Codex：o destino padrão é $CODEX_HOME\AGENTS.md；se não definido, ~/.codex/AGENTS.md
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\install-tavernweave.ps1 -TargetSkillRoot '<raiz real de Skills>' -AgentHost Codex -HostFrontDoorAction Prompt
 
-# Claude Code：默认目标为 ~/.claude/CLAUDE.md
-powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\install-tavernweave.ps1 -TargetSkillRoot '<实际 Skill 根目录>' -AgentHost Claude -HostFrontDoorAction Prompt
+# Claude Code：o destino padrão é ~/.claude/CLAUDE.md
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\install-tavernweave.ps1 -TargetSkillRoot '<raiz real de Skills>' -AgentHost Claude -HostFrontDoorAction Prompt
 ```
 
-安装动作只维护带版本的 `tavernweave-host-front-door` 注释区块；已有文件先留备份，重复安装幂等，错误/重复标记与链接路径会被拒绝。单独预览或安装可运行：
+A instalação mantém apenas o bloco de comentário versionado `tavernweave-host-front-door`; arquivos existentes recebem primeiro um backup, instalações repetidas são idempotentes, e marcadores duplicados/incorretos e caminhos de link são rejeitados. Para pré-visualizar ou instalar separadamente:
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\manage-host-front-door.ps1 -AgentHost Codex -Action Preview
 powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\manage-host-front-door.ps1 -AgentHost Codex -Action Install
 ```
 
-全局规则修改是独立执行门；Agent 不得因为“推荐”二字静默写入。Codex/Claude 需要新建任务或重启后重新发现；前门回执也不能冒充 Soul Skill 已被实际调用。
+Modificar regras globais é uma porta de execução separada; o agente não pode gravar silenciosamente só porque algo foi "recomendado". Codex/Claude precisam criar uma nova tarefa ou reiniciar para redescobrir; o recibo da front door também não pode fingir que o Skill Soul foi realmente invocado.
 
-安装或更新后必须对**实际扫描位置**运行核验，而不是只检查源码仓库。核验器默认拒绝把 TavernWeave 源码目录本身当作安装目标：
+Depois de instalar ou atualizar, a verificação deve ser executada nos **locais de varredura reais**, não apenas no repositório de código. O verificador recusa, por padrão, usar o próprio diretório de código da TavernWeave como destino de instalação:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\verify-install.ps1 -TargetRoot '<实际插件根目录或 Skill 根目录>'
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\verify-install.ps1 -TargetRoot '<raiz real do plugin ou raiz de Skills>'
 ```
 
-通过回执的技能数必须与所用源码的安装清单一致。以下以 2.3.0 的 23 技能源码为例；已发布的 1.9.1 原包仍为 22/22：
+O número de Skills no recibo aprovado deve corresponder ao manifesto de instalação da fonte usada. O exemplo abaixo usa o código de 23 Skills da 2.3.0; o pacote original publicado da 1.9.1 ainda é 22/22:
 
 ```text
 INSTALLATION VERIFIED: 23/23
@@ -275,65 +275,65 @@ Soul: present-and-matched
 Host rediscovery: required-new-task
 ```
 
-如果核验时同时指定宿主与规则文件，回执还会显示 `Host Front Door: current|missing-block|outdated|drifted`；它是推荐状态，不改变按机器清单核对 Skill 文件完整性的判定。
+Se a verificação também receber o host e o arquivo de regras, o recibo mostra ainda `Host Front Door: current|missing-block|outdated|drifted`; é um status recomendado e não altera o julgamento da integridade dos arquivos de Skills conforme o manifesto da máquina.
 
-目标目录中的无关个人 Skill 会保留；机器清单中的 TavernWeave 官方目录必须与当前源码逐文件匹配。写入目标最后一级必须明确名为 `skills`；安装脚本拒绝盘符根、用户目录根、源码仓库内部目标和目录链接，替换失败时会回滚已有官方 Skill。
+Skills pessoais sem relação no diretório de destino são preservadas; os diretórios oficiais da TavernWeave no manifesto devem corresponder arquivo a arquivo ao código atual. O último nível do destino de gravação deve ser chamado explicitamente `skills`; o script de instalação recusa raízes de unidade, raízes de usuário, destinos dentro do repositório de código e links de diretório, e reverte Skills oficiais existentes se a substituição falhar.
 
-完成对应版本的完整核验后新建任务或重启会话，使本地宿主重新发现 Skill。新任务中仍需实际调用世界书设计与写作、Soul、脑暴编排、照镜子与 Library；安装回执不能冒充宿主发现。v2.4.0 插件包、`TavernWeave-DSH-v2.4.0.tgz`（DeepSeek Harness）与 SHA-256 校验文件见 [正式发布页](https://github.com/LiarMTTT/TavernWeave/releases/tag/v2.4.0)。
+Após a verificação completa da versão correspondente, crie uma nova tarefa ou reinicie a sessão para que o host local redescubra os Skills. Na nova tarefa ainda é preciso invocar de fato o design e escrita de livros-mundo, Soul, orquestração de brainstorm, Espelho e Library; o recibo de instalação não pode substituir a descoberta pelo host. O pacote de plugins v2.4.0, `TavernWeave-DSH-v2.4.0.tgz` (DeepSeek Harness) e os arquivos de verificação SHA-256 estão na [página oficial de lançamento](https://github.com/LiarMTTT/TavernWeave/releases/tag/v2.4.0).
 
-维护者若只是在发布前自检源码树，可显式使用 `-AllowSourceTree`；该开关不能用于普通用户的安装回执。
+Mantenedores que desejam apenas verificar a árvore de código antes de publicar podem usar explicitamente `-AllowSourceTree`; essa opção não serve para o recibo de instalação de usuários comuns.
 
-## Antigravity / AGY 插件
+## Plugin Antigravity / AGY
 
-Antigravity / AGY 用户请先看[原生插件构建、安装与验证](host-adapters/antigravity/README.md)。该包复用 23 个 Skill，通过常驻规则加载前门，并提供 AGY Agent 与设置保存适配；严格校验和客户端实测分别记录。仓库根的 Claude 插件导入转换不是 AGY 原生包的安装路径。
+Usuários Antigravity / AGY devem ver primeiro [build, instalação e verificação do plugin nativo](host-adapters/antigravity/README.md). O pacote reutiliza os 23 Skills, carrega a front door por regras persistentes e traz adaptações para o agente AGY e para a persistência de configurações; validação estrita e testes no cliente são registrados separadamente. A conversão de importação do plugin Claude na raiz do repositório não é o caminho de instalação do pacote nativo AGY.
 
-## Claude Code 插件
+## Plugin do Claude Code
 
-2.2.0 起，仓库本身就是一个 Claude Code 插件市场（`.claude-plugin/`）。在 Claude Code 中运行：
+Desde a 2.2.0, o próprio repositório é um marketplace de plugins do Claude Code (`.claude-plugin/`). No Claude Code, execute:
 
 ```text
 /plugin marketplace add LiarMTTT/TavernWeave
 /plugin install tavernweave-agent-skills@tavernweave
 ```
 
-插件包含四部分，前三项与 DSH 插件包一一对应：
+O plugin tem quatro partes; as três primeiras correspondem um a um ao pacote DSH:
 
-| 组成 | 文件 | 对应 DSH |
+| Componente | Arquivo | Correspondência DSH |
 | --- | --- | --- |
-| 23 个 Skill，名称带 `tavernweave-agent-skills:` 前缀 | `skills/` | Skill provider |
-| Host Front Door 自动注入：每次会话开始时把前门作为会话上下文加入（需要 PATH 中有 `node`） | [`hooks/hooks.json`](hooks/hooks.json)、[`hooks/session-start-front-door.mjs`](hooks/session-start-front-door.mjs) | system prompt section |
-| `tavernweave` agent：TW 专用人设，工具集同样精简（不含联网与子代理） | [`agents/tavernweave.md`](agents/tavernweave.md) | `TavernWeave X DSH` preset |
-| Soul 模式切换：输入框上方一行 `Soul 阿瞳 ▸`，展开后选模式只把对应指令填进输入框，由你发送 | [`hooks/soul-switch.tsx`](hooks/soul-switch.tsx)（`hooks/hooks.json` 的 `modules`） | 神之手 Soul 小浮窗（CC 只保留这一项界面） |
+| 23 Skills, com nomes prefixados por `tavernweave-agent-skills:` | `skills/` | provedor de Skills |
+| Injeção automática do Host Front Door: a cada início de sessão, a front door é adicionada como contexto da sessão (requer `node` no PATH) | [`hooks/hooks.json`](hooks/hooks.json), [`hooks/session-start-front-door.mjs`](hooks/session-start-front-door.mjs) | seção de system prompt |
+| Agente `tavernweave`: persona exclusiva da TW, com conjunto de ferramentas igualmente enxuto (sem rede e sem subagentes) | [`agents/tavernweave.md`](agents/tavernweave.md) | predefinição `TavernWeave X DSH` |
+| Alternância de modo Soul: uma linha `Soul Atong ▸` acima da caixa de entrada, que ao expandir permite escolher o modo e apenas preenche a instrução correspondente na caixa, para você enviar | [`hooks/soul-switch.tsx`](hooks/soul-switch.tsx) (`modules` em `hooks/hooks.json`) | mini janela flutuante Soul do Hand of God (no CC, só este elemento de interface é mantido) |
 
-`tavernweave` agent 可以作为主会话启动：`claude --agent tavernweave-agent-skills:tavernweave`；也可以在普通会话里让 Claude 把 TW 任务交给它。如果之前把 Skill 复制进了 `~/.claude/skills`，改用插件后可以移除那份副本，避免同名 Skill 出现两次。
+O agente `tavernweave` pode iniciar a sessão principal: `claude --agent tavernweave-agent-skills:tavernweave`; ou você pode pedir ao Claude em uma sessão comum para entregar tarefas da TW a ele. Se você copiou os Skills para `~/.claude/skills`, pode remover essa cópia ao migrar para o plugin, evitando Skills duplicados com o mesmo nome.
 
-Soul 模式切换用的是 Claude Code 插件的函数 hook 接口（官方标注为 early access）。它和前门 hook 写在同一个 `hooks/hooks.json` 里，已在 Claude Code 2.1.299 上确认两者都会加载；更早的版本是否忽略 `modules` 字段尚未验证。切换只记录你实际发出的 Soul 指令，不代表 Soul 已被确认激活；它从不替你发送消息。界面测试用 `claude plugin test .` 运行。
+A alternância de modo Soul usa a interface de function hooks de plugins do Claude Code (marcada oficialmente como early access). Ela e o hook da front door estão no mesmo `hooks/hooks.json`, e foi confirmado que ambos carregam no Claude Code 2.1.299; não foi verificado se versões anteriores ignoram o campo `modules`. A alternância registra apenas a instrução Soul que você realmente enviou, não confirma que o Soul foi ativado; ela nunca envia mensagens por você. Testes de interface são executados com `claude plugin test .`.
 
-### 与 CLAUDE.md 区块去重
+### Eliminando duplicação com o bloco do CLAUDE.md
 
-前门只需要一处。hook 启动时检查本会话会加载的指令文件：`$CLAUDE_CONFIG_DIR/CLAUDE.md`（未设置时为 `~/.claude/CLAUDE.md`），以及当前目录到根目录各级的 `CLAUDE.md`、`.claude/CLAUDE.md`、`CLAUDE.local.md`。文件里的受控区块优先：
+A front door precisa existir em apenas um lugar. Na inicialização, o hook verifica os arquivos de instrução que serão carregados nesta sessão: `$CLAUDE_CONFIG_DIR/CLAUDE.md` (ou `~/.claude/CLAUDE.md`, se não definido) e `CLAUDE.md`, `.claude/CLAUDE.md` e `CLAUDE.local.md` em cada nível do diretório atual até a raiz. O bloco controlado nesses arquivos tem prioridade:
 
-| 情况 | hook 的行为 |
+| Situação | Comportamento do hook |
 | --- | --- |
-| 这些文件都没有 `tavernweave-host-front-door` 区块 | 注入插件自带的前门 |
-| 已有同版本区块 | 不注入，文件区块生效 |
-| 已有其他版本区块 | 不注入前门，只加一句版本不一致提示；文件区块仍生效 |
-| 环境变量 `TAVERNWEAVE_FRONT_DOOR=off` | 完全不注入 |
+| Nenhum desses arquivos tem um bloco `tavernweave-host-front-door` | Injeta a front door incluída no plugin |
+| Já existe um bloco da mesma versão | Não injeta; o bloco do arquivo prevalece |
+| Já existe um bloco de outra versão | Não injeta a front door, apenas acrescenta um aviso de divergência de versão; o bloco do arquivo continua valendo |
+| Variável de ambiente `TAVERNWEAVE_FRONT_DOOR=off` | Não injeta nada |
 
-- 通过插件市场安装的用户，不需要再用 `manage-host-front-door.ps1` 写入 `CLAUDE.md`。已经写过、想改由插件随版本更新的，运行 `manage-host-front-door.ps1 -AgentHost Claude -Action Remove`（脚本会先备份）。
-- 通过 ZIP 或复制 `skills/` 安装的用户没有这个 hook，仍按上文写入 `CLAUDE.md`。
-- 引导挡位（`tavernweave-guidance-preference` 区块）不受影响，仍单独保存在 `CLAUDE.md`。
+- Usuários que instalaram pelo marketplace de plugins não precisam usar `manage-host-front-door.ps1` para gravar no `CLAUDE.md`. Se já gravaram e querem passar a ter o blocos atualizado pelo plugin, execute `manage-host-front-door.ps1 -AgentHost Claude -Action Remove` (o script faz backup primeiro).
+- Usuários que instalaram por ZIP ou copiando `skills/` não têm esse hook e devem continuar gravando no `CLAUDE.md` como descrito acima.
+- O nível de orientação (bloco `tavernweave-guidance-preference`) não é afetado e continua salvo separadamente no `CLAUDE.md`.
 
-验收状态：hook、agent 与 Soul 切换的结构、去重规则、输出格式和指令一致性由 [`tests/claude-plugin.test.mjs`](tests/claude-plugin.test.mjs) 离线检查，Soul 切换的界面行为由 [`hooks/soul-switch.test.tsx`](hooks/soul-switch.test.tsx) 在终端与桌面两种表面检查；Claude Code 新会话中的实际注入、`--agent` 启动和子代理调用尚未实机验收（见安装清单 `claudePlugin.hostLoading`）。
+Status de validação: a estrutura dos hooks, do agente e da alternância Soul, as regras de eliminação de duplicação, o formato de saída e a consistência das instruções são verificados offline por [`tests/claude-plugin.test.mjs`](tests/claude-plugin.test.mjs); o comportamento de interface da alternância Soul é verificado por [`hooks/soul-switch.test.tsx`](hooks/soul-switch.test.tsx) nas superfícies de terminal e desktop; a injeção real em uma nova sessão do Claude Code, a inicialização com `--agent` e a invocação por subagente ainda não foram validadas em máquina real (ver `claudePlugin.hostLoading` no manifesto de instalação).
 
 ## DeepSeek Harness
 
-2.1.0 起，DSH 改用独立插件包安装，**不要**把 `skills/` 复制到 `.agents/skills`，也不需要写 `AGENTS.md`：
+Desde a 2.1.0, o DSH é instalado por um pacote de plugin separado, **não** copie `skills/` para `.agents/skills`, e não é necessário escrever `AGENTS.md`:
 
-1. 从 [v2.4.0 发布页](https://github.com/LiarMTTT/TavernWeave/releases/tag/v2.4.0)下载 `TavernWeave-DSH-v2.4.0.tgz`；或在源码树运行 `node scripts/build-dsh-plugin.mjs` 重新生成本地包 `TavernWeave-DSH-v2.4.0.tgz`；
-2. DSH 桌面版：侧栏 **插件 → 添加插件 → 安装第三方插件 → 本地路径/tarball**，安装后启用 bundle；
-3. 新建任务，在 Agent preset 中选择 **TavernWeave X DSH**。
+1. Baixe `TavernWeave-DSH-v2.4.0.tgz` na [página de lançamento v2.4.0](https://github.com/LiarMTTT/TavernWeave/releases/tag/v2.4.0); ou execute `node scripts/build-dsh-plugin.mjs` na árvore de código para gerar localmente o pacote `TavernWeave-DSH-v2.4.0.tgz`;
+2. DSH Desktop: barra lateral **Plugins → Adicionar plugin → Instalar plugin de terceiros → caminho local/tarball**, e habilite o bundle após a instalação;
+3. Crie uma nova tarefa e selecione **TavernWeave X DSH** no preset do agente.
 
-CLI/Web profile 使用 `dsh plugin --profile <profile> add <本地路径|tarball|git 地址|包名>`；`desktop` profile 由 Desktop shell 管理，不要直接调用 CLI。
+Perfis CLI/Web usam `dsh plugin --profile <perfil> add <caminho local|tarball|endereço git|nome do pacote>`; o perfil `desktop` é gerenciado pelo shell do Desktop e não deve ser chamado diretamente pela CLI.
 
-插件包内直接携带 23 个 Skill 与 Host Front Door（作为 system prompt section 注入），安装/升级/卸载都走 DSH 插件机制。详细组成、机器合同与运行时门禁见 [host-adapters/dsh/README.md](host-adapters/dsh/README.md)。DSH 仍处于 Developer Preview。2.1.0 已在 DSH Desktop `0.2.1-rc.2` 上完成插件页、preset 选择、23 Skill 目录、Front Door、Soul 与完全权限终端的实机验收；模型效果、Linux/WSL 与真实酒馆仍是分开的验收项。OneDrive reparse-point 工作区在 workspace-write 下需切完全权限或换普通目录（见合同 `knownEnvironmentIssues`）。
+O pacote de plugin traz diretamente os 23 Skills e o Host Front Door (injetado como seção de system prompt); instalação, atualização e desinstalação passam pelo mecanismo de plugins do DSH. Composição detalhada, contrato de máquina e portas de runtime estão em [host-adapters/dsh/README.md](host-adapters/dsh/README.md). O DSH ainda está em Developer Preview. A 2.1.0 concluiu a validação em máquina real no DSH Desktop `0.2.1-rc.2` da página de plugins, seleção de preset, diretório de 23 Skills, Front Door, Soul e terminal com permissão total; efeito do modelo, Linux/WSL e taverna real continuam como itens de validação separados. Workspaces com ponto de reanálise do OneDrive precisam mudar para permissão total ou usar um diretório comum sob workspace-write (ver contrato `knownEnvironmentIssues`).

@@ -1,118 +1,118 @@
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="docs/assets/banner-dark.svg">
-    <img src="docs/assets/banner-light.svg" width="900" alt="ctx-handoff: the long-session toolkit for Claude Code">
+    <img src="docs/assets/banner-light.svg" width="900" alt="ctx-handoff: o kit de ferramentas para sessões longas no Claude Code">
   </picture>
 </p>
 
 <p align="center">
-  <b>Have Claude remember what you taught it, catch its usual slips,<br>and pick long sessions back up when you return.</b>
+  <b>Faça o Claude lembrar do que você ensinou, pegue as escorregadas de sempre,<br>e retome sessões longas quando você voltar.</b>
 </p>
 
 <p align="center">
   <a href="https://github.com/cablate/ctx-handoff-mod/releases"><img src="https://img.shields.io/github/v/release/cablate/ctx-handoff-mod?include_prereleases&display_name=release&label=release&color=7dd3fc" alt="Latest release"></a>
   <a href="https://github.com/cablate/ctx-handoff-mod/actions/workflows/check.yml"><img src="https://github.com/cablate/ctx-handoff-mod/actions/workflows/check.yml/badge.svg" alt="CI"></a>
-  <img src="https://img.shields.io/badge/Claude_Code-2.1.287%2B-a78bfa" alt="Claude Code 2.1.287 or later">
+  <img src="https://img.shields.io/badge/Claude_Code-2.1.287%2B-a78bfa" alt="Claude Code 2.1.287 ou mais recente">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="MIT license"></a>
 </p>
 
 <p align="center">
-  <b>English</b> · <a href="README.zh-TW.md">繁體中文</a> · <a href="#install">Install</a> · <a href="#whats-inside">Features</a> · <a href="docs/guide.md">Guide</a> · <a href="CHANGELOG.md">Changelog</a>
+  <b>English</b> · <a href="README.zh-TW.md">繁體中文</a> · <a href="#install">Instalação</a> · <a href="#whats-inside">Recursos</a> · <a href="docs/guide.md">Guia</a> · <a href="CHANGELOG.md">Changelog</a>
 </p>
 
 <p align="center">
-  <img src="docs/assets/handoff.svg" width="900" alt="Animation: a long session fills its context to the threshold; ctx-handoff writes a summary of verified work, failed attempts, your limits and the next step, clears, and a fresh session continues from it">
+  <img src="docs/assets/handoff.svg" width="900" alt="Animação: uma sessão longa preenche o contexto até o limite; o ctx-handoff escreve um resumo do trabalho verificado, das tentativas falhas, dos seus limites e do próximo passo, limpa e uma nova sessão continua a partir dele">
 </p>
 
-## Why
+## Por quê
 
-Long Claude Code sessions run into the same chores again and again. ctx-handoff takes care of them in the background, so in normal use you type no commands.
+Sessões longas do Claude Code esbarram sempre nas mesmas tarefas chatas. O ctx-handoff cuida delas em segundo plano, então no uso normal você não digita nenhum comando.
 
-| When… | Without it | With ctx-handoff |
+| Quando… | Sem ele | Com o ctx-handoff |
 |---|---|---|
-| the conversation is nearly full | You write a summary, `/clear`, paste it back | A summary is written, the conversation is cleared, and a fresh one continues |
-| you step away for an hour | Your next message rereads everything at full price | The cache is kept warm for up to about 4 hours |
-| you repeat an instruction | The next conversation forgets it | It becomes a project note, and after 3 times a line in your repo |
-| you `/clear` or reopen Claude Code | The new conversation starts blind | It's told where the last one stopped |
-| Claude retries a failing command, or says "done" untested | You find out later | Claude gets a one-line nudge right away |
+| a conversa está quase cheia | Você escreve um resumo, `/clear` e cola de volta | Um resumo é escrito, a conversa é limpa e uma nova continua |
+| você sai por uma hora | Sua próxima mensagem relê tudo a preço cheio | O cache é mantido aquecido por até cerca de 4 horas |
+| você repete uma instrução | A próxima conversa esquece | Ela vira uma nota do projeto e, após 3 vezes, uma linha no seu repositório |
+| você usa `/clear` ou reabre o Claude Code | A nova conversa começa às cegas | Ela é informada de onde a última parou |
+| o Claude repete um comando que falha, ou diz "pronto" sem testar | Você descobre depois | O Claude recebe um lembrete de uma linha na hora |
 
-## Install
+## Instalação
 
-Requires Claude Code 2.1.287 or later. Tested up to 2.1.302.
+Requer Claude Code 2.1.287 ou mais recente. Testado até a 2.1.302.
 
 ```sh
 claude plugin marketplace add cablate/ctx-handoff-mod
 claude plugin install ctx-handoff@ctx-handoff-mod
 ```
 
-Start a new session and type `/handoff`. You should see:
+Inicie uma nova sessão e digite `/handoff`. Você deve ver:
 
 ```
 context 12034 / threshold 600000 (window 1000000)
 Cache refresh on, refreshed 0/3 this idle period, timer not started
 ```
 
-That's it. Update with `claude plugin update ctx-handoff@ctx-handoff-mod`, or turn on auto-update under **Marketplaces** in `/plugin`.
+É só isso. Atualize com `claude plugin update ctx-handoff@ctx-handoff-mod`, ou ligue a atualização automática em **Marketplaces** em `/plugin`.
 
 > [!NOTE]
-> Built for Claude subscriptions and long sessions (for example on a 1M-context model). On an API key, Bedrock or Vertex the cache lasts only 5 minutes, so run `/handoff refresh off`; everything else works. ctx-handoff is experimental, because Claude Code mods are still in early access.
+> Feito para assinaturas Claude e sessões longas (por exemplo, em um modelo com contexto de 1M). Com chave de API, Bedrock ou Vertex, o cache dura só 5 minutos, então rode `/handoff refresh off`; todo o resto funciona. O ctx-handoff é experimental, porque os mods do Claude Code ainda estão em acesso antecipado.
 
-## What's inside
+## O que há dentro
 
-ctx-handoff is a growing toolkit for long sessions: new features for working with Claude over hours land here.
+O ctx-handoff é um kit que cresce para sessões longas: novos recursos para trabalhar com o Claude por horas chegam aqui.
 
-### Hands off before the context fills (optional)
+### Entregar antes do contexto encher (opcional)
 
-Off by default, so Claude Code's own compact takes over. Turn on `auto_handoff` in the panel's Settings tab and at 600k tokens it waits for Claude and its subagents to finish, writes a summary that keeps verified work apart from unverified changes, lists what failed, the limits you set in your own words and what was already found out, ends with one next step, clears, and continues in a fresh conversation. Anything you type meanwhile is carried over.
+Desligado por padrão, para que a compactação própria do Claude Code assuma. Ative `auto_handoff` na aba Configurações do painel e, em 600k tokens, ele espera o Claude e seus subagentes terminarem, escreve um resumo que separa trabalho verificado de alterações não verificadas, lista o que falhou, os limites que você definiu com suas palavras e o que já se descobriu, termina com um próximo passo, limpa e continua em uma conversa nova. Qualquer coisa que você digite nesse meio tempo é levada junto.
 
-### Keeps the cache warm while you're away
+### Mantém o cache aquecido enquanto você está fora
 
-After about 50 idle minutes it sends a tiny request so the conversation cache doesn't expire (and stays ahead of Claude Code's 54-minute idle compaction on large chats), up to 3 times (about 3.5 hours); after that it saves a handoff summary without clearing, so when you return you choose to start fresh from it (`/handoff resume`) or stay where you were (`continue`).
+Depois de cerca de 50 minutos inativo, ele envia uma requisição minúscula para que o cache da conversa não expire (ficando à frente da compactação por inatividade de 54 minutos do Claude Code em chats grandes), até 3 vezes (cerca de 3,5 horas); depois disso, salva um resumo de entrega sem limpar, para que, ao voltar, você escolha começar do zero com ele (`/handoff resume`) ou ficar onde estava (`continue`).
 
-To pause away refreshes and away summaries for just this conversation, click the button at the top of the panel or run `/handoff away pause` (`resume` restarts the timer). Notes updates keep running, and other conversations aren't affected. The panel and `/handoff` also show live background activity and the session's reported background token usage since this update (not a bill; requests already sent cannot be cancelled).
+Para pausar as atualizações e os resumos de ausência só nesta conversa, clique no botão no topo do painel ou execute `/handoff away pause` (`resume` reinicia o timer). Atualizações de notas continuam rodando, e outras conversas não são afetadas. O painel e `/handoff` também mostram atividade em segundo plano ao vivo e o uso de tokens em segundo plano informado pela sessão desde esta atualização (não é uma fatura; requisições já enviadas não podem ser canceladas).
 
-<img src="docs/assets/cache.svg" width="900" alt="Animation: after you leave, the cache is refreshed at 55, 110 and 165 minutes; after that a summary is saved, and when you return you choose to resume or continue">
+<img src="docs/assets/cache.svg" width="900" alt="Animação: depois que você sai, o cache é atualizado aos 55, 110 e 165 minutos; depois disso, um resumo é salvo e, ao voltar, você escolhe retomar ou continuar">
 
-### Learns your project, then hands it to your repo
+### Aprende sobre seu projeto e entrega ao seu repositório
 
-<img src="docs/assets/memory.svg" width="900" alt="Animation: the same instruction on three days becomes a project rule, then a line in CLAUDE.md for you to review">
+<img src="docs/assets/memory.svg" width="900" alt="Animação: a mesma instrução em três dias vira uma regra do projeto e depois uma linha no CLAUDE.md para você revisar">
 
-Preferences, corrections and facts become one Markdown notes file per project, loaded into every new conversation. Routines you repeat become project skills. Only the new part of the conversation is read, by Sonnet 5.5 at low effort.
+Preferências, correções e fatos viram um arquivo de notas Markdown por projeto, carregado em toda nova conversa. Rotinas que você repete viram skills do projeto. Apenas a parte nova da conversa é lida, pelo Sonnet 5.5 com esforço baixo.
 
-If a notes update fails or gets unusable output, that slice of the conversation is kept for the next retry, without counting the same rule or procedure twice. Memories you delete come back only if you bring them up again in a new slice of conversation.
+Se uma atualização de notas falhar ou gerar algo inútil, aquele trecho da conversa é guardado para a próxima tentativa, sem contar duas vezes a mesma regra ou procedimento. Memórias que você exclui só voltam se você as mencionar novamente em um novo trecho de conversa.
 
-### Remembers where you stopped
+### Lembra onde você parou
 
-<img src="docs/assets/resume.svg" width="900" alt="Animation: after /clear, the next conversation is told the last task, its state and the next step">
+<img src="docs/assets/resume.svg" width="900" alt="Animação: após /clear, a próxima conversa recebe a última tarefa, seu estado e o próximo passo">
 
-### Catches the usual slips
+### Pega as escorregadas de sempre
 
-<img src="docs/assets/nudges.svg" width="900" alt="Animation: nudges for the same failure twice, for saying done without checking, and for drifting out of your language">
+<img src="docs/assets/nudges.svg" width="900" alt="Animação: lembretes para a mesma falha duas vezes, para dizer pronto sem verificar e para sair do seu idioma">
 
-### Guards you approve, one panel for everything
+### Guardas que você aprova, um painel para tudo
 
-When a rule is already written down but keeps getting broken, ctx-handoff drafts a guard: a check on tool calls that reminds or blocks Claude. Claude asks you about it in the next conversation, and nothing applies until you say yes. `/handoff panel` opens a panel above the prompt for guards, memories, rules, the latest notes update and every setting.
+Quando uma regra já está escrita mas continua sendo quebrada, o ctx-handoff rascunha uma guarda: uma verificação das chamadas de ferramenta que lembra ou bloqueia o Claude. O Claude pergunta a você na próxima conversa, e nada é aplicado até você dizer que sim. `/handoff panel` abre um painel acima do prompt para guardas, memórias, regras, a última atualização de notas e todas as configurações.
 
-<img src="docs/assets/guard.svg" width="900" alt="Animation: a rule in CLAUDE.md that keeps getting broken is drafted into a guard; Claude asks whether to turn it on, you say yes, and the next git push gets a reminder. Beside it, the panel above the prompt steps through its tabs: guards, memory, rules, the last update and settings">
+<img src="docs/assets/guard.svg" width="900" alt="Animação: uma regra no CLAUDE.md que continua sendo quebrada é transformada em guarda; o Claude pergunta se deve ativá-la, você diz que sim e o próximo git push recebe um lembrete. Ao lado, o painel acima do prompt percorre suas abas: guardas, memória, regras, última atualização e configurações">
 
-## Settings
+## Configurações
 
-Everything is on the panel's Settings tab (`/handoff panel`, then <kbd>5</kbd>), with where each value comes from and a reset button. The defaults are meant to be left alone. The [guide](docs/guide.md#settings) lists every setting.
+Tudo está na aba Configurações do painel (`/handoff panel`, depois <kbd>5</kbd>), com a origem de cada valor e um botão de redefinir. Os padrões devem ser deixados como estão. O [guia](docs/guide.md#settings) lista cada configuração.
 
-## Cost and privacy
+## Custo e privacidade
 
-- **No servers of its own.** It runs on your Claude Code sign-in and sends nothing anywhere but Anthropic, like the conversation itself.
-- **Small, predictable costs.** A handoff is one request; a cache refresh reads from cache at about a tenth of the input price; a notes update sends only the new part of the conversation. The nudges cost nothing.
-- **Plain files you own.** Notes are Markdown in `~/.claude/projects/`. Check what the mod may do with `claude plugin validate`; the [guide](docs/guide.md#cost-privacy-and-permissions) explains every entry.
+- **Nenhum servidor próprio.** Roda no seu login do Claude Code e não envia nada a lugar nenhum além da Anthropic, como a própria conversa.
+- **Custos pequenos e previsíveis.** Uma entrega é uma requisição; uma atualização de cache lê do cache a cerca de um décimo do preço de entrada; uma atualização de notas envia só a parte nova da conversa. Os lembretes não custam nada.
+- **Arquivos simples que são seus.** Notas são Markdown em `~/.claude/projects/`. Confira o que o mod pode fazer com `claude plugin validate`; o [guia](docs/guide.md#cost-privacy-and-permissions) explica cada entrada.
 
-## Documentation
+## Documentação
 
-- [Guide](docs/guide.md): every feature in detail, settings, commands, permissions, supported environments, limitations, troubleshooting and uninstalling.
-- [Changelog](CHANGELOG.md): what changed in each version and why it's worth upgrading.
-- [Contributing](CONTRIBUTING.md): how to run it from source and send changes. Bug reports and ideas go in [issues](https://github.com/cablate/ctx-handoff-mod/issues/new/choose).
-- [Security](SECURITY.md): how to report a vulnerability privately.
+- [Guia](docs/guide.md): cada recurso em detalhes, configurações, comandos, permissões, ambientes suportados, limitações, solução de problemas e desinstalação.
+- [Changelog](CHANGELOG.md): o que mudou em cada versão e por que vale atualizar.
+- [Contribuindo](CONTRIBUTING.md): como rodar a partir do código e enviar alterações. Relatórios de bugs e ideias vão nas [issues](https://github.com/cablate/ctx-handoff-mod/issues/new/choose).
+- [Segurança](SECURITY.md): como relatar uma vulnerabilidade de forma privada.
 
-## Star history
+## Histórico de estrelas
 
 <a href="https://star-history.com/#cablate/ctx-handoff-mod&Date">
   <picture>
@@ -122,6 +122,6 @@ Everything is on the panel's Settings tab (`/handoff panel`, then <kbd>5</kbd>),
   </picture>
 </a>
 
-## License
+## Licença
 
 [MIT](LICENSE)

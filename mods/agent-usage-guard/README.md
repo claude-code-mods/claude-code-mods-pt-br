@@ -1,8 +1,8 @@
 # agent-usage-guard
 
-> Stops Claude Code from spending your five-hour usage window in ten minutes.
+> Impede que o Claude Code gaste sua janela de uso de cinco horas em dez minutos.
 
-`agent-usage-guard` is a Claude Code [mod](https://code.claude.com/docs/en/plugins/mods/overview): it runs inside Claude Code and holds runaway spend before it happens. It reads your plan's live usage, and it holds subagent fan-out, heavy-context churn and retry loops.
+`agent-usage-guard` é um [mod](https://code.claude.com/docs/en/plugins/mods/overview) do Claude Code: roda dentro do Claude Code e contém gastos descontrolados antes que aconteçam. Ele lê o uso ao vivo do seu plano e contém a proliferação de subagentes, o giro de contextos pesados e os loops de retry.
 
 <p align="center">
   <a href="https://www.producthunt.com/products/agent-usage-guard?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-agent-usage-guard" target="_blank" rel="noopener noreferrer">
@@ -14,23 +14,23 @@
 </p>
 
 <p align="center">
-  <img src="https://github.com/rbartoli/agent-usage-guard/releases/download/agent-usage-guard--v1.0.0/agent-usage-guard.gif" alt="Four scenes in Claude Code's interactive UI. The guard asks before a prompt re-writes the expired cache of a 486k-token session resumed after two hours, before a fifth parallel agent starts against a limit of four, before a twenty-first tool call at 433k context, and before a new agent once subagents have processed 10.9M tokens." width="900">
+  <img src="https://github.com/rbartoli/agent-usage-guard/releases/download/agent-usage-guard--v1.0.0/agent-usage-guard.gif" alt="Quatro cenas na interface interativa do Claude Code. A guarda pergunta antes que um prompt reescreva o cache expirado de uma sessão de 486k tokens retomada após duas horas, antes que um quinto agente paralelo comece com limite de quatro, antes da vigésima primeira chamada de ferramenta com 433k de contexto e antes de um novo agente quando os subagentes já processaram 10,9M de tokens." width="900">
 </p>
 
 <p align="center">
-  <sub>Recorded from Claude Code's interactive UI with the guard loaded. A <a href="demo/scripted-api.ts">scripted local API</a> stands in for Claude, so the sessions and token counts are staged and no usage is spent. Every question on screen is the guard's own. <a href="demo/render.sh">Rebuild it</a> from the <a href="demo/fixture/northstar-api">Northstar fixture</a>.</sub>
+  <sub>Gravado na interface interativa do Claude Code com a guarda carregada. Uma <a href="demo/scripted-api.ts">API local roteirizada</a> faz o papel do Claude, então as sessões e as contagens de tokens são encenadas e nenhum uso é gasto. Toda pergunta na tela é da própria guarda. <a href="demo/render.sh">Recrie isso</a> a partir do <a href="demo/fixture/northstar-api">fixture Northstar</a>.</sub>
 </p>
 
-It acts before the spend, not after it: before an agent starts, a prompt is sent, or a tool call runs. Agent limits hold across every Claude Code session on your machine, and fan-out and heavy context are capped at any usage level, not only near the limit. When you are at the keyboard it asks you, in Claude Code's own question dialog. When nobody can answer, it refuses and tells Claude why, so the model can wait, batch the work, or stop. `/agent-guard report` shows what it did.
+Ele age antes do gasto, não depois: antes de um agente começar, um prompt ser enviado ou uma ferramenta rodar. Os limites de agentes valem para todas as sessões do Claude Code nesta máquina, e a proliferação e os contextos pesados têm teto em qualquer nível de uso, não só perto do limite. Quando você está ao teclado, ele pergunta a você, na própria caixa de diálogo de perguntas do Claude Code. Quando ninguém pode responder, ele recusa e diz ao Claude por quê, para que o modelo espere, agrupe o trabalho ou pare. `/agent-guard report` mostra o que ele fez.
 
-- **Plan-aware.** It reads the 5-hour and weekly percentages Claude Code reports, and keeps the end of the window for you.
-- **One answer covers a while.** An approval lifts its condition until it clears or times out, so the same question does not come back call after call.
-- **Local and privacy-minimal.** No network, no processes. It stores counts and coarse buckets, never prompt text, tool inputs or model output.
-- **Fails open.** If one of its hooks fails, the event goes ahead: a broken guard never breaks your session. The one exception is an agent it could not judge, which is refused so that Claude starts it again.
+- **Ciente do plano.** Lê as porcentagens de 5 horas e semanais que o Claude Code informa e reserva o fim da janela para você.
+- **Uma resposta cobre um tempo.** Uma aprovação suspende sua condição até que ela se resolva ou expire, então a mesma pergunta não volta chamada após chamada.
+- **Local e com privacidade mínima.** Sem rede, sem processos. Armazena contagens e faixas grosseiras, nunca texto de prompt, entradas de ferramentas ou saída do modelo.
+- **Falha aberta.** Se um de seus hooks falhar, o evento segue em frente: uma guarda quebrada nunca quebra sua sessão. A única exceção é um agente que ele não conseguiu julgar, que é recusado para que o Claude o inicie de novo.
 
-## Install
+## Instalação
 
-Run these commands inside Claude Code v2.1.287 or later:
+Execute estes comandos dentro do Claude Code v2.1.287 ou mais recente:
 
 ```text
 /plugin marketplace add rbartoli/agent-usage-guard
@@ -38,155 +38,155 @@ Run these commands inside Claude Code v2.1.287 or later:
 /reload-plugins
 ```
 
-Then run `/agent-guard` to see what it sees, and `/agent-guard simulate concurrency` to see the question it asks when too many agents run, with nothing held or spent. Mods are on by default; the [overview](https://code.claude.com/docs/en/plugins/mods/overview#turn-mods-on-or-off) lists the settings that turn them off.
+Depois execute `/agent-guard` para ver o que ele vê, e `/agent-guard simulate concurrency` para ver a pergunta que faz quando há agentes demais, sem conter ou gastar nada. Mods vêm ligados por padrão; a [visão geral](https://code.claude.com/docs/en/plugins/mods/overview#turn-mods-on-or-off) lista as configurações que os desligam.
 
-## Why this exists
+## Por que isso existe
 
-One afternoon I gave Claude Code a research prompt at max effort. It spawned **394 subagent calls, 341 of them running at once, and pushed 84M context tokens through the API in ten minutes.** Session over: *"Claude usage limit reached."* Locked out until the window reset.
+Certa tarde dei ao Claude Code um prompt de pesquisa com esforço máximo. Ele gerou **394 chamadas de subagente, 341 rodando ao mesmo tempo e empurrou 84M tokens de contexto pela API em dez minutos.** Sessão encerrada: *"Claude usage limit reached."* Bloqueado até a janela reiniciar.
 
-That wasn't a one-off. Sixty days of my own logs held **12 lockouts** and 166 ten-minute windows with agent bursts. The failure mode multiplies: *a large context × rapid tool loops × parallel agents × blind retries*. Each protection below removes one factor.
+Não foi um caso isolado. Sessenta dias dos meus próprios logs tinham **12 bloqueios** e 166 janelas de dez minutos com rajadas de agentes. O modo de falha se multiplica: *contexto grande × loops rápidos de ferramentas × agentes paralelos × retries cegos*. Cada proteção abaixo remove um fator.
 
-And it's not just me: [339 subagents from a single prompt](https://www.reddit.com/r/ClaudeAI/comments/1u5d02w/), [half a weekly Max plan consumed by recursive spawning](https://github.com/anthropics/claude-code/issues/68619), and multi-agent runs using [~15× the tokens of a chat session](https://www.anthropic.com/engineering/built-multi-agent-research-system).
+E não sou só eu: [339 subagentes a partir de um único prompt](https://www.reddit.com/r/ClaudeAI/comments/1u5d02w/), [metade de um plano semanal Max consumida por spawning recursivo](https://github.com/anthropics/claude-code/issues/68619) e execuções multiagente usando [~15× os tokens de uma sessão de chat](https://www.anthropic.com/engineering/built-multi-agent-research-system).
 
-## What it does
+## O que ele faz
 
-| Area | Rule | Default | What happens |
+| Área | Regra | Padrão | O que acontece |
 |---|---|---|---|
-| Plan windows | New agents need approval once a window is this full | 80% | asks; approval lasts until that window resets |
-| | New agents are refused once a window is this full | 95% | refuses |
-| | `ScheduleWakeup` and `CronCreate` are refused once a window is this full, so no turn starts itself into the limit | 95% | refuses |
-| | Each session is told once to finish its step and say what is left | 95% | adds a note to the next prompt |
-| | New agents need approval when the 5-hour window rises this fast | 20 points / 10 min | asks |
-| | New agents need approval when the 5-hour window's pace over the last 10 minutes would fill it within the hour, before it resets | at least 2 points over 2 min | asks |
-| Agents | Agents running at once, across every session on this machine | 4 | asks |
-| | Agents started or resumed per 10 minutes, across this machine | 12 | asks |
-| | Tokens processed by subagents per 10 minutes, across this machine; an approval lasts an hour | 10M | asks |
-| | Subagents may not start their own agents | depth 1 | refuses |
-| Context | Claude is told once to keep the turn bounded | 300k tokens | adds a note to the prompt |
-| | A prompt that would re-read this much context | 500k tokens | asks: compact then send, send anyway, or cancel |
-| | Tool calls per 10 minutes while a conversation or agent carries this much | 20 calls at 400k | asks: keep going, compact after this turn, or stop |
-| | A heavy session idle long enough for its prompt cache to expire | 150k tokens, 1 h idle | asks before re-writing the cache |
-| Loops | The same tool call failing again and again, with no other call in between | 3 identical failures | refuses the identical retry |
-| | Refused agent calls within 10 minutes | 5 | pauses agent spawns for 10 min |
+| Janelas do plano | Novos agentes precisam de aprovação quando a janela está tão cheia | 80% | pergunta; a aprovação dura até a janela reiniciar |
+| | Novos agentes são recusados quando a janela está tão cheia | 95% | recusa |
+| | `ScheduleWakeup` e `CronCreate` são recusados quando a janela está tão cheia, para que nenhum turno comece sozinho rumo ao limite | 95% | recusa |
+| | Cada sessão é avisada uma vez para terminar sua etapa e dizer o que sobrou | 95% | acrescenta uma nota ao próximo prompt |
+| | Novos agentes precisam de aprovação quando a janela de 5 horas sobe tão rápido | 20 pontos / 10 min | pergunta |
+| | Novos agentes precisam de aprovação quando o ritmo dos últimos 10 minutos da janela de 5 horas a encheria em uma hora, antes de reiniciar | pelo menos 2 pontos em 2 min | pergunta |
+| Agentes | Agentes rodando ao mesmo tempo, em todas as sessões desta máquina | 4 | pergunta |
+| | Agentes iniciados ou retomados por 10 minutos, nesta máquina | 12 | pergunta |
+| | Tokens processados por subagentes por 10 minutos, nesta máquina; uma aprovação dura uma hora | 10M | pergunta |
+| | Subagentes não podem iniciar seus próprios agentes | profundidade 1 | recusa |
+| Contexto | O Claude é avisado uma vez para manter o turno limitado | 300k tokens | acrescenta uma nota ao prompt |
+| | Um prompt que releria tanto contexto | 500k tokens | pergunta: compactar e enviar, enviar mesmo assim ou cancelar |
+| | Chamadas de ferramenta por 10 minutos enquanto uma conversa ou agente carrega tanto | 20 chamadas em 400k | pergunta: continuar, compactar depois deste turno ou parar |
+| | Uma sessão pesada parada tempo suficiente para o cache do prompt expirar | 150k tokens, 1 h inativo | pergunta antes de reescrever o cache |
+| Loops | A mesma chamada de ferramenta falhando repetidamente, sem outra chamada no meio | 3 falhas idênticas | recusa a retry idêntico |
+| | Chamadas de agente recusadas em 10 minutos | 5 | pausa a criação de agentes por 10 min |
 
-Agents covers subagents, agent-team teammates, workflow agents, and finished subagents resumed with `SendMessage`. Haiku agents stay out of the running and starts limits, whether Claude asks for Haiku or the agent's own definition picks it; they still count toward the subagent token budget and every plan-window rule. Each tool call is judged on the context of the loop that makes it, so a small subagent never inherits the main conversation's size.
+"Agentes" cobre subagentes, colegas de equipe de agentes, agentes de workflow e subagentes concluídos retomados com `SendMessage`. Agentes Haiku ficam de fora dos limites de agentes rodando e iniciados, seja porque o Claude pediu Haiku ou porque a própria definição do agente o escolhe; eles ainda contam para o orçamento de tokens de subagentes e para toda regra de janela do plano. Cada chamada de ferramenta é julgada no contexto do loop que a faz, então um subagente pequeno nunca herda o tamanho da conversa principal.
 
-**When it asks.** The question appears in Claude Code's own dialog, the one Claude uses to ask you something, and the call waits for your answer. Agents started in parallel while it is open are held back, and Claude starts them again once you answer. If you allow it, that condition stays allowed for a while: a plan window until it resets, a heavy context until it shrinks (for tool calls, an hour at most), the agent counts for 10 minutes. If you decline or dismiss the question, or it closes without an answer for any other reason, Claude is told not to start agents for the next 10 minutes (`AGENT_GUARD_WINDOW_SECONDS`), and is not asked again in that time. Typed words reach Claude, so you can answer "use haiku agents instead".
+**Quando pergunta.** A pergunta aparece na própria caixa de diálogo do Claude Code, aquela que o Claude usa para perguntar algo a você, e a chamada espera sua resposta. Agentes iniciados em paralelo enquanto ela está aberta são contidos, e o Claude os inicia de novo quando você responde. Se você permitir, aquela condição fica permitida por um tempo: uma janela do plano até reiniciar, um contexto pesado até encolher (para chamadas de ferramenta, no máximo uma hora), as contagens de agentes por 10 minutos. Se você recusar ou dispensar a pergunta, ou ela fechar sem resposta por qualquer outro motivo, o Claude é avisado para não iniciar agentes pelos próximos 10 minutos (`AGENT_GUARD_WINDOW_SECONDS`), e não é perguntado novamente nesse tempo. Palavras digitadas chegam ao Claude, então você pode responder "use agentes haiku em vez disso".
 
-**When nobody can answer.** In `claude -p`, the Agent SDK and `dontAsk` mode, an agent or tool gate refuses instead of asking. A heavy prompt is held with the reason, and so is a dormant heavy resume once the machine-wide cap of one per 10 minutes is reached. Prompts that start a turn on their own, such as a schedule or `/loop` firing, a message relayed from a channel like Slack, or a Slack ping, are held the same way, even in a session someone could be asked in; they never lift limits. Claude reads each refusal as the tool's result. Repeat refusals of the same condition are worded differently each time and escalate: the second says nothing has changed and to try something else, the third says to end the turn. If a Stop hook such as `/goal` keeps reopening the turn, the refusal says the user has to decide.
+**Quando ninguém pode responder.** Em `claude -p`, no Agent SDK e no modo `dontAsk`, um portão de agente ou ferramenta recusa em vez de perguntar. Um prompt pesado é contido com o motivo, e o mesmo vale para uma retomada pesada dormente quando o teto de uma por máquina em 10 minutos é atingido. Prompts que iniciam um turno por conta própria, como um agendamento ou o disparo de `/loop`, uma mensagem retransmitida de um canal como o Slack ou um ping do Slack, são contidos da mesma forma, mesmo em uma sessão em que alguém poderia ser perguntado; eles nunca suspendem limites. O Claude lê cada recusa como o resultado da ferramenta. Recusas repetidas da mesma condição são formuladas de modo diferente a cada vez e escalam: a segunda diz que nada mudou e para tentar outra coisa, a terceira diz para encerrar o turno. Se um hook Stop como `/goal` continua reabrindo o turno, a recusa diz que o usuário precisa decidir.
 
-**What it shows.** While agents run on this machine, or the guard is holding or has just refused something, a line above the prompt shows it: `Usage guard · 3 of 4 agents running · 5 of 12 started in the last 10 min · last refusal 14:22: concurrency`. It is bold once a limit is reached or something is held, and gone when there is nothing to say. Claude Code's `[-]` beside it collapses it. Plan windows and context stay in the status line.
+**O que mostra.** Enquanto agentes rodam nesta máquina, ou a guarda está contendo ou acabou de recusar algo, uma linha acima do prompt mostra: `Usage guard · 3 of 4 agents running · 5 of 12 started in the last 10 min · last refusal 14:22: concurrency`. Fica em negrito quando um limite é atingido ou algo está contido, e desaparece quando não há nada a dizer. O `[-]` do Claude Code ao lado a recolhe. Janelas do plano e contexto ficam na linha de status.
 
-**What it leaves alone.** It never holds a background task's notification or another session's message, because that would lose the result. It no longer blocks prompts after a usage limit: since v2.1.234, Claude Code waits at a limit and continues at reset on its own (`autoContinueAtUsageLimit`). The guard's job is to keep you from reaching the limit, and its journal counts the lockouts it did not prevent. Near the limit it only adds a note: from 95%, each session's next prompt tells Claude to finish the step in progress, start nothing large, and end the turn with what is done and what is left, so a lockout finds every session at a clean stop.
+**O que ele não toca.** Ele nunca contém a notificação de uma tarefa em segundo plano nem a mensagem de outra sessão, pois isso perderia o resultado. Ele não bloqueia mais prompts após um limite de uso: desde a v2.1.234, o Claude Code espera no limite e continua sozinho na reinicialização (`autoContinueAtUsageLimit`). O trabalho da guarda é evitar que você chegue ao limite, e seu diário conta os bloqueios que ele não impediu. Perto do limite, ele só acrescenta uma nota: a partir de 95%, o próximo prompt de cada sessão diz ao Claude para terminar a etapa em andamento, não iniciar nada grande e encerrar o turno com o que foi feito e o que sobrou, para que um bloqueio encontre todas as sessões em uma parada limpa.
 
-**Idle compaction.** Since v2.1.299, Claude Code compacts a conversation of 200k tokens or more that sits idle for about 54 minutes, before its one-hour prompt cache expires (`idleCompaction`, on by default). The guard reads the compacted size, so it does not ask about that session. Since v2.1.314 it also runs in VS Code and Claude Desktop's Code tab, for subscribers with telemetry turned off, and on Bedrock, Vertex, Foundry and LLM gateways once the one-hour prompt cache is on. Its dormant question covers what idle compaction leaves out: conversations from 150k to 200k tokens, `claude -p` and SDK sessions, a machine that was asleep at the 54-minute mark, and setups with idle compaction or auto-compaction turned off.
+**Compactação por inatividade.** Desde a v2.1.299, o Claude Code compacta uma conversa de 200k tokens ou mais que fica ociosa por cerca de 54 minutos, antes do cache do prompt de uma hora expirar (`idleCompaction`, ligado por padrão). A guarda lê o tamanho compactado, então não pergunta sobre essa sessão. Desde a v2.1.314, ela também roda no VS Code e na aba Code do Claude Desktop, para assinantes com telemetria desligada, e no Bedrock, Vertex, Foundry e gateways LLM quando o cache de prompt de uma hora está ligado. Sua pergunta dormente cobre o que a compactação por inatividade deixa de fora: conversas de 150k a 200k tokens, sessões `claude -p` e SDK, uma máquina que estava suspensa aos 54 minutos e configurações com compactação por inatividade ou compactação automática desligadas.
 
-**Claude Code's own resume warning.** Since v2.1.304, on Pro and Max plans, Claude Code warns before resuming an inactive conversation, or sending to one whose cache went cold while idle, when that would use a noticeable share of your 5-hour limit: you resume anyway or start a new conversation. It shows only from a minimum share, which Anthropic sets per plan and model, so for most models it shows only on very large conversations. The guard's dormant question asks from 150k tokens, so it still covers most cold resumes, and on the largest you may see both.
+**O aviso de retomada próprio do Claude Code.** Desde a v2.1.304, nos planos Pro e Max, o Claude Code avisa antes de retomar uma conversa inativa, ou de enviar para uma cujo cache esfriou enquanto ociosa, quando isso usaria uma parte perceptível do seu limite de 5 horas: você retoma de qualquer forma ou começa uma conversa nova. Isso só aparece a partir de uma fração mínima, que a Anthropic define por plano e modelo, então para a maioria dos modelos aparece só em conversas muito grandes. A pergunta dormente da guarda começa em 150k tokens, então ainda cobre a maioria das retomadas com cache frio, e nas maiores você pode ver ambas.
 
-## Commands
+## Comandos
 
 ```text
-/agent-guard [status]                          what the guard sees right now
-/agent-guard allow [agents|context] [minutes]  lift its limits for this session (default: all, 10 min)
-/agent-guard pause [minutes]                   the same as allow, for every limit
-/agent-guard resume                            end an allow early, lift the agent pause, and let declined questions ask again
-/agent-guard report [days]                     what it did on this machine (default: 7 days)
-/agent-guard simulate <rule>                   show what a rule does, with nothing held or spent
-/agent-guard help                              these commands
+/agent-guard [status]                          o que a guarda vê agora
+/agent-guard allow [agents|context] [minutes]  suspende seus limites para esta sessão (padrão: todos, 10 min)
+/agent-guard pause [minutes]                   o mesmo que allow, para todo limite
+/agent-guard resume                            encerra uma permissão antes do fim, tira a pausa dos agentes e deixa perguntas recusadas perguntarem de novo
+/agent-guard report [days]                     o que ele fez nesta máquina (padrão: 7 dias)
+/agent-guard simulate <rule>                   mostra o que uma regra faz, sem conter ou gastar nada
+/agent-guard help                              estes comandos
 ```
 
-`/agent-guard` runs at once, even mid-turn, and never starts a model turn, so Claude never sees an override and cannot take one as permission. Only you can lift limits: when another plugin runs `/agent-guard allow` or `pause`, the guard refuses and says so in the transcript. Sending `[allow-usage-guard]` or `[allow-agent-burst]` alone as a prompt, the markers of earlier versions, does the same as `/agent-guard allow` or `allow agents`.
+`/agent-guard` roda imediatamente, mesmo no meio de um turno, e nunca inicia um turno do modelo, então o Claude nunca vê uma substituição e não pode tomá-la como permissão. Só você pode suspender limites: quando outro plugin executa `/agent-guard allow` ou `pause`, a guarda recusa e diz isso na transcrição. Enviar `[allow-usage-guard]` ou `[allow-agent-burst]` sozinho como prompt, os marcadores de versões anteriores, faz o mesmo que `/agent-guard allow` ou `allow agents`.
 
-## What it can and cannot see
+## O que ele pode e não pode ver
 
-Checked against Claude Code v2.1.316:
+Conferido com o Claude Code v2.1.316:
 
-| Path | Coverage |
+| Caminho | Cobertura |
 |---|---|
-| Subagents, teammates and workflow agents | Held before they start (`agent.spawn`) |
-| A finished subagent sent new work with `SendMessage` | Held before it resumes, and counted as a start, once |
-| A teammate brought back from disk (Claude Code 2.1.299 or later) | Held before it resumes, and counted as a start |
-| `/subtask` forks, and anything else that starts without `agent.spawn` | Counted when they start, never held: Claude Code offers no event before they do. Forks Claude starts through the Agent tool are held like any agent |
-| Claude Code's internal agents (prompt suggestions, compaction) | Not counted |
-| Plan-window percentages | From the last API response on a subscription, in `claude -p` too. API-key sessions report none, so only the token and count budgets apply |
-| Teammates running in their own terminal panes | Not visible: their loops run in other processes |
-| Sessions on other machines | Not counted: the cross-session records live in this machine's mod store |
-| Tools the API runs itself, such as the advisor | Not holdable: no tool event fires for them |
+| Subagentes, colegas de equipe e agentes de workflow | Contidos antes de começar (`agent.spawn`) |
+| Um subagente concluído ao qual se envia novo trabalho com `SendMessage` | Contido antes de retomar, e contado como uma criação, uma vez |
+| Um colega trazido de volta do disco (Claude Code 2.1.299 ou mais recente) | Contido antes de retomar, e contado como uma criação |
+| Forks de `/subtask` e qualquer coisa que comece sem `agent.spawn` | Contados quando começam, nunca contidos: o Claude Code não oferece evento antes disso. Forks que o Claude inicia pela ferramenta Agent são contidos como qualquer agente |
+| Agentes internos do Claude Code (sugestões de prompt, compactação) | Não contados |
+| Porcentagens da janela do plano | Da última resposta da API em uma assinatura, inclusive em `claude -p`. Sessões com chave de API não informam nenhuma, então só valem os orçamentos de token e contagem |
+| Colegas rodando em seus próprios painéis de terminal | Não visíveis: seus loops rodam em outros processos |
+| Sessões em outras máquinas | Não contadas: os registros entre sessões ficam no mod store desta máquina |
+| Ferramentas que a própria API executa, como o advisor | Não contíveis: nenhum evento de ferramenta dispara para elas |
 
-Mods run in `claude` in a terminal, in the Desktop app's Code tab, in `claude -p` and the Agent SDK. They don't run in a Desktop-app WSL session ([where mods run](https://code.claude.com/docs/en/plugins/mods/overview#where-mods-run)).
+Mods rodam no `claude` de um terminal, na aba Code do aplicativo desktop, no `claude -p` e no Agent SDK. Não rodam em uma sessão WSL do aplicativo desktop ([onde mods rodam](https://code.claude.com/docs/en/plugins/mods/overview#where-mods-run)).
 
-**On Team and Enterprise plans**, and on machines with managed settings, Claude Code runs its built-in `cc-plugin-sec-default` plugin ahead of every other, unless managed `prependPlugins` leaves it out. That plugin sends Claude Code's classic hook events on past user plugins, and Claude Code shows a line for each of the guard's it skipped, such as "agent-usage-guard: its classic.PostToolUse hook was skipped". The guard follows compactions, lockouts, `/clear` and resumes, and Stop hooks that reopen a turn through events that still reach it. Two things need the classic events: the permission mode reaches the guard only when an agent starts, so it may ask you in `dontAsk` mode, and `/subtask` forks go uncounted.
+**Nos planos Team e Enterprise**, e em máquinas com configurações gerenciadas, o Claude Code executa seu plugin embutido `cc-plugin-sec-default` antes de todos os outros, a menos que `prependPlugins` gerenciado o deixe de fora. Esse plugin repassa os eventos clássicos de hook do Claude Code aos plugins do usuário, e o Claude Code mostra uma linha para cada hook da guarda que pulou, como "agent-usage-guard: its classic.PostToolUse hook was skipped". A guarda acompanha compactações, bloqueios, `/clear` e retomadas, e hooks Stop que reabrem um turno por eventos que ainda a alcançam. Duas coisas precisam dos eventos clássicos: o modo de permissão só chega à guarda quando um agente começa, então ela pode perguntar a você no modo `dontAsk`, e forks de `/subtask` ficam sem contagem.
 
-**Native limits still matter.** Claude Code caps a session at 20 concurrent subagents (`CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS`) and three layers of nesting (`CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH`). It has no limit on the total number of agents a session starts. Since v2.1.316, `CLAUDE_CODE_SUBAGENT_EFFORT` sets the effort subagents run at when nothing else names one, instead of the session's: a lower one makes each agent cheaper, and the guard still limits how many run. The guard's defaults are stricter and span sessions; the native caps remain the outer wall for the paths the guard only counts.
+**Os limites nativos continuam importando.** O Claude Code limita uma sessão a 20 subagentes concorrentes (`CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS`) e três camadas de aninhamento (`CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH`). Não há limite para o total de agentes que uma sessão inicia. Desde a v2.1.316, `CLAUDE_CODE_SUBAGENT_EFFORT` define o esforço com que os subagentes rodam quando ninguém mais o especifica, em vez do da sessão: um menor torna cada agente mais barato, e a guarda ainda limita quantos rodam. Os padrões da guarda são mais rígidos e abrangem sessões; os tetos nativos continuam sendo a parede externa para os caminhos que a guarda só conta.
 
-## See what it did
+## Veja o que ele fez
 
 ```text
 /agent-guard report 30
 ```
 
-The report counts usage-limit lockouts (each locked window once), plan-window threshold crossings, wind-down notes, and every question and refusal by rule, with what you answered. It reads every session's journal on this machine and never leaves it. Set `AGENT_GUARD_JOURNAL=0` to stop recording.
+O relatório conta bloqueios por limite de uso (cada janela bloqueada uma vez), cruzamentos de limite de janela do plano, notas de desaceleração e toda pergunta e recusa por regra, com a sua resposta. Ele lê o diário de cada sessão nesta máquina e nunca o deixa. Defina `AGENT_GUARD_JOURNAL=0` para parar de registrar.
 
-## Security and privacy
+## Segurança e privacidade
 
-A mod runs inside Claude Code with your permissions; read [what a mod can reach](https://code.claude.com/docs/en/plugins/mods/overview#what-a-mod-can-reach) before you install one. This one is about 3,000 lines of TypeScript with no dependencies, and `claude plugin validate .` lists every API it calls and every environment variable it reads:
+Um mod roda dentro do Claude Code com suas permissões; leia [o que um mod pode alcançar](https://code.claude.com/docs/en/plugins/mods/overview#what-a-mod-can-reach) antes de instalar um. Este tem cerca de 3.000 linhas de TypeScript sem dependências, e `claude plugin validate .` lista cada API que ele chama e cada variável de ambiente que lê:
 
-- It makes no network requests and starts no processes. The only file it reads is its own `plugin.json`, for the version `/agent-guard status` shows.
-- It decides only what the rules above describe: whether an agent starts, a prompt is sent, or a tool call runs. It asks you whenever you can answer, and gives the reason when it refuses. It reads permission modes but never changes them, and it writes no settings.
-- The only prompt it submits is your own. After "Compact, then send", it takes the prompt you typed out of the input box and sends it unchanged once compaction finishes, or puts it back if compaction fails. A prompt with an image or an @ mention stays in the input box for you to send, since a resend would drop them.
-- Its prompt hook passes your prompt on unchanged, adds a one-time note for Claude when the context passes 300k or a plan window reaches 95%, or holds the prompt to ask you first (when nobody can answer, it says why instead). Its `SessionStart` hook changes nothing.
-- It keeps its state in the mod store, a JSON file under `~/.claude/plugins/store/`. Each session writes its own counts (running agents, recent starts and dormant resumes, subagent tokens per minute, its latest 5-hour reading), when it was last active (kept 30 days, so a resumed session knows how long it sat idle), and its journal rows (time, a session-id prefix, rule, tool name, context bucket such as `400-500k`, plan window and percentage, refusal number, and your answer). Each record is stored under the session's full id, which is also the name of that session's transcript file. If the store stops saving, such as when it is full, the status line says so: other sessions then stop counting this one.
-- It never stores prompt text, tool inputs, error text or model output. When a turn ends on an API error, it reads the conversation's last message, the error Claude Code showed, to tell a usage-limit lockout from other failures. A tool call is reduced to a 13-character fingerprint. Agent names stay in memory and are never written.
-- Journal days older than 90 days are deleted (`AGENT_GUARD_JOURNAL_DAYS`).
-- `demo/`, which builds the GIF above, is not part of what runs. It starts Claude Code in a temporary home directory with a made-up API key for a scripted local API, and reads none of your credentials.
+- Não faz requisições de rede nem inicia processos. O único arquivo que lê é seu próprio `plugin.json`, para a versão que `/agent-guard status` mostra.
+- Decide apenas o que as regras acima descrevem: se um agente começa, um prompt é enviado ou uma ferramenta roda. Pergunta a você sempre que você pode responder, e dá o motivo quando recusa. Lê os modos de permissão, mas nunca os altera, e não escreve configurações.
+- O único prompt que ele envia é o seu. Depois de "Compactar e enviar", ele pega o prompt que você digitou na caixa e o envia sem alterações quando a compactação termina, ou o devolve se a compactação falhar. Um prompt com imagem ou menção @ permanece na caixa para você enviar, pois reenviá-lo as perderia.
+- Seu hook de prompt repassa seu prompt sem alterações, acrescenta uma nota única ao Claude quando o contexto passa de 300k ou uma janela do plano chega a 95%, ou contém o prompt para perguntar primeiro (quando ninguém pode responder, diz o motivo em vez disso). Seu hook `SessionStart` não muda nada.
+- Mantém seu estado no mod store, um arquivo JSON em `~/.claude/plugins/store/`. Cada sessão grava suas próprias contagens (agentes rodando, inícios e retomadas dormentes recentes, tokens de subagente por minuto, sua última leitura de 5 horas), quando foi ativa pela última vez (guardado por 30 dias, para que uma sessão retomada saiba quanto tempo ficou ociosa) e suas linhas de diário (hora, prefixo de um id de sessão, regra, nome da ferramenta, faixa de contexto como `400-500k`, janela do plano e porcentagem, número da recusa e sua resposta). Cada registro é armazenado sob o id completo da sessão, que também é o nome do arquivo de transcrição daquela sessão. Se o store parar de salvar, por exemplo por estar cheio, a linha de status avisa: outras sessões então param de contar esta.
+- Nunca armazena texto de prompt, entradas de ferramentas, texto de erro ou saída do modelo. Quando um turno termina com erro de API, ele lê a última mensagem da conversa, o erro que o Claude Code mostrou, para distinguir um bloqueio por limite de uso de outras falhas. Uma chamada de ferramenta é reduzida a uma impressão digital de 13 caracteres. Nomes de agentes ficam na memória e nunca são gravados.
+- Dias de diário com mais de 90 dias são excluídos (`AGENT_GUARD_JOURNAL_DAYS`).
+- `demo/`, que gera o GIF acima, não faz parte do que roda. Ele inicia o Claude Code em um diretório home temporário com uma chave de API inventada para uma API local roteirizada, e não lê nenhuma credencial sua.
 
-Set `AGENT_GUARD=0` to turn it off without uninstalling it.
+Defina `AGENT_GUARD=0` para desligá-lo sem desinstalar.
 
-## Configuration
+## Configuração
 
-Set these as environment variables, or under `env` in `~/.claude/settings.json`. Times are in seconds; a value that isn't a number in range keeps its default, and `/agent-guard` says so.
+Defina estas como variáveis de ambiente, ou sob `env` em `~/.claude/settings.json`. Os tempos são em segundos; um valor que não for um número no intervalo mantém o padrão, e `/agent-guard` avisa.
 
-| Variable | Meaning (default) |
+| Variável | Significado (padrão) |
 |---|---|
-| `AGENT_GUARD` | `0`, `false`, `off` or `no` turns the guard off (`1`) |
-| `AGENT_GUARD_JOURNAL` | `0` stops the journal (`1`) |
-| `AGENT_GUARD_HAIKU_EXEMPT` | `0` counts Haiku agents in the running and starts limits like any other (`1`: they stay out) |
-| `AGENT_GUARD_JOURNAL_DAYS` | Days of journal kept (`90`) |
-| `AGENT_GUARD_WINDOW_SECONDS` | Rolling window for budgets, burn and refusals (`600`) |
-| `AGENT_GUARD_AGENT_MAX` | Agents running at once on this machine (`4`) |
-| `AGENT_GUARD_ROLLING_MAX` | Agent starts and resumes per window on this machine (`12`) |
-| `AGENT_GUARD_AGENT_TOKENS_MAX` | Subagent tokens per window on this machine (`10000000`) |
-| `AGENT_GUARD_DEPTH_MAX` | Agent layers below the main conversation (`1`) |
-| `AGENT_GUARD_LIMIT_ASK_PERCENT` | Plan-window percentage from which new agents ask (`80`) |
-| `AGENT_GUARD_LIMIT_DENY_PERCENT` | Plan-window percentage from which new agents, wakeups and scheduled jobs are refused and each session is told to wind down (`95`) |
-| `AGENT_GUARD_BURN_PERCENT` | 5-hour-window points per window that make new agents ask (`20`) |
-| `AGENT_GUARD_CONTEXT_WARN` | Context at which Claude is told once to keep the turn bounded (`300000`) |
-| `AGENT_GUARD_CONTEXT_HARD` | Context at which a prompt asks before it is sent (`500000`) |
-| `AGENT_GUARD_TOOL_CONTEXT` | Context above which tool calls count against the tool budget (`400000`) |
-| `AGENT_GUARD_TOOL_MAX` | Tool calls per window above that context (`20`) |
-| `AGENT_GUARD_DORMANT_SECONDS` | Idle time after which a heavy session's cache counts as expired (`3600`) |
-| `AGENT_GUARD_DORMANT_CONTEXT` | Context at which an idle session counts as heavy (`150000`) |
-| `AGENT_GUARD_DORMANT_MAX` | Heavy dormant resumes per window on this machine when nobody can be asked (`1`) |
-| `AGENT_GUARD_TOOL_FAILURE_MAX` | Identical failures before the identical retry is refused (`3`) |
-| `AGENT_GUARD_FUSE_MAX` | Refused agent calls per fuse period that pause spawns (`5`) |
-| `AGENT_GUARD_FUSE_SECONDS` | The fuse period, and how long the pause lasts (`600`) |
-| `AGENT_GUARD_PEER_TTL_SECONDS` | How long another session's counts, or an agent with no sign of activity, still count (`900`) |
+| `AGENT_GUARD` | `0`, `false`, `off` ou `no` desligam a guarda (`1`) |
+| `AGENT_GUARD_JOURNAL` | `0` interrompe o diário (`1`) |
+| `AGENT_GUARD_HAIKU_EXEMPT` | `0` conta agentes Haiku nos limites de agentes rodando e iniciados como qualquer outro (`1`: ficam de fora) |
+| `AGENT_GUARD_JOURNAL_DAYS` | Dias de diário mantidos (`90`) |
+| `AGENT_GUARD_WINDOW_SECONDS` | Janela rolante para orçamentos, consumo e recusas (`600`) |
+| `AGENT_GUARD_AGENT_MAX` | Agentes rodando ao mesmo tempo nesta máquina (`4`) |
+| `AGENT_GUARD_ROLLING_MAX` | Inícios e retomadas de agentes por janela nesta máquina (`12`) |
+| `AGENT_GUARD_AGENT_TOKENS_MAX` | Tokens de subagente por janela nesta máquina (`10000000`) |
+| `AGENT_GUARD_DEPTH_MAX` | Camadas de agentes abaixo da conversa principal (`1`) |
+| `AGENT_GUARD_LIMIT_ASK_PERCENT` | Porcentagem da janela do plano a partir da qual novos agentes perguntam (`80`) |
+| `AGENT_GUARD_LIMIT_DENY_PERCENT` | Porcentagem da janela do plano a partir da qual novos agentes, despertares e tarefas agendadas são recusados e cada sessão é avisada a desacelerar (`95`) |
+| `AGENT_GUARD_BURN_PERCENT` | Pontos da janela de 5 horas por janela que fazem novos agentes perguntarem (`20`) |
+| `AGENT_GUARD_CONTEXT_WARN` | Contexto em que o Claude é avisado uma vez a manter o turno limitado (`300000`) |
+| `AGENT_GUARD_CONTEXT_HARD` | Contexto em que um prompt pergunta antes de ser enviado (`500000`) |
+| `AGENT_GUARD_TOOL_CONTEXT` | Contexto acima do qual chamadas de ferramenta contam para o orçamento de ferramentas (`400000`) |
+| `AGENT_GUARD_TOOL_MAX` | Chamadas de ferramenta por janela acima daquele contexto (`20`) |
+| `AGENT_GUARD_DORMANT_SECONDS` | Tempo ocioso após o qual o cache de uma sessão pesada conta como expirado (`3600`) |
+| `AGENT_GUARD_DORMANT_CONTEXT` | Contexto em que uma sessão ociosa conta como pesada (`150000`) |
+| `AGENT_GUARD_DORMANT_MAX` | Retomadas pesadas dormentes por janela nesta máquina quando não se pode perguntar a ninguém (`1`) |
+| `AGENT_GUARD_TOOL_FAILURE_MAX` | Falhas idênticas antes que a retry idêntica seja recusada (`3`) |
+| `AGENT_GUARD_FUSE_MAX` | Chamadas de agente recusadas por período de fusível que pausam criações (`5`) |
+| `AGENT_GUARD_FUSE_SECONDS` | O período do fusível e quanto tempo a pausa dura (`600`) |
+| `AGENT_GUARD_PEER_TTL_SECONDS` | Por quanto tempo as contagens de outra sessão, ou um agente sem sinal de atividade, continuam contando (`900`) |
 
-The dormant default assumes the one-hour prompt cache that subscriptions get within plan usage. With an API key or extra usage, the cache lasts five minutes, so set `AGENT_GUARD_DORMANT_SECONDS=300`.
+O padrão dormente pressupõe o cache de prompt de uma hora que assinaturas recebem dentro do uso do plano. Com chave de API ou uso extra, o cache dura cinco minutos, então defina `AGENT_GUARD_DORMANT_SECONDS=300`.
 
-## Beyond Claude Code
+## Além do Claude Code
 
-The rules live in a harness-agnostic core (`core/`) that performs no I/O. The Claude Code mod is its first adapter. [docs/architecture.md](docs/architecture.md) describes the contract an adapter keeps and what another agent harness must offer to carry each rule.
+As regras ficam em um núcleo independente de harness (`core/`) que não faz E/S. O mod do Claude Code é seu primeiro adaptador. [docs/architecture.md](docs/architecture.md) descreve o contrato que um adaptador mantém e o que outro harness de agente precisa oferecer para aplicar cada regra.
 
-## Tests
+## Testes
 
 ```sh
 claude plugin validate . --strict
 claude plugin test
 ```
 
-`claude plugin test` runs the suite inside Claude Code's own test kit: unit tests of the core, and tests that fire real Claude Code events through the hooks module with no session, model or network. [TESTING.md](TESTING.md) covers the layers and what each test proves.
+`claude plugin test` roda a suíte no próprio kit de testes do Claude Code: testes unitários do núcleo e testes que disparam eventos reais do Claude Code pelos hooks, sem sessão, modelo ou rede. [TESTING.md](TESTING.md) cobre as camadas e o que cada teste prova.
 
-## License
+## Licença
 
 MIT

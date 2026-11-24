@@ -1,341 +1,184 @@
 ![claude-council](assets/banner.svg)
 
-A Claude Code plugin that asks AI coding agents the same question in
-parallel. Compare their answers when one model's bias could mislead you:
-architecture decisions, debugging dead ends, security reviews, or framework
-choices.
+Um plugin do Claude Code que faz a mesma pergunta a agentes de codificação com IA em paralelo. Compare as respostas quando o viés de um modelo puder enganar você: decisões de arquitetura, becos sem saída na depuração, revisões de segurança ou escolha de frameworks.
 
-![Codex, Antigravity, Gemini, and OpenAI answer the SQLite-or-Postgres question while fake Kimi fails](assets/council-run.svg)
+![Codex, Antigravity, Gemini e OpenAI respondem à pergunta SQLite ou Postgres enquanto o falso Kimi falha](assets/council-run.svg)
 
 [![Tests](https://github.com/hex/claude-council/actions/workflows/tests.yml/badge.svg)](https://github.com/hex/claude-council/actions/workflows/tests.yml)
 
-## Where it runs
+## Onde roda
 
-| Where | What you get |
+| Onde | O que você recebe |
 | --- | --- |
-| Claude Code in a terminal | `/claude-council:ask`, every seat, and the pane beside the chat. |
-| Claude Desktop, Code tab | The same plugin and the same commands. The pane opens in Desktop's side panel. |
-| Claude Desktop, an ordinary chat | The [Desktop extension](#claude-desktop): five tools, a seat picker and an answers panel in the chat. macOS and Linux. |
+| Claude Code em um terminal | `/claude-council:ask`, todos os assentos e o painel ao lado do chat. |
+| Claude Desktop, aba Code | O mesmo plugin e os mesmos comandos. O painel abre no painel lateral do Desktop. |
+| Claude Desktop, chat comum | A [extensão Desktop](#claude-desktop): cinco ferramentas, um seletor de assentos e um painel de respostas no chat. macOS e Linux. |
 
-![Claude Desktop's Code tab: Claude's synthesis of a primary-key question on the left, the Council pane with each seat's answer on the right](assets/desktop-code-tab.png)
+![Aba Code do Claude Desktop: à esquerda, a síntese do Claude sobre uma pergunta de chave primária; à direita, o painel Council com a resposta de cada assento](assets/desktop-code-tab.png)
 
-In both, Claude can also call the council as a tool. It asks which seats and
-how verbose first, then shows a Send card, and nothing leaves your machine
-until you confirm it.
+Nos dois casos, o Claude também pode chamar o council como ferramenta. Ele pergunta quais assentos e quão detalhada deve ser a resposta primeiro, depois mostra um cartão de Envio, e nada sai da sua máquina até você confirmar.
 
-claude.ai chat and Cowork run in a sandbox that can block calls to other
-providers, so the council does not work there.
+O chat claude.ai e o Cowork rodam em um sandbox que pode bloquear chamadas a outros provedores, então o council não funciona lá.
 
-## Install
+## Instalação
 
-You need `curl` and `jq` on macOS, Linux, or Windows through Git Bash.
+Você precisa de `curl` e `jq` no macOS, Linux ou Windows via Git Bash.
 
 ```text
 /plugin marketplace add hex/claude-marketplace
 /plugin install claude-council
 ```
 
-Give it at least one provider in the shell you start Claude Code from:
+Informe pelo menos um provedor no shell de onde você inicia o Claude Code:
 
 ```bash
 export OPENAI_API_KEY="..."
-# Or GEMINI_API_KEY, XAI_API_KEY, PERPLEXITY_API_KEY,
+# Ou GEMINI_API_KEY, XAI_API_KEY, PERPLEXITY_API_KEY,
 # KIMI_API_KEY, OPENROUTER_API_KEY
 ```
 
-Or store the keys in the plugin's config. Run `/plugin configure claude-council`,
-fill in the API key rows, and choose Save configuration. Claude Code keeps them in
-its secure storage, not in a settings file. The council's mod sets each stored
-key as its variable for the whole session, so every command Claude Code starts,
-in every project, gets the stored key in place of one your shell exports.
-The OpenRouter models row takes the model ids `OPENROUTER_MODELS` takes, so
-the router's seats need no export either.
-Stored keys need Claude Code 2.1.287 or later. The desktop app's plugin
-Settings tab takes them too, for sessions on that computer. They never reach
-claude.ai chat or Cowork. [API keys](docs/REFERENCE.md#api-keys) covers where they are kept,
-when the mod does not load, and how a cleared key behaves.
+Ou guarde as chaves na configuração do plugin. Execute `/plugin configure claude-council`, preencha as linhas de chave de API e escolha Salvar configuração. O Claude Code as mantém em seu armazenamento seguro, não em um arquivo de configurações. O mod do council define cada chave guardada como sua variável durante toda a sessão, então todo comando que o Claude Code inicia, em todo projeto, recebe a chave guardada no lugar de uma que seu shell exportou. A linha de modelos do OpenRouter aceita os ids que `OPENROUTER_MODELS` aceita, então os assentos do router também não precisam de export. Chaves guardadas exigem Claude Code 2.1.287 ou mais recente. A aba de configurações de plugin do aplicativo desktop também as aceita, para sessões naquele computador. Elas nunca chegam ao chat claude.ai nem ao Cowork. [Chaves de API](docs/REFERENCE.md#api-keys) cobre onde ficam guardadas, quando o mod não carrega e como se comporta uma chave limpa.
 
-The `codex`, `agy` (Antigravity), `grok`, `kimi`, and `cursor-agent` CLIs use
-your existing subscriptions without an API key. Claude Code itself, the
-Copilot CLI and OpenCode can sit too, when named in `--providers`. A local
-`ollama` model needs no key or external network. With none of these, `--local` uses Claude
-subagents. See [provider selection](docs/REFERENCE.md#choosing-providers) and
-[local councils](docs/USAGE.md#local-council---local).
+As CLIs `codex`, `agy` (Antigravity), `grok`, `kimi` e `cursor-agent` usam suas assinaturas existentes sem chave de API. O próprio Claude Code, a CLI do Copilot e o OpenCode também podem participar, quando nomeados em `--providers`. Um modelo local `ollama` não precisa de chave nem de rede externa. Sem nenhum desses, `--local` usa subagentes do Claude. Veja [seleção de provedores](docs/REFERENCE.md#choosing-providers) e [councils locais](docs/USAGE.md#local-council---local).
 
-## First run in 60 seconds
+## Primeira execução em 60 segundos
 
-Read [what gets sent and saved](docs/REFERENCE.md#what-gets-sent-and-saved)
-before asking about your code.
+Leia [o que é enviado e salvo](docs/REFERENCE.md#what-gets-sent-and-saved) antes de perguntar sobre seu código.
 
 ```text
 /claude-council:status
 /claude-council:ask "Should I use UUID or BIGINT primary keys for a SaaS users table?"
 ```
 
-Each provider answers independently. Claude writes a synthesis of their
-agreement, disagreements, and recommendation. Agreement is not verification:
-the models share your description and its assumptions.
-[The synthesis names the premise that could change the answer](docs/REFERENCE.md#reading-the-synthesis).
+Cada provedor responde de forma independente. O Claude escreve uma síntese dos pontos de concordância, divergência e sua recomendação. Concordância não é verificação: os modelos compartilham sua descrição e suas suposições. [A síntese aponta a premissa que mudaria a resposta](docs/REFERENCE.md#reading-the-synthesis).
 
 ## Claude Desktop
 
-The plugin needs Claude Code. For an ordinary Claude Desktop chat there is a
-Desktop extension, `council-<version>.mcpb`, that gives Claude five tools:
-`council_ask`, `council_pick`, `council_result`, `council_status` and
-`council_settings`. It runs on macOS and Linux only, because it starts the
-council's bash scripts.
+O plugin precisa do Claude Code. Para um chat comum do Claude Desktop, há uma extensão Desktop, `council-<version>.mcpb`, que dá ao Claude cinco ferramentas: `council_ask`, `council_pick`, `council_result`, `council_status` e `council_settings`. Ela roda só no macOS e no Linux, porque inicia os scripts bash do council.
 
-1. Download `council-<version>.mcpb` from the
-   [latest release](https://github.com/hex/claude-council/releases/latest).
-   To build it yourself, run `bash extension/build.sh` in a clean checkout.
-   It needs `npm` and writes `dist/council-<version>.mcpb`.
-2. Double-click the file. Desktop warns that the extension gets access to
-   everything on your computer and is not verified by Anthropic. Both hold for
-   any extension installed from a file: its server runs as you, with your files
-   and network, and Anthropic has not reviewed it. Install only a package you
-   built or trust.
-3. In Settings, Extensions, Claude Council, Configure, paste a key for each
-   provider you want: Gemini, OpenAI, xAI, Perplexity, Kimi, OpenRouter. An
-   empty field leaves that provider's API out. Desktop stores the keys. For a
-   question, each key goes only to its own vendor's seats: the vendor's API,
-   and its CLI agent when one is installed (`codex` gets the OpenAI key, `agy`
-   the Gemini key, `grok` the xAI key, `kimi` the Kimi key). A status check is
-   different: it starts each installed CLI agent but `claude` and `opencode`
-   with every key set.
-4. In a chat, ask Claude to open the council settings. A panel in the chat
-   lists each keyed provider's models, fetched live from that provider. Pick
-   one per provider, or switch on up to 12 OpenRouter models, one seat each.
-   Every change saves at once and applies to the next question.
-5. Ask Claude to put a question to the council. Desktop asks you to approve
-   the tool call, and that approval is the only check before the question
-   leaves your machine. A panel under the tool call shows each seat's answer,
-   or its error, in a card of its own headed by the seat's name and its
-   vendor's logo, and Claude writes the synthesis below it. Desktop waits for
-   the whole run, from seconds to a few minutes.
+1. Baixe `council-<version>.mcpb` na [última versão](https://github.com/hex/claude-council/releases/latest). Para construí-la você mesmo, rode `bash extension/build.sh` em um checkout limpo. Precisa de `npm` e grava `dist/council-<version>.mcpb`.
+2. Dê dois cliques no arquivo. O Desktop avisa que a extensão recebe acesso a tudo no seu computador e não é verificada pela Anthropic. Ambas as coisas valem para qualquer extensão instalada a partir de um arquivo: seu servidor roda como você, com seus arquivos e rede, e a Anthropic não a revisou. Instale só um pacote que você construiu ou em que confia.
+3. Em Configurações, Extensões, Claude Council, Configurar, cole uma chave para cada provedor que quiser: Gemini, OpenAI, xAI, Perplexity, Kimi, OpenRouter. Um campo vazio deixa a API daquele provedor de fora. O Desktop guarda as chaves. Para uma pergunta, cada chave vai só para os assentos de seu próprio fornecedor: a API do fornecedor e seu agente CLI, quando instalado (`codex` recebe a chave OpenAI, `agy` a Gemini, `grok` a xAI, `kimi` a Kimi). Uma verificação de status é diferente: inicia cada agente CLI instalado, mas `claude` e `opencode` com todas as chaves definidas.
+4. Em um chat, peça ao Claude para abrir as configurações do council. Um painel no chat lista os modelos de cada provedor com chave, buscados ao vivo daquele provedor. Escolha um por provedor, ou ligue até 12 modelos do OpenRouter, um assento cada. Toda alteração salva na hora e vale para a próxima pergunta.
+5. Peça ao Claude para subir uma pergunta ao council. O Desktop pede sua aprovação da chamada de ferramenta, e essa aprovação é a única verificação antes de a pergunta sair da sua máquina. Um painel abaixo da chamada mostra a resposta de cada assento, ou seu erro, em um card próprio encabeçado pelo nome do assento e pelo logo de seu fornecedor, e o Claude escreve a síntese abaixo. O Desktop espera a execução inteira, de segundos a alguns minutos.
 
-### Asking at once
+### Perguntar de uma vez
 
-Name the seats or a verbosity (standard, brief or
-detailed) in your message, or say to just ask everyone, and Claude runs the
-question at once, on every default seat at standard unless you named others.
-Claude passes your question as you asked it, adding context only when it
-depends on earlier messages the council cannot see.
+Nomeie os assentos ou um nível de detalhe (padrão, breve ou detalhado) na sua mensagem, ou diga para perguntar a todos, e o Claude executa a pergunta de uma vez, em todos os assentos padrão com detalhe padrão, a menos que você tenha nomeado outros. O Claude repassa sua pergunta como você a fez, acrescentando contexto apenas quando ela depende de mensagens anteriores que o council não vê.
 
-### The picker
+### O seletor
 
-Otherwise, as in "ask the council: which queue should we
-use?", Claude opens `council_pick`, a panel with the question, a switch per
-seat and the three verbosities. Claude then waits, in the same turn, in
-`council_result` for the picker's run.
+Caso contrário, como em "pergunte ao council: qual fila devemos usar?", o Claude abre `council_pick`, um painel com a pergunta, um interruptor por assento e os três níveis de detalhe. O Claude então espera, no mesmo turno, em `council_result` pela execução do seletor.
 
-1. Press Ask. The answers appear in that panel, and the line under them says
-   "Claude is writing the synthesis".
-2. Claude writes the synthesis with no message from you. When every seat
-   fails, Claude says what failed.
+1. Pressione Perguntar. As respostas aparecem naquele painel, e a linha abaixo diz "O Claude está escrevendo a síntese".
+2. O Claude escreve a síntese sem nenhuma mensagem sua. Quando todos os assentos falham, o Claude diz o que falhou.
 
-When no seat answers, the panel says so and Ask works again.
+Quando nenhum assento responde, o painel diz isso e Perguntar volta a funcionar.
 
-### Changing a model in the picker
+### Trocar de modelo no seletor
 
-On an API seat or an OpenRouter seat the
-model in grey is a button: click it to pick another model from that
-provider's live list (OpenRouter's has a filter box). The choice saves at
-once, as the settings panel's would, and applies to this question and the
-ones after it. An OpenRouter seat changes only its own model; adding or
-removing OpenRouter seats stays in the settings panel.
+Em um assento de API ou do OpenRouter, o modelo em cinza é um botão: clique para escolher outro modelo da lista ao vivo daquele provedor (a do OpenRouter tem um filtro). A escolha salva na hora, como a do painel de configurações, e vale para esta pergunta e as seguintes. Um assento do OpenRouter muda só seu próprio modelo; acrescentar ou remover assentos do OpenRouter continua no painel de configurações.
 
-### When Claude is no longer waiting
+### Quando o Claude não está mais esperando
 
-Claude waits at most 11.5 minutes from
-when the picker opened. If it has stopped waiting by the time the answers are
-in, or you press Ask a second time in the same panel:
+O Claude espera no máximo 11,5 minutos desde que o seletor abriu. Se ele tiver parado de esperar quando as respostas chegarem, ou você pressionar Perguntar uma segunda vez no mesmo painel:
 
-- Desktop puts "Synthesise the council's answers (run 3f9a2c)." in the
-  message box, under a caution about malicious content, and the line under
-  the answers says to press Enter. The panel cannot send that message itself.
-- Claude then fetches that run's answers with `council_result` and writes the
-  synthesis.
-- If Desktop refuses the message, the line instead gives the words to send
-  yourself (`Ask Claude: "synthesise council run 3f9a2c"`).
-- The extension keeps the last 5 runs in which a seat answered; after that,
-  ask the council again.
+- O Desktop coloca "Sintetize as respostas do council (execução 3f9a2c)." na caixa de mensagem, sob um aviso sobre conteúdo malicioso, e a linha sob as respostas diz para pressionar Enter. O painel não pode enviar essa mensagem sozinho.
+- O Claude então busca as respostas daquela execução com `council_result` e escreve a síntese.
+- Se o Desktop recusar a mensagem, a linha dá em vez disso as palavras para enviar você mesmo (`Peça ao Claude: "sintetize a execução 3f9a2c do council"`).
+- A extensão mantém as últimas 5 execuções em que algum assento respondeu; depois disso, pergunte ao council de novo.
 
-A question with no providers named goes to every provider with a key and to
-every CLI agent the scripts find (`codex`, `agy`, `grok`, `kimi`,
-`cursor-agent`, `ollama`) in your PATH, `~/.local/bin`, `~/bin`,
-`/opt/homebrew/bin` or `/usr/local/bin`. `claude`, `copilot` and `opencode`
-get it only when the question names them. A CLI agent answers on its own
-login, so it receives the question even when its vendor's key field is
-empty; apart from its own vendor's key it gets no key from the form. The
-[reference](docs/REFERENCE.md#claude-desktop-extension) lists the files it
-keeps and its limits.
+Uma pergunta sem provedores nomeados vai para todo provedor com chave e para todo agente CLI que os scripts encontrarem (`codex`, `agy`, `grok`, `kimi`, `cursor-agent`, `ollama`) no seu PATH, `~/.local/bin`, `~/bin`, `/opt/homebrew/bin` ou `/usr/local/bin`. `claude`, `copilot` e `opencode` a recebem só quando a pergunta os nomeia. Um agente CLI responde com seu próprio login, então recebe a pergunta mesmo que o campo de chave de seu fornecedor esteja vazio; além da chave de seu próprio fornecedor, não recebe nenhuma chave do formulário. A [referência](docs/REFERENCE.md#claude-desktop-extension) lista os arquivos que ele mantém e seus limites.
 
-## Features
+## Recursos
 
-| Capability | Guide |
+| Capacidade | Guia |
 |---|---|
-| Ask providers together, or name one in plain words | [Command examples](docs/REFERENCE.md#command-examples) |
-| Choose providers and pin a standing roster | [Provider selection](docs/REFERENCE.md#choosing-providers) |
-| Assign specialist roles | [Roles](docs/USAGE.md#specialized-roles) |
-| Have providers challenge each other's answers | [Debate](docs/USAGE.md#debate-mode) |
-| Gather code context with agents before asking | [Agent mode](docs/USAGE.md#agent-enhanced-analysis---agents) |
-| Use Claude subagents without an external provider | [Local council](docs/USAGE.md#local-council---local) |
-| Include relevant files or choose your own | [Auto-context](docs/USAGE.md#auto-context-injection) |
-| Attach a screenshot | [Image input](docs/USAGE.md#image-input) |
-| Ask about the current conversation | [`/advise`](docs/USAGE.md#asking-about-the-conversation-itself) |
-| Run in the background and fetch the result | [Background jobs](docs/USAGE.md#background-jobs---async) |
-| Export the answers to a file | [Export](docs/USAGE.md#export-to-file) |
-| Show only the synthesis | [Quiet mode](docs/USAGE.md#quiet-mode) |
-| Watch answers arrive and retry failed seats | [The pane](#the-pane) |
-| Get a note from one seat while Claude works | [Heads-up side-check](#heads-up-side-check) |
-| Have a second model review the diff before Claude stops | [Stop-gate review](docs/USAGE.md#stop-gate-review-opt-in-off-by-default) |
-| Ask the council from a Claude Desktop chat | [Claude Desktop](#claude-desktop) |
-| Call the scripts without Claude Code | [Direct script usage](docs/REFERENCE.md#direct-script-usage) |
+| Perguntar a provedores juntos, ou nomear um em linguagem comum | [Exemplos de comando](docs/REFERENCE.md#command-examples) |
+| Escolher provedores e fixar uma lista permanente | [Seleção de provedores](docs/REFERENCE.md#choosing-providers) |
+| Atribuir papéis especialistas | [Papéis](docs/USAGE.md#specialized-roles) |
+| Fazer provedores desafiarem as respostas uns dos outros | [Debate](docs/USAGE.md#debate-mode) |
+| Reunir contexto de código com agentes antes de perguntar | [Modo agente](docs/USAGE.md#agent-enhanced-analysis---agents) |
+| Usar subagentes do Claude sem provedor externo | [Council local](docs/USAGE.md#local-council---local) |
+| Incluir arquivos relevantes ou escolher os seus | [Contexto automático](docs/USAGE.md#auto-context-injection) |
+| Anexar uma captura de tela | [Entrada de imagem](docs/USAGE.md#image-input) |
+| Perguntar sobre a conversa atual | [`/advise`](docs/USAGE.md#asking-about-the-conversation-itself) |
+| Rodar em segundo plano e buscar o resultado | [Tarefas em segundo plano](docs/USAGE.md#background-jobs---async) |
+| Exportar as respostas para um arquivo | [Exportação](docs/USAGE.md#export-to-file) |
+| Mostrar só a síntese | [Modo silencioso](docs/USAGE.md#quiet-mode) |
+| Ver as respostas chegando e repetir assentos que falharam | [O painel](#the-pane) |
+| Receber uma nota de um assento enquanto o Claude trabalha | [Verificação lateral avisada](#heads-up-side-check) |
+| Fazer um segundo modelo revisar o diff antes de o Claude parar | [Revisão na porta de parada](docs/USAGE.md#stop-gate-review-opt-in-off-by-default) |
+| Perguntar ao council em um chat do Claude Desktop | [Claude Desktop](#claude-desktop) |
+| Chamar os scripts sem o Claude Code | [Uso direto de script](docs/REFERENCE.md#direct-script-usage) |
 
-The [reference](docs/REFERENCE.md) lists every flag, variable, model default,
-and limit. [Architecture](docs/ARCHITECTURE.md) covers the implementation.
-[TESTING.md](TESTING.md) covers tests, releases, and adding a provider.
+A [referência](docs/REFERENCE.md) lista toda flag, variável, padrão de modelo e limite. [Arquitetura](docs/ARCHITECTURE.md) cobre a implementação. [TESTING.md](TESTING.md) cobre testes, releases e como acrescentar um provedor.
 
-## Heads-up side-check
+## Verificação lateral avisada
 
-![The intro hint, a heads-up note, Learn more, and an unsent Tell Claude draft](assets/heads-up.svg)
+![A dica de introdução, uma nota avisada, Saiba mais e um rascunho "Diga ao Claude" não enviado](assets/heads-up.svg)
 
-Opt in through the "Heads-up side-check" row in `/config` or the project's
-`.claude/council-heads-up.json`. One seat, codex by default, checks recent
-turns and tool results while Claude works. For a Write or an Edit, it gets the
-text Claude wrote. The note shows what went where.
-Learn more expands it; Tell Claude puts a draft in the prompt without sending
-it. Read the [data limits and off switch](docs/REFERENCE.md#what-gets-sent-and-saved)
-and the [heads-up guide](docs/USAGE.md#heads-up-side-check-opt-in-off-by-default).
+Ative pela linha "Verificação lateral avisada" em `/config` ou pelo `.claude/council-heads-up.json` do projeto. Um assento, codex por padrão, verifica os turnos e resultados de ferramentas recentes enquanto o Claude trabalha. Para um Write ou um Edit, ele recebe o texto que o Claude escreveu. A nota mostra o que foi para onde. Saiba mais a expande; Diga ao Claude coloca um rascunho na caixa de prompt sem enviá-lo. Leia os [limites de dados e o interruptor](docs/REFERENCE.md#what-gets-sent-and-saved) e o [guia de verificação avisada](docs/USAGE.md#heads-up-side-check-opt-in-off-by-default).
 
-## The pane
+## O painel
 
-On Claude Code 2.1.287 or later, the pane opens inside Claude Code,
-as in the animation above. Each seat has one row with its model, a bar for
-its state, its time, and a button for what it does now: cancel, retry, open,
-or fold. When the run ends,
-the synthesis opens at the top with the answers folded below it. Reopen the
-last run with `/council-pane`. Inside tmux, the mod asks once which pane you want.
+No Claude Code 2.1.287 ou mais recente, o painel abre dentro do Claude Code, como na animação acima. Cada assento tem uma linha com seu modelo, uma barra de estado, seu tempo e um botão para a ação atual: cancelar, repetir, abrir ou recolher. Quando a execução termina, a síntese abre no topo com as respostas recolhidas abaixo. Reabra a última execução com `/council-pane`. Dentro do tmux, o mod pergunta uma vez qual painel você quer.
 
-The [mod guide](mods/council-pane/README.md) lists keys, settings, limits,
-and when the mod does not load. It also lets Claude call the council as a tool;
-every call asks you first.
+O [guia do mod](mods/council-pane/README.md) lista teclas, configurações, limites e quando o mod não carrega. Ele também permite que o Claude chame o council como ferramenta; toda chamada pergunta a você primeiro.
 
-### What the mod runs, reads and sends
+### O que o mod executa, lê e envia
 
-The mod makes no network calls of its own. It starts the programs below
-from an argument array, never a shell string, and never hands `bash -c` a
-script. Your text reaches model providers only through the first two:
+O mod não faz chamadas de rede por conta própria. Ele inicia os programas abaixo a partir de uma lista de argumentos, nunca de uma string de shell, e nunca entrega um script a `bash -c`. Seu texto chega aos provedores de modelo apenas pelos dois primeiros:
 
-- `bash scripts/run-council.sh` when Claude calls the council tool and you
-  choose `Send to the council`. It sends your question to the providers you
-  set up.
-- `bash scripts/heads-up.sh`, only with the heads-up side-check on. It reads
-  this session's transcript (by default the last 5 turns and up to 8 tool
-  results of 2,000 characters each) and sends that digest to one seat,
-  `codex` unless you pick another. The run directory keeps `digest.md` and
-  `prompt.md`, exactly what left the machine, until the mod reads the result
-  and removes it. The codex seat runs in that directory under a codex home
-  of its own: your model and effort, a link to your `auth.json` so a token
-  refresh reaches your login (without one, your `CODEX_API_KEY` or
-  `OPENAI_API_KEY` signs codex in), and none of your plugins, hooks,
-  `AGENTS.md`, skills or MCP servers.
-- `bash scripts/query-council.sh --list-default-models` when Claude calls
-  the council tool, to list the seats it may offer you and to check the
-  seats it names. It reads your configuration and sends nothing.
-- `bash scripts/seat-info.sh discover`, `model <seat>` or
-  `allowlisted <seat>` during `/heads-up setup` and `/heads-up on <seat>`.
-  It checks which seats this machine can run and sends nothing.
-- `codex debug models` during `/heads-up setup` with the codex seat, to list
-  its models. That command belongs to codex, and so does any request it
-  makes.
-- `kill -0 <pid>` to check a council run is still alive. It sends no
-  signal.
-- `rm -rf` and `mv -f` on its own run directories under
-  `$TMPDIR/council-mod.<session id>`, to clean up a finished run and to
-  answer the retry offer.
+- `bash scripts/run-council.sh` quando o Claude chama a ferramenta council e você escolhe `Enviar ao council`. Isso envia sua pergunta aos provedores que você configurou.
+- `bash scripts/heads-up.sh`, só com a verificação lateral avisada ligada. Lê a transcrição desta sessão (por padrão os últimos 5 turnos e até 8 resultados de ferramentas de 2.000 caracteres cada) e envia esse resumo a um assento, `codex` a menos que você escolha outro. O diretório da execução guarda `digest.md` e `prompt.md`, exatamente o que saiu da máquina, até que o mod leia o resultado e os remova. O assento codex roda nesse diretório com um home codex próprio: seu modelo e esforço, um link para seu `auth.json` para que uma renovação de token chegue ao seu login (sem ele, seu `CODEX_API_KEY` ou `OPENAI_API_KEY` autentica o codex), e nenhum de seus plugins, hooks, `AGENTS.md`, skills ou servidores MCP.
+- `bash scripts/query-council.sh --list-default-models` quando o Claude chama a ferramenta council, para listar os assentos que ele pode oferecer e verificar os que ele nomeia. Lê sua configuração e não envia nada.
+- `bash scripts/seat-info.sh discover`, `model <assento>` ou `allowlisted <assento>` durante `/heads-up setup` e `/heads-up on <assento>`. Verifica quais assentos esta máquina pode rodar e não envia nada.
+- `codex debug models` durante `/heads-up setup` com o assento codex, para listar seus modelos. Esse comando pertence ao codex, e assim como qualquer requisição que ele faça.
+- `kill -0 <pid>` para verificar se uma execução do council ainda está viva. Não envia sinal.
+- `rm -rf` e `mv -f` em seus próprios diretórios de execução sob `$TMPDIR/council-mod.<id da sessão>`, para limpar uma execução concluída e responder à oferta de repetição.
 
-It writes files in that `$TMPDIR` directory, including `model.json` and
-`avoid.txt`, which `heads-up.sh` reads. Outside it, it writes one file,
-`.claude/council-heads-up.json` in the project, and only from
-`/heads-up setup`, `/heads-up on`, `/heads-up off` or a note's `Turn off`.
-That file is the heads-up switch. Claude Code itself does not read it.
+Ele grava arquivos nesse diretório `$TMPDIR`, incluindo `model.json` e `avoid.txt`, que `heads-up.sh` lê. Fora dele, grava um arquivo, `.claude/council-heads-up.json` no projeto, e somente a partir de `/heads-up setup`, `/heads-up on`, `/heads-up off` ou do `Desligar` de uma nota. Esse arquivo é o interruptor da verificação avisada. O próprio Claude Code não o lê.
 
-It sets environment variables in Claude Code's own process. With an API key
-or the OpenRouter models list stored in the plugin's config, it sets that
-variable, such as `OPENAI_API_KEY` or `OPENROUTER_MODELS`, when the session
-starts. Every command Claude Code starts after that gets the stored value in
-place of the one your shell exports, the same as an export would. Before a council run it sets `COUNCIL_MOD_PANE_DIR`.
+Ele define variáveis de ambiente no processo do próprio Claude Code. Com uma chave de API ou a lista de modelos do OpenRouter guardada na configuração do plugin, ele define aquela variável, como `OPENAI_API_KEY` ou `OPENROUTER_MODELS`, quando a sessão começa. Todo comando que o Claude Code inicia depois disso recebe o valor guardado no lugar do que seu shell exporta, como um export faria. Antes de uma execução do council, ele define `COUNCIL_MOD_PANE_DIR`.
 
-It touches the prompt in two places. With `wake_on_async_done` on, it
-submits `The background council job <id> has finished. Fetch it with
-/claude-council:result <id> and summarise it.` once a background job
-finishes. A note's `Tell Claude` puts a draft in the prompt box, and you decide
-whether to send it.
+Ele toca no prompt em dois lugares. Com `wake_on_async_done` ligado, ele envia `A tarefa do council em segundo plano <id> terminou. Busque com /claude-council:result <id> e faça um resumo.` uma vez que uma tarefa em segundo plano termina. O `Diga ao Claude` de uma nota coloca um rascunho na caixa de prompt, e você decide se o envia.
 
-It reads the text of each Bash command Claude runs, only to spot a call
-to `run-council.sh`. Just before that call it sets `COUNCIL_MOD_PANE_DIR`,
-so the run draws in this pane, and clears it when tmux owns the pane. It reads `TMPDIR` and `TMUX`. It turns on the
-`claude-council.heads_up` setting only when you pick "every project" in
-`/heads-up setup`.
+Ele lê o texto de cada comando Bash que o Claude roda, apenas para detectar uma chamada a `run-council.sh`. Logo antes dessa chamada, ele define `COUNCIL_MOD_PANE_DIR` para que a execução desenhe neste painel, e o limpa quando o tmux é dono do painel. Lê `TMPDIR` e `TMUX`. Liga a configuração `claude-council.heads_up` somente quando você escolhe "todos os projetos" em `/heads-up setup`.
 
-![Real SQLite-or-Postgres answers arrive in tmux beside a fake Kimi failure and the retry offer](assets/tmux-pane.svg)
+![Respostas reais de SQLite ou Postgres chegam no tmux ao lado da falha do falso Kimi e da oferta de repetição](assets/tmux-pane.svg)
 
-Without the mod, tmux opens a side pane that streams answers and each
-provider's status. It offers to retry failed seats. Esc closes it.
-`--no-pane` or `COUNCIL_NO_PANE=1` turns it off. Outside both pane modes,
-answers arrive in the chat. See [terminal integration](docs/REFERENCE.md#display--terminal-integration).
+Sem o mod, o tmux abre um painel lateral que transmite as respostas e o status de cada provedor. Oferece repetir assentos que falharam. Esc fecha. `--no-pane` ou `COUNCIL_NO_PANE=1` desligam isso. Fora dos dois modos de painel, as respostas chegam no chat. Veja [integração com terminal](docs/REFERENCE.md#display--terminal-integration).
 
-The council and tmux animations show real answers to
-"Should a single-node demo app use SQLite or Postgres?" Codex and Antigravity
-use subscriptions; Gemini and OpenAI use their APIs. Kimi is a rate-limit
-fixture. The heads-up animation uses a fake seat and a real Claude Code host.
-[Capture scripts and raw frames](assets/capture/README.md) record how to
-reproduce them.
+As animações do council e do tmux mostram respostas reais à pergunta "Um aplicativo de demonstração de nó único deve usar SQLite ou Postgres?" Codex e Antigravity usam assinaturas; Gemini e OpenAI usam suas APIs. Kimi é um fixture de limite de taxa. A animação da verificação avisada usa um assento falso e um host real do Claude Code. [Scripts de captura e quadros brutos](assets/capture/README.md) registram como reproduzi-las.
 
-## What a CLI seat loads
+## O que um assento CLI carrega
 
-Every CLI seat runs from an empty directory, `$TMPDIR/claude-council-<uid>/seat`,
-where `<uid>` is your numeric user id. The `CLAUDE.md`, `AGENTS.md`, rules,
-skills, hooks and MCP servers of the project you ask from don't reach it. The
-directory doesn't limit what a seat can read: codex, for example, can still
-open any file by its full path.
+Todo assento CLI roda a partir de um diretório vazio, `$TMPDIR/claude-council-<uid>/seat`, em que `<uid>` é seu id numérico de usuário. O `CLAUDE.md`, `AGENTS.md`, regras, skills, hooks e servidores MCP do projeto de onde você pergunta não chegam lá. O diretório não limita o que um assento pode ler: o codex, por exemplo, ainda pode abrir qualquer arquivo pelo caminho completo.
 
-The directory is read-only. That stops a seat writing a file there, but not a
-seat that changes the mode first. A seat also refuses to start when it finds
-anything in it, and names the path so you can look before you remove it. A file
-that lands while other seats are running can reach them; the next seat to start
-refuses. A seat also refuses to start when `TMPDIR` sits inside a git
-repository, and names it: a CLI would take the whole repository as the seat's
-project.
+O diretório é somente leitura. Isso impede que um assento grave um arquivo ali, mas não impede um assento que muda o modo antes. Um assento também se recusa a começar se encontrar qualquer coisa ali, e nomeia o caminho para você olhar antes de remover. Um arquivo que chega enquanto outros assentos rodam pode alcançá-los; o próximo assento a iniciar se recusa. Um assento também se recusa a começar quando `TMPDIR` fica dentro de um repositório git, e o nomeia: uma CLI tomaria o repositório inteiro como projeto do assento.
 
-The seats below also run under a home of their own, in
-`$TMPDIR/claude-council-<uid>/seat-home`. It links only to what the CLI needs to
-sign in and start. Only you can open either directory, and a seat refuses to
-start when one of them belongs to another user or is a symlink.
+Os assentos abaixo também rodam com um home próprio, em `$TMPDIR/claude-council-<uid>/seat-home`. Ele só tem links para o que a CLI precisa para entrar e começar. Só você pode abrir qualquer um dos diretórios, e um assento se recusa a iniciar quando um deles pertence a outro usuário ou é um link simbólico.
 
-| Seat | No longer loads | Still loads |
+| Assento | Não carrega mais | Ainda carrega |
 |---|---|---|
-| `cursor-cli` | Skills and plugins from `~/.cursor`, `~/.claude`, `~/.codex`, `~/.grok` and `~/.agents`, Cursor and Claude hooks, `~/.cursor/mcp.json` | Team commands from your Cursor dashboard (read from the CLI's bundle, not seen in a run) |
-| `grok-cli` | Claude plugins, `~/.agents` skills, grok's memory across sessions | Your `~/.grok` config and the hooks in `~/.grok/hooks`, since no grok setting turns them off. The seat home links your login keychain (macOS) and `~/.docker/run`, for Docker Desktop's socket |
-| `antigravity` | On macOS: your `~/.gemini` rules, skills, MCP servers and saved conversations | On Linux: everything under `~/.gemini`, because where agy keeps its login there is not confirmed |
-| `opencode` | The `~/.claude` and `~/.agents` skills, agents and `CLAUDE.md` | Your login and session history in `~/.local/share/opencode` |
-| `codex` | Your plugins, hooks, skills, memories and MCP servers. Each question gets its own codex home with your model, your effort and a link to `auth.json` | Nothing. With no `auth.json` and `cli_auth_credentials_store` set to `keyring` or `auto`, your login is in the system keyring, which codex can't read from another home, so the seat runs under your own codex home and the answer starts with a note. An exported `OPENAI_API_KEY` doesn't change that; an exported `CODEX_API_KEY` still signs codex in ahead of any login, as it does when you run codex yourself. Set `cli_auth_credentials_store = "file"` and run `codex login` again to isolate it. With no login at all, the seat stops and says so |
-| `claude-cli` | The git status and commit instructions a repository adds | Admin policy and your organisation's instructions |
-| `kimi-cli`, `copilot-cli` | The project's files | Your home: kimi's hooks in `~/.kimi-code/config.toml`, copilot's skills in `~/.copilot` and `~/.agents` |
+| `cursor-cli` | Skills e plugins de `~/.cursor`, `~/.claude`, `~/.codex`, `~/.grok` e `~/.agents`, hooks do Cursor e do Claude, `~/.cursor/mcp.json` | Comandos de equipe do seu painel Cursor (lidos do bundle da CLI, não vistos em uma execução) |
+| `grok-cli` | Plugins do Claude, skills de `~/.agents`, a memória do grok entre sessões | Sua config `~/.grok` e os hooks em `~/.grok/hooks`, pois nenhuma config do grok os desliga. O home do assento tem links para sua chave de login (macOS) e `~/.docker/run`, para o socket do Docker Desktop |
+| `antigravity` | No macOS: suas regras, skills, servidores MCP e conversas salvas em `~/.gemini` | No Linux: tudo sob `~/.gemini`, porque não é confirmado onde o agy guarda seu login lá |
+| `opencode` | As skills, agentes e `CLAUDE.md` de `~/.claude` e `~/.agents` | Seu login e histórico de sessão em `~/.local/share/opencode` |
+| `codex` | Seus plugins, hooks, skills, memórias e servidores MCP. Cada pergunta recebe seu próprio home codex com seu modelo, seu esforço e um link para `auth.json` | Nada. Sem `auth.json` e com `cli_auth_credentials_store` definido como `keyring` ou `auto`, seu login fica no keyring do sistema, que o codex não consegue ler de outro home, então o assento roda sob seu próprio home codex e a resposta começa com uma nota. Um `OPENAI_API_KEY` exportado não muda isso; um `CODEX_API_KEY` exportado ainda autentica o codex à frente de qualquer login, como quando você roda o codex você mesmo. Defina `cli_auth_credentials_store = "file"` e rode `codex login` de novo para isolá-lo. Sem login algum, o assento para e diz isso |
+| `claude-cli` | O status do git e as instruções de commit que um repositório acrescenta | Política de administrador e instruções da sua organização |
+| `kimi-cli`, `copilot-cli` | Os arquivos do projeto | Seu home: hooks do kimi em `~/.kimi-code/config.toml`, skills do copilot em `~/.copilot` e `~/.agents` |
 
-Cursor and Antigravity keep the model you picked in their own config: the seat
-reads it from your real home and passes it on. On Windows the seats keep your
-home, because the native CLIs find it through `USERPROFILE`.
-[Seat isolation](docs/ARCHITECTURE.md) has each seat's details.
+Cursor e Antigravity mantêm o modelo escolhido em suas próprias configurações: o assento o lê do seu home real e o repassa. No Windows, os assentos mantêm seu home, porque as CLIs nativas o encontram por `USERPROFILE`. [Isolamento de assentos](docs/ARCHITECTURE.md) tem os detalhes de cada um.
 
-## Troubleshooting
+## Solução de problemas
 
-| Problem | Fix |
+| Problema | Correção |
 |---|---|
-| Cloned the repo and nothing loads | Don't clone into `~/.claude/plugins/`. `pluginDirectories` is not a setting. Follow [running from a local clone](docs/REFERENCE.md#running-from-a-local-clone). |
-| No providers found | Run `/claude-council:status`. Export keys in the shell that starts Claude Code, store them with `/plugin configure claude-council`, or use `--local`. |
-| A stored key is not used | After saving one with `claude plugin configure` in a shell, restart Claude Code. Stored keys need the council's mod, which loads on Claude Code 2.1.287 or later and not under `--safe-mode` or `disableAllHooks`. Without it, export the key in your shell. |
-| A different model answered | A header such as `grok-4.7 (grok-latest unavailable)` records a [model fallback](docs/REFERENCE.md#model-fallback). Setting that provider's `_MODEL` variable disables fallback. |
-| No pane | Use tmux, or update to Claude Code 2.1.287 or later for the pane inside Claude Code. The [mod guide](mods/council-pane/README.md) lists what stops it loading. |
-| Updating | Run `/plugin update claude-council`, then restart Claude Code. |
+| Clonou o repositório e nada carrega | Não clone em `~/.claude/plugins/`. `pluginDirectories` não é uma configuração. Siga [rodando a partir de um clone local](docs/REFERENCE.md#running-from-a-local-clone). |
+| Nenhum provedor encontrado | Execute `/claude-council:status`. Exporte chaves no shell que inicia o Claude Code, guarde-as com `/plugin configure claude-council`, ou use `--local`. |
+| Uma chave guardada não é usada | Depois de salvar uma com `claude plugin configure` em um shell, reinicie o Claude Code. Chaves guardadas exigem o mod do council, que carrega no Claude Code 2.1.287 ou mais recente e não sob `--safe-mode` ou `disableAllHooks`. Sem ele, exporte a chave no seu shell. |
+| Outro modelo respondeu | Um cabeçalho como `grok-4.7 (grok-latest unavailable)` registra um [fallback de modelo](docs/REFERENCE.md#model-fallback). Definir a variável `_MODEL` daquele provedor desativa o fallback. |
+| Sem painel | Use tmux, ou atualize para o Claude Code 2.1.287 ou mais recente para ter o painel dentro do Claude Code. O [guia do mod](mods/council-pane/README.md) lista o que impede seu carregamento. |
+| Atualizando | Execute `/plugin update claude-council` e reinicie o Claude Code. |

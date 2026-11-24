@@ -11,13 +11,13 @@
   <img alt="Claude Code 2.1.287+" src="https://img.shields.io/badge/Claude%20Code-2.1.287%2B-555?style=flat-square">
 </p>
 
-<p align="center">Tool calls with icons and timings, edits as diff cards, tables, code and Mermaid charts as cards,<br>a live usage band, and sixteen skins you can repaint or have Claude design for you.</p>
+<p align="center">Chamadas de ferramentas com ícones e tempos, edições como cards de diff, tabelas, código e gráficos Mermaid como cards,<br>uma faixa de uso ao vivo e dezesseis skins que você pode repintar ou ter o Claude desenhando para você.</p>
 
-<img alt="Claude Code switching skins with /skin: a coding turn in Noir and Tokyo Night, then Mermaid chart cards in Dracula (xy chart), Catppuccin (sankey), Rosé Pine (radar) and Gruvbox (treemap)" src="docs/demo.gif">
+<img alt="Claude Code alternando skins com /skin: um turno de código no Noir e Tokyo Night, depois cards de gráficos Mermaid no Dracula (xy chart), Catppuccin (sankey), Rosé Pine (radar) e Gruvbox (treemap)" src="docs/demo.gif">
 
-## Install
+## Instalação
 
-Needs Claude Code **2.1.287** or later, in a terminal or the desktop app's Code tab. Run both inside Claude Code:
+Precisa do Claude Code **2.1.287** ou mais recente, em um terminal ou na aba Code do aplicativo desktop. Rode os dois dentro do Claude Code:
 
 ```
 /plugin marketplace add hellosverre/claude-skins
@@ -27,13 +27,13 @@ Needs Claude Code **2.1.287** or later, in a terminal or the desktop app's Code 
 /plugin install skins@hellosverre-mods
 ```
 
-Restart Claude Code. The **noir** skin is on; type `/skin` to change it.
+Reinicie o Claude Code. A skin **noir** está ativa; digite `/skin` para mudá-la.
 
-Looking for more mods? `/plugin install mod-store@hellosverre-mods`, then `/mods` browses and installs about 2,700 of them from a pane, showing what each one can access first.
+Procurando mais mods? `/plugin install mod-store@hellosverre-mods`, depois `/mods` navega e instala cerca de 2.700 deles a partir de um painel, mostrando antes o que cada um pode acessar.
 
-## Update
+## Atualização
 
-skins checks for a new release once a day and shows a toast when you are behind. To update:
+O skins verifica se há uma nova release uma vez por dia e mostra um aviso quando você está atrasado. Para atualizar:
 
 ```bash
 claude plugin marketplace update hellosverre-mods
@@ -43,141 +43,132 @@ claude plugin marketplace update hellosverre-mods
 claude plugin update skins@hellosverre-mods
 ```
 
-Then restart Claude Code. Open sessions keep the version they started with.
+Depois reinicie o Claude Code. Sessões abertas mantêm a versão com que começaram.
 
-## Uninstall
+## Desinstalação
 
 ```bash
 claude plugin uninstall skins@hellosverre-mods
 ```
 
-To keep it installed but go back to Claude Code's own drawing, run `/skin off`.
+Para mantê-lo instalado mas voltar ao desenho próprio do Claude Code, execute `/skin off`.
 
-## Use
+## Uso
 
-`/skin help` lists every command in Claude Code; `/skin list` shows every skin and setting.
+`/skin help` lista todos os comandos no Claude Code; `/skin list` mostra todas as skins e configurações.
 
 **Skins**
 
-| Command | What it does |
+| Comando | O que faz |
 |---|---|
-| `/skin` | Settings: pick a skin with a live preview, toggle parts, repaint any colour |
-| `/skin <name>` | Switch skin (names below) |
-| `/skin list` | Every skin, yours included, and every setting |
-| `/skin help` | Every command, in a table |
-| `/skin off` · `on` | Back to Claude Code's own drawing, or skins back on |
-| `/skin gallery` | Every element the skin draws, numbered, to point at |
-| `/skin pin` · `unpin` · `share` | Give this folder its own look, drop it, or make it the default |
-| `/skin copy` · `copy code` | Copy Claude's last reply, or just its last code block |
-| `/skin calm` · `calm off` | No motion, one line per tool row, read-only output folded, failures always whole; `calm off` puts back what you had |
+| `/skin` | Configurações: escolha uma skin com pré-visualização ao vivo, alterne partes, repinte qualquer cor |
+| `/skin <nome>` | Troca de skin (nomes abaixo) |
+| `/skin list` | Todas as skins, inclusive as suas, e todas as configurações |
+| `/skin help` | Todos os comandos, em tabela |
+| `/skin off` · `on` | Volta ao desenho próprio do Claude Code, ou liga as skins de volta |
+| `/skin gallery` | Todos os elementos que a skin desenha, numerados, para apontar |
+| `/skin pin` · `unpin` · `share` | Dá a esta pasta sua própria aparência, remove ou torna o padrão |
+| `/skin copy` · `copy code` | Copia a última resposta do Claude, ou só seu último bloco de código |
+| `/skin calm` · `calm off` | Sem movimento, uma linha por linha de ferramenta, saída somente leitura dobrada, falhas sempre inteiras; `calm off` restaura o que você tinha |
 
-Built-in skins: `noir`, `tokyo-night`, `dracula`, `catppuccin`, `rose-pine`, `nord`, `gruvbox`,
-`kanagawa`, `everforest`, `one-dark`, `solarized`, `night-owl`, `ayu`, `github`, `mono`, `terminal`.
+Skins embutidas: `noir`, `tokyo-night`, `dracula`, `catppuccin`, `rose-pine`, `nord`, `gruvbox`, `kanagawa`, `everforest`, `one-dark`, `solarized`, `night-owl`, `ayu`, `github`, `mono`, `terminal`.
 
-**Options**
+**Opções**
 
-| Command | What it does |
+| Comando | O que faz |
 |---|---|
-| `/skin tables on/text/off` | Tables as cards, as selectable text on the desktop, or Claude Code's own |
-| `/skin prompt left/right/plain` | In the terminal, which side your prompt's outline sits on, or a plain leading marker. The desktop keeps Claude Code's own messages, with copy and rewind |
-| `/skin words claude/skin` | Whose words the spinner and the turn footer show: Claude Code's own, or the skin's (the default) |
-| `/skin icons unicode/ascii` | The icon set, and ASCII-only diagrams in the terminal |
+| `/skin tables on/text/off` | Tabelas como cards, como texto selecionável no desktop, ou as próprias do Claude Code |
+| `/skin prompt left/right/plain` | No terminal, de qual lado fica o contorno do seu prompt, ou um marcador inicial simples. O desktop mantém as mensagens próprias do Claude Code, com copiar e retroceder |
+| `/skin words claude/skin` | De quem são as palavras do spinner e do rodapé do turno: as do próprio Claude Code, ou as da skin (o padrão) |
+| `/skin icons unicode/ascii` | O conjunto de ícones, e diagramas somente ASCII no terminal |
 
-**Parts**, each switched with `/skin <part> on` or `off`:
+**Partes**, cada uma alternada com `/skin <parte> on` ou `off`:
 
-| Part | What it does |
+| Parte | O que faz |
 |---|---|
-| `rail` | The coloured rail beside tool rows |
-| `shimmer` | The band of light across the spinner word |
-| `band` | The usage meters above the prompt |
-| `countdown` | Time left on each limit in the band |
-| `compact` | The Compact button in the band, with a nudge from 70% context (on by default) |
-| `clip` | Trim Claude Code's own shell output to its head and tail |
-| `markdown` | Alerts and task lists drawn |
-| `quiet` | Reads, searches and read-only commands folded to one row |
-| `charts` | Mermaid fences as charts |
-| `math` | Math typeset |
-| `commands` | Slash-command output as tables and cards |
-| `shell` | Shell output as a card |
-| `highlight` | Code blocks highlighted in the skin's colours |
-| `hints` | Tell Claude that charts draw here |
-| `links` | URLs and paths as links |
-| `copy` | Copy buttons on cards |
-| `fold` | Long blocks fold behind `▾ N more` |
-| `expand` | Every run of reads and searches open, instead of the one line `Read 3 · Search 2 ▸`; off by default |
+| `rail` | A faixa colorida ao lado das linhas de ferramenta |
+| `shimmer` | A banda de luz sobre a palavra do spinner |
+| `band` | Os medidores de uso acima do prompt |
+| `countdown` | Tempo restante de cada limite na faixa |
+| `compact` | O botão Compact na faixa, com um toque a partir de 70% de contexto (ligado por padrão) |
+| `clip` | Corta a própria saída de shell do Claude Code na cabeça e na cauda |
+| `markdown` | Alertas e listas de tarefas desenhados |
+| `quiet` | Leituras, buscas e comandos somente leitura dobrados em uma linha |
+| `charts` | Cercas Mermaid como gráficos |
+| `math` | Matemática tipografada |
+| `commands` | Saída de comandos slash como tabelas e cards |
+| `shell` | Saída de shell como um card |
+| `highlight` | Blocos de código destacados nas cores da skin |
+| `hints` | Avisa o Claude de que gráficos são desenhados aqui |
+| `links` | URLs e caminhos como links |
+| `copy` | Botões de copiar nos cards |
+| `fold` | Blocos longos dobram atrás de `▾ N more` |
+| `expand` | Toda execução de leituras e buscas aberta, em vez da linha única `Read 3 · Search 2 ▸`; desligado por padrão |
 
-**Design one with Claude.** Ask "make me a skin that feels like a sunset". skins gives Claude a
-`design` tool, so it builds the skin and applies it while you watch. Repainting a built-in skin saves
-it as your own `my-<skin>`. Choices are remembered across sessions.
+**Desenhe uma com o Claude.** Peça "faça uma skin que pareça um pôr do sol". O skins dá ao Claude uma ferramenta `design`, então ele constrói a skin e a aplica enquanto você assiste. Repintar uma skin embutida a salva como sua própria `my-<skin>`. As escolhas são lembradas entre sessões.
 
-## Preview
+## Pré-visualização
 
-Drawn by the mod's own card code (`scripts/previews.ts`), not screenshots.
+Desenhada pelo próprio código de cards do mod (`scripts/previews.ts`), não por capturas de tela.
 
 <picture>
   <source media="(prefers-color-scheme: light)" srcset="docs/previews/hero-light.svg">
-  <img alt="A Claude Code turn with the noir skin: tool rows with icons, an edit as a diff card, and a table card" src="docs/previews/hero-dark.svg">
+  <img alt="Um turno do Claude Code com a skin noir: linhas de ferramenta com ícones, uma edição como card de diff e um card de tabela" src="docs/previews/hero-dark.svg">
 </picture>
 
 <picture>
   <source media="(prefers-color-scheme: light)" srcset="docs/previews/spinners-light.svg">
-  <img alt="The four spinner animations: thinking, running a tool, writing, waiting" src="docs/previews/spinners-dark.svg">
+  <img alt="As quatro animações do spinner: pensando, rodando uma ferramenta, escrevendo, esperando" src="docs/previews/spinners-dark.svg">
 </picture>
 
 <picture>
   <source media="(prefers-color-scheme: light)" srcset="docs/previews/terminal-light.svg">
-  <img alt="Shell output in a terminal card" src="docs/previews/terminal-dark.svg">
+  <img alt="Saída de shell em um card de terminal" src="docs/previews/terminal-dark.svg">
 </picture>
 
 <picture>
   <source media="(prefers-color-scheme: light)" srcset="docs/previews/code-light.svg">
-  <img alt="A code block as a card with line numbers" src="docs/previews/code-dark.svg">
+  <img alt="Um bloco de código como card com números de linha" src="docs/previews/code-dark.svg">
 </picture>
 
 <picture>
   <source media="(prefers-color-scheme: light)" srcset="docs/previews/usage-light.svg">
-  <img alt="Context and plan limit rings" src="docs/previews/usage-dark.svg">
+  <img alt="Anéis de contexto e de limite do plano" src="docs/previews/usage-dark.svg">
 </picture>
 
-## What it redraws
+## O que ele redesenha
 
-| Part | Desktop app | Terminal |
+| Parte | Aplicativo desktop | Terminal |
 |---|---|---|
-| Tool calls | Icon per kind, spinner while running, lines changed, time taken. `▸` opens the row: the call's input in full and its answer (a read's text with line numbers, a search's matches, the shell card, the diff); a failed call opens by itself | A node on the turn's rail, with the same `▸` |
-| Edits | Diff card with `+N −M` and numbered lines | Claude Code's own diff |
-| Shell commands | Terminal card with status, stderr apart, long output folded; paths, numbers and error, warning and pass words coloured | Card with the command, the output coloured the same way, `✓` or `✗ exit N`, stderr in red under its own label, each stream folded to 8 + 4 lines (`/skin shell off` for Claude Code's own) |
-| Quiet output (off by default) | Reads, searches and read-only commands fold to one row; a failure keeps its error line | The same |
-| Tables | Card with header rule, zebra rows, colour swatches | Cell grid with a header band |
-| Charts | ` ```mermaid ` as a card: flowchart, xy, pie, gantt, timeline, journey, kanban, mindmap, quadrant, radar, sankey, gitGraph, treemap, packet, block, architecture, C4 | The same seventeen drawn in cells, ASCII with `/skin icons ascii` |
-| Math | `$$…$$`, `\[…\]` and ` ```math ` as a typeset card: fractions, roots, sums and integrals with limits, matrices, aligned lines; `$…$` inline turns into Unicode | Fractions and limits stacked in cells, inline `$…$` as Unicode |
-| Command output | `/cost`, `/context` and plugin output: tables, code and `key: value` runs as cards | The same as cell grids |
-| Alerts and task lists | `> [!NOTE]` as a titled box, `- [ ]` with ticks and a done count | The same |
-| Code blocks | Card with language, line numbers, highlighting; shell blocks keep the Run button | Framed, the language on the frame, highlighted in the skin's colours: TS/JS, JSON, shells, PowerShell, Python, Rust, Go, C/C++, C#, F#, Java, YAML, TOML, HTML/XML, CSS, SQL, diff, Markdown, Lua (`/skin highlight off` for Claude Code's own) |
-| Spinner | Animated icon per phase | The skin's word with a band of light |
-| Above the prompt | Context and plan-limit rings, Compact button, nudge at 70% | Block meters, same button |
-| Your prompts | Claude Code's own, so copy, rewind and selection stay | Rounded outline, or a plain marker |
-| Links and files | URLs are the app's own links; tool rows colour files this turn created (`ok`) or edited (`warn`) | URLs in prose are OSC 8 links where the terminal draws them (`FORCE_HYPERLINK=1` or `0` overrides the check), plain text elsewhere; paths with `:line`, numbers and versions coloured, this turn's files in `ok` or `warn` in rows and prose |
-| Diff fences | ` ```diff ` as the diff card, with Copy and `new only` (the code after the change) | Numbered old and new lines, the `+` and `-` in the skin's colours and the code highlighted in the language its `+++` path or a ` ```diff-fsharp ` tag names, the same two copies |
-| Side by side | Two or more tables or charts in a row share it when each gets 75 columns; stack otherwise | Tables and diagrams in a row sit side by side while their natural widths fit; stack otherwise |
-| Long blocks | Code cards past 24 lines cut there, with `▾ N more` | Code past 24 lines, tables past 14 rows and shell output past 8 + 4 lines fold behind `▾ N more` / `▴ less` |
+| Chamadas de ferramenta | Ícone por tipo, spinner enquanto roda, linhas alteradas, tempo gasto. `▸` abre a linha: a entrada completa da chamada e sua resposta (o texto de uma leitura com números de linha, as ocorrências de uma busca, o card de shell, o diff); uma chamada que falhou abre sozinha | Um nó no trilho do turno, com o mesmo `▸` |
+| Edições | Card de diff com `+N −M` e linhas numeradas | O próprio diff do Claude Code |
+| Comandos de shell | Card de terminal com status, stderr à parte, saída longa dobrada; caminhos, números e palavras de erro, aviso e sucesso coloridos | Card com o comando, a saída colorida do mesmo modo, `✓` ou `✗ exit N`, stderr em vermelho sob seu próprio rótulo, cada stream dobrado para 8 + 4 linhas (`/skin shell off` para o próprio do Claude Code) |
+| Saída silenciosa (desligada por padrão) | Leituras, buscas e comandos somente leitura dobram em uma linha; uma falha mantém sua linha de erro | O mesmo |
+| Tabelas | Card com regra de cabeçalho, linhas zebradas, amostras de cor | Grade de células com banda de cabeçalho |
+| Gráficos | ` ```mermaid ` como card: flowchart, xy, pie, gantt, timeline, journey, kanban, mindmap, quadrant, radar, sankey, gitGraph, treemap, packet, block, architecture, C4 | Os mesmos dezessete desenhados em células, ASCII com `/skin icons ascii` |
+| Matemática | `$$…$$`, `\[…\]` e ` ```math ` como card tipografado: frações, raízes, somas e integrais com limites, matrizes, linhas alinhadas; `$…$` inline vira Unicode | Frações e limites empilhados em células, `$…$` inline como Unicode |
+| Saída de comandos | `/cost`, `/context` e saída de plugins: tabelas, código e execuções `chave: valor` como cards | Os mesmos como grades de células |
+| Alertas e listas de tarefas | `> [!NOTE]` como caixa com título, `- [ ]` com marcações e contagem de concluídos | O mesmo |
+| Blocos de código | Card com linguagem, números de linha, destaque; blocos de shell mantêm o botão Run | Emoldurado, a linguagem na moldura, destacado nas cores da skin: TS/JS, JSON, shells, PowerShell, Python, Rust, Go, C/C++, C#, F#, Java, YAML, TOML, HTML/XML, CSS, SQL, diff, Markdown, Lua (`/skin highlight off` para o próprio do Claude Code) |
+| Spinner | Ícone animado por fase | A palavra da skin com uma banda de luz |
+| Acima do prompt | Anéis de contexto e de limite do plano, botão Compact, toque a 70% | Medidores em bloco, mesmo botão |
+| Seus prompts | Os próprios do Claude Code, então copiar, retroceder e selecionar permanecem | Contorno arredondado, ou um marcador simples |
+| Links e arquivos | URLs são os próprios links do app; linhas de ferramenta coloram arquivos criados neste turno (`ok`) ou editados (`warn`) | URLs em prosa são links OSC 8 onde o terminal os desenha (`FORCE_HYPERLINK=1` ou `0` sobrepõe a verificação), texto simples em outros lugares; caminhos com `:linha`, números e versões coloridos, arquivos deste turno em `ok` ou `warn` em linhas e prosa |
+| Cercas de diff | ` ```diff ` como card de diff, com Copy e `new only` (o código depois da mudança) | Linhas antigas e novas numeradas, `+` e `-` nas cores da skin e o código destacado na linguagem que o caminho do `+++` ou uma tag ` ```diff-fsharp ` nomeia, as mesmas duas cópias |
+| Lado a lado | Duas ou mais tabelas ou gráficos em uma linha compartilham-na quando cada um recebe 75 colunas; caso contrário empilham | Tabelas e diagramas em uma linha ficam lado a lado enquanto suas larguras naturais couberem; caso contrário empilham |
+| Blocos longos | Cards de código além de 24 linhas cortam lá, com `▾ N more` | Código além de 24 linhas, tabelas além de 14 linhas e saída de shell além de 8 + 4 linhas dobram atrás de `▾ N more` / `▴ less` |
 
-Every card has a Copy button (tables also `as text`, the table as drawn; a reply of several blocks ends in `copy reply`) and animates once, on first draw, respecting reduced motion. Only the
-drawing changes: the stored conversation and what the model reads are untouched. Agents, plan mode
-and the permission prompt keep Claude Code's own drawing.
+Todo card tem um botão Copy (tabelas também `as text`, a tabela como desenhada; uma resposta de vários blocos termina em `copy reply`) e anima uma vez, no primeiro desenho, respeitando movimento reduzido. Só o desenho muda: a conversa armazenada e o que o modelo lê não são tocados. Agentes, modo de plano e o prompt de permissão mantêm o desenho próprio do Claude Code.
 
-**Chart hints.** While charts are on, Claude gets a short model-only note (about 130 tokens, estimated from its 458 characters) saying ` ```mermaid ` fences draw here, so it reaches for a chart when one reads better. Never for headless `claude -p` runs. `/skin hints off` drops it and keeps charts drawing.
+**Dicas de gráficos.** Com gráficos ligados, o Claude recebe uma nota só para o modelo (cerca de 130 tokens, estimados a partir de seus 458 caracteres) dizendo que cercas ` ```mermaid ` são desenhadas aqui, então ele recorre a um gráfico quando um lê melhor. Nunca para execuções headless `claude -p`. `/skin hints off` descarta isso e mantém os gráficos desenhando.
 
-**Light and dark.** Every skin has both and follows Claude Code's theme. On `auto` it follows your
-terminal (`COLORFGBG`) or the system. Force one with `SKINS_THEME=light` or `SKINS_THEME=dark`.
+**Claro e escuro.** Toda skin tem os dois e segue o tema do Claude Code. Em `auto` segue seu terminal (`COLORFGBG`) ou o sistema. Force um com `SKINS_THEME=light` ou `SKINS_THEME=dark`.
 
-**Your terminal's colours.** The `terminal` skin paints the terminal in its own 16-colour palette
-(`ansi256(0)` to `ansi256(15)`), so it follows whatever theme the terminal has, light or dark. Body
-text and table bands use Claude Code's own theme colours; pick an ANSI theme in `/config` to have
-those follow the terminal too. The desktop app has no terminal palette and draws it as `noir`.
+**As cores do seu terminal.** A skin `terminal` pinta o terminal na sua própria paleta de 16 cores (`ansi256(0)` a `ansi256(15)`), então segue qualquer tema que o terminal tenha, claro ou escuro. Texto do corpo e bandas de tabela usam as cores de tema próprias do Claude Code; escolha um tema ANSI em `/config` para que esses sigam o terminal também. O aplicativo desktop não tem paleta de terminal e o desenha como `noir`.
 
-## For other mods
+## Para outros mods
 
-skins adds `$.skins.markdown` to `$`. It draws markdown the way skins draws a reply, in the person's skin. It answers a tree, or `undefined` when skins is off or the text holds nothing it draws, and throws on a malformed argument. It draws no copy or fold controls, because a press cannot cross from one mod's tree to another's. List `skins` under `dependencies` in your `plugin.json` and Claude Code lays its types into your `.claude-plugin/types/`.
+O skins adiciona `$.skins.markdown` a `$`. Ele desenha markdown do jeito que o skins desenha uma resposta, na skin da pessoa. Responde uma árvore, ou `undefined` quando o skins está desligado ou o texto não contém nada que ele desenha, e lança em argumento malformado. Não desenha controles de cópia ou dobragem, porque um pressionar não pode cruzar de uma árvore de um mod para a de outro. Liste `skins` sob `dependencies` no seu `plugin.json` e o Claude Code deposita seus tipos em `.claude-plugin/types/`.
 
 ```tsx
 let drawn
@@ -187,99 +178,83 @@ try {
 return drawn ?? <Markdown text={text} />
 ```
 
-## Compatibility
+## Compatibilidade
 
-Checked by hand on Windows (terminal and desktop app, 0.3.0) and run on Linux (terminal, 0.5.0,
-Claude Code 2.1.288, 168 engine tests). [CI](.github/workflows/ci.yml) runs the tests, the
-manifest checks and the type check on Linux, Windows and macOS. macOS, VS Code and mobile have
-not been looked at by hand. The surface × OS matrix and
-render times per row are in [docs/compat.md](docs/compat.md). To measure on your machine:
+Verificado à mão no Windows (terminal e aplicativo desktop, 0.3.0) e rodado no Linux (terminal, 0.5.0, Claude Code 2.1.288, 168 testes do engine). O [CI](.github/workflows/ci.yml) roda os testes, as verificações de manifest e a verificação de tipos no Linux, Windows e macOS. macOS, VS Code e mobile não foram olhados à mão. A matriz superfície × SO e os tempos de renderização por linha estão em [docs/compat.md](docs/compat.md). Para medir na sua máquina:
 
 ```bash
 scripts/bench.sh
 ```
 
-## Known limitations
+## Limitações conhecidas
 
-| What | What you get instead | Where |
+| O quê | O que você recebe em vez disso | Onde |
 |---|---|---|
-| An opened row for an image, PDF or notebook read, a background command, or an answer it cannot read | Claude Code's own row, drawn in the opened row | `bodyOf` in [`hooks/detail.ts`](hooks/detail.ts); test "an opened image Read is Claude Code's own drawing…" |
-| Agents, plan mode, todos, the permission prompt | Claude Code's own rows and dialogs | `kindOf` in [`hooks/tools.ts`](hooks/tools.ts); test "tools a skin cannot redraw faithfully keep their own row" |
-| Edits on the terminal, failed edits everywhere | Claude Code's own diff | [`hooks/register.tsx`](hooks/register.tsx) `ToolResult`; test "on the desktop an edit is a diff card…" |
-| Code blocks on the terminal in a language the highlighter does not know | Claude Code's own markdown | `languageOf` in [`hooks/highlight.ts`](hooks/highlight.ts); test "a fence in a language it does not know keeps Claude Code's markdown" |
-| Shell fences (` ```bash `) on the desktop | The app's own block, so its Run button stays | test "on the desktop a shell fence keeps the app's own block" |
-| Sequence, state, class and ER diagrams on the desktop | A code card: only the terminal's vendored layout draws them | `artKind` in [`hooks/mermaid-art.ts`](hooks/mermaid-art.ts), `parseMermaid` in [`hooks/mermaid.ts`](hooks/mermaid.ts) |
-| Korean, Chinese, Japanese or other wide characters in a terminal diagram's node id or state name (`A[開始] --> 請求`) | The code: the vendored layout drops such nodes. Wide labels draw as art | `drawsWide` in [`hooks/mermaid-art.ts`](hooks/mermaid-art.ts); test "a diagram the renderer cannot lay out with wide characters falls back to code" |
-| A diagram too wide or too long (over 80 lines or 8,000 characters on the terminal) | Rows for flowchart, xy and pie, else the code | test "a diagram too wide for the terminal falls back to rows…" |
-| A reply block over 9,000 characters, a prompt over 4,000 | Claude Code's own drawing of the whole message | `MAX_MARKDOWN`, `MAX_PROMPT` in [`hooks/register.tsx`](hooks/register.tsx) |
-| Code cards past 80 lines | The first 80 and a `N more lines` note; Copy takes all of it | `MAX_LINES` in [`hooks/svg-code.ts`](hooks/svg-code.ts) |
-| TeX commands the parser does not know | Drawn as written, `\name` | [`hooks/math.ts`](hooks/math.ts) |
-| Shell output on the terminal vs the desktop | The terminal card names the command and folds each stream to 8 + 4 lines; the desktop card says `Output` and folds both streams together to 6 + 6 | [`hooks/shell-rows.tsx`](hooks/shell-rows.tsx), [`hooks/svg-terminal.ts`](hooks/svg-terminal.ts) |
-| A failed shell call that hands back error text, not its record | stdout and stderr arrive merged, so the whole text is drawn as stderr | `shellResultOf` in [`hooks/shell.ts`](hooks/shell.ts) |
-| A command sent to the background, or output that is an image | Claude Code's own row, which says where it went or draws the image | `keepsOwnRow` in [`hooks/shell.ts`](hooks/shell.ts); test "/skin shell off gives shell output back…" |
-| Shell cards and tool timings after `/resume` | No command in the header and no time: both are recorded as the call runs | `commandAtom`, `durationAtom` in [`hooks/register.tsx`](hooks/register.tsx) |
-| Slash-command errors and `/skin`'s own output | Claude Code's own row | test "slash-command output with key: value lines is a table, prose keeps its row" |
-| `/skin calm` and Claude Code's spinner | Calm hands the spinner back to Claude Code, whose own spinner still moves | `Spinner` in [`hooks/register.tsx`](hooks/register.tsx) |
-| The settings pane on mobile | A line saying to use the terminal or the desktop app | `Pane` in [`hooks/register.tsx`](hooks/register.tsx) |
-| File paths as links | Coloured, not clickable: the engine's `Link` takes only `https:` and `http://localhost` | `safeHref` in [`hooks/links.ts`](hooks/links.ts) |
-| Folding on the desktop | Code cards fold; table cards and the shell card keep their full height or their own 6 + 6 fold | [`hooks/fold.tsx`](hooks/fold.tsx) |
-| Icons and the rail | Icons on the desktop only (the terminal draws no `Svg`); the rail on the terminal only | `lookOf` in [`hooks/register.tsx`](hooks/register.tsx) |
+| Uma linha aberta para uma leitura de imagem, PDF ou notebook, um comando em segundo plano ou uma resposta que não pode ser lida | A própria linha do Claude Code, desenhada na linha aberta | `bodyOf` em [`hooks/detail.ts`](hooks/detail.ts); teste "an opened image Read is Claude Code's own drawing…" |
+| Agentes, modo de plano, tarefas, o prompt de permissão | As próprias linhas e diálogos do Claude Code | `kindOf` em [`hooks/tools.ts`](hooks/tools.ts); teste "tools a skin cannot redraw faithfully keep their own row" |
+| Edições no terminal, edições que falharam em todo lugar | O próprio diff do Claude Code | [`hooks/register.tsx`](hooks/register.tsx) `ToolResult`; teste "on the desktop an edit is a diff card…" |
+| Blocos de código no terminal em uma linguagem que o destacador não conhece | O próprio markdown do Claude Code | `languageOf` em [`hooks/highlight.ts`](hooks/highlight.ts); teste "a fence in a language it does not know keeps Claude Code's markdown" |
+| Cercas de shell (` ```bash `) no desktop | O próprio bloco do app, para que seu botão Run permaneça | teste "on the desktop a shell fence keeps the app's own block" |
+| Diagramas de sequência, estado, classe e ER no desktop | Um card de código: só o layout vendored do terminal os desenha | `artKind` em [`hooks/mermaid-art.ts`](hooks/mermaid-art.ts), `parseMermaid` em [`hooks/mermaid.ts`](hooks/mermaid.ts) |
+| Caracteres coreanos, chineses, japoneses ou outros largos no id de nó de um diagrama de terminal ou no nome de estado (`A[開始] --> 請求`) | O código: o layout vendored descarta tais nós. Legendas largas desenham como arte | `drawsWide` em [`hooks/mermaid-art.ts`](hooks/mermaid-art.ts); teste "a diagram the renderer cannot lay out with wide characters falls back to code" |
+| Um diagrama largo demais ou longo demais (mais de 80 linhas ou 8.000 caracteres no terminal) | Linhas para flowchart, xy e pie, senão o código | teste "a diagram too wide for the terminal falls back to rows…" |
+| Um bloco de resposta acima de 9.000 caracteres, um prompt acima de 4.000 | O próprio desenho do Claude Code da mensagem inteira | `MAX_MARKDOWN`, `MAX_PROMPT` em [`hooks/register.tsx`](hooks/register.tsx) |
+| Cards de código além de 80 linhas | As primeiras 80 e uma nota `N more lines`; Copy pega tudo | `MAX_LINES` em [`hooks/svg-code.ts`](hooks/svg-code.ts) |
+| Comandos TeX que o parser não conhece | Desenhados como escritos, `\name` | [`hooks/math.ts`](hooks/math.ts) |
+| Saída de shell no terminal vs no desktop | O card do terminal nomeia o comando e dobra cada stream para 8 + 4 linhas; o card do desktop diz `Output` e dobra ambos os streams juntos para 6 + 6 | [`hooks/shell-rows.tsx`](hooks/shell-rows.tsx), [`hooks/svg-terminal.ts`](hooks/svg-terminal.ts) |
+| Uma chamada de shell que falhou e entrega texto de erro, não seu registro | stdout e stderr chegam mesclados, então todo o texto é desenhado como stderr | `shellResultOf` em [`hooks/shell.ts`](hooks/shell.ts) |
+| Um comando enviado ao segundo plano, ou saída que é uma imagem | A própria linha do Claude Code, que diz para onde foi ou desenha a imagem | `keepsOwnRow` em [`hooks/shell.ts`](hooks/shell.ts); teste "/skin shell off gives shell output back…" |
+| Cards de shell e tempos de ferramentas após `/resume` | Sem comando no cabeçalho e sem tempo: ambos são gravados enquanto a chamada roda | `commandAtom`, `durationAtom` em [`hooks/register.tsx`](hooks/register.tsx) |
+| Erros de comandos slash e a própria saída do `/skin` | A própria linha do Claude Code | teste "slash-command output with key: value lines is a table, prose keeps its row" |
+| `/skin calm` e o spinner do Claude Code | O calm entrega o spinner de volta ao Claude Code, cujo spinner próprio ainda se move | `Spinner` em [`hooks/register.tsx`](hooks/register.tsx) |
+| O painel de configurações no mobile | Uma linha dizendo para usar o terminal ou o aplicativo desktop | `Pane` em [`hooks/register.tsx`](hooks/register.tsx) |
+| Caminhos de arquivo como links | Coloridos, não clicáveis: o `Link` do engine aceita apenas `https:` e `http://localhost` | `safeHref` em [`hooks/links.ts`](hooks/links.ts) |
+| Dobragem no desktop | Cards de código dobram; cards de tabela e o card de shell mantêm sua altura total ou sua própria dobragem 6 + 6 | [`hooks/fold.tsx`](hooks/fold.tsx) |
+| Ícones e a faixa | Ícones apenas no desktop (o terminal não desenha `Svg`); a faixa apenas no terminal | `lookOf` em [`hooks/register.tsx`](hooks/register.tsx) |
 
-## Compared with
+## Comparado com
 
-Other mods that change how the transcript looks, from their READMEs on 2026-10-10. Blank means
-the README does not say.
+Outros mods que mudam a aparência da transcrição, a partir de seus READMEs em 2026-10-10. Em branco significa que o README não diz.
 
 | | skins | [Prismantis](https://github.com/NahumLitvin/prismantis) | [glint](https://github.com/manikosto/glint) | [tweakcc](https://github.com/Piebald-AI/tweakcc) | [claude-gfm-render](https://github.com/briangtn/claude-gfm-render) | [ccstatusline](https://github.com/sirmalloc/ccstatusline) |
 |---|---|---|---|---|---|---|
-| How | Function-hooks plugin | Function-hooks plugin | Function-hooks plugin, a Prismantis fork | Patches Claude Code's JavaScript; reapply after each update | Function-hooks mod | Status line command |
-| Claude Code | 2.1.287+ | 2.1.287+ | 2.1.289+ | Verified on 2.1.162 | 2.1.286+ | |
-| Platforms named | Windows by hand, Linux by tests; CI on Linux, Windows, macOS ([compat](docs/compat.md)) | macOS terminal by hand; CI on macOS, Linux, Windows | | Windows, macOS, Linux | Terminal and desktop app | Windows guide in its docs |
-| Themes | 16, repaint any colour, or have Claude design one | 15 and `mono`, 20 colour slots | 15 | Your own, for Claude Code's whole UI | | Powerline themes |
-| Recolours Claude Code's own UI | No | No | No | **Yes** | No | No |
-| Tool rows | Icons, timings, rail; **open to the input and answer** | 4 styles | | | No | No |
-| Read-only output hidden | `/skin quiet` | `toolOutput: quiet` | | | No | No |
-| Edit diffs | Card on the desktop; the engine's diff in an opened row on the terminal | Claude Code's own | | | No | No |
-| ` ```diff ` fences | Diff card or numbered rows, `new only` copy | | Numbered, `⧉ new only` | | | No |
-| Shell output | Card on both surfaces, paths, numbers and errors coloured | Boxed in expanded groups | | | No | No |
-| Code highlighting on the terminal | 20 language families in the skin's colours | Prism, two dozen languages | 20+ languages | | | No |
-| Tables | Card or cell grid, side by side with diagrams | 4 styles, side by side with diagrams | | 4 formats | No | No |
-| Mermaid | 17 kinds; sequence, state, class, ER on the terminal only | Flowchart, sequence, state, class, ER, xy; no pie | Flowchart, sequence, xy | | Flowchart, sequence, state, class, ER, xy; SVG on the desktop | No |
-| Math | Card on the desktop, stacked cells on the terminal | Typeset image in kitty and Ghostty via RaTeX, text elsewhere | | | Not handled | No |
-| Links | URLs as OSC 8 links; this turn's files coloured | Links and bare URLs clickable | **URLs and file paths clickable**; changed files coloured; link band | | | No |
-| Long blocks folded | Code, tables, shell output (`/skin fold`) | | Code, lists, tables | | | No |
-| Right-to-left text | No | **Hebrew and Arabic** | Hebrew and Arabic | | | No |
-| Usage meters | Context and plan limits above the prompt | | | | No | **Many widgets**, Powerline |
-| Spinner words | The skin's, with a shimmer | | | **Your own verbs and animations** | No | No |
-| Copy | Cards, tables as markdown or as drawn, `copy reply`, `/skin copy` | Buttons, `/prismantis copy`, HTML tables | Code, tables, diagrams, lists, quotes | | | No |
-| API for other mods | `$.skins.markdown` | `$.prismantis.markdown` | | | | No |
+| Como | Plugin de function hooks | Plugin de function hooks | Plugin de function hooks, um fork do Prismantis | Faz patch no JavaScript do Claude Code; reaplique após cada atualização | Mod de function hooks | Comando de linha de status |
+| Claude Code | 2.1.287+ | 2.1.287+ | 2.1.289+ | Verificado em 2.1.162 | 2.1.286+ | |
+| Plataformas nomeadas | Windows à mão, Linux por testes; CI no Linux, Windows, macOS ([compat](docs/compat.md)) | Terminal macOS à mão; CI no macOS, Linux, Windows | | Windows, macOS, Linux | Terminal e aplicativo desktop | Guia do Windows nos docs |
+| Temas | 16, repinte qualquer cor ou tenha o Claude desenhando um | 15 e `mono`, 20 slots de cor | 15 | Os seus, para toda a interface do Claude Code | | Temas Powerline |
+| Recolore a própria interface do Claude Code | Não | Não | Não | **Sim** | Não | Não |
+| Linhas de ferramenta | Ícones, tempos, faixa; **abre para a entrada e a resposta** | 4 estilos | | | Não | Não |
+| Saída somente leitura oculta | `/skin quiet` | `toolOutput: quiet` | | | Não | Não |
+| Diffs de edição | Card no desktop; o diff do engine em uma linha aberta no terminal | O próprio do Claude Code | | | Não | Não |
+| Cercas ` ```diff ` | Card de diff ou linhas numeradas, cópia `new only` | | Numeradas, `⧉ new only` | | | Não |
+| Saída de shell | Card em ambas as superfícies, caminhos, números e erros coloridos | Em caixas em grupos expandidos | | | Não | Não |
+| Destaque de código no terminal | 20 famílias de linguagem nas cores da skin | Prism, duas dezenas de linguagens | 20+ linguagens | | | Não |
+| Tabelas | Card ou grade de células, lado a lado com diagramas | 4 estilos, lado a lado com diagramas | | 4 formatos | Não | Não |
+| Mermaid | 17 tipos; sequência, estado, classe, ER apenas no terminal | Flowchart, sequência, estado, classe, ER, xy; sem pie | Flowchart, sequência, xy | | Flowchart, sequência, estado, classe, ER, xy; SVG no desktop | Não |
+| Matemática | Card no desktop, células empilhadas no terminal | Imagem tipografada em kitty e Ghostty via RaTeX, texto em outros lugares | | | Não tratado | Não |
+| Links | URLs como links OSC 8; arquivos deste turno coloridos | Links e URLs soltas clicáveis | **URLs e caminhos de arquivo clicáveis**; arquivos alterados coloridos; banda de links | | | Não |
+| Blocos longos dobrados | Código, tabelas, saída de shell (`/skin fold`) | | Código, listas, tabelas | | | Não |
+| Texto da direita para a esquerda | Não | **Hebraico e árabe** | Hebraico e árabe | | | Não |
+| Medidores de uso | Contexto e limites do plano acima do prompt | | | | Não | **Muitos widgets**, Powerline |
+| Palavras do spinner | As da skin, com cintilação | | | **Seus próprios verbos e animações** | Não | Não |
+| Copiar | Cards, tabelas como markdown ou como desenhadas, `copy reply`, `/skin copy` | Botões, `/prismantis copy`, tabelas HTML | Código, tabelas, diagramas, listas, citações | | | Não |
+| API para outros mods | `$.skins.markdown` | `$.prismantis.markdown` | | | | Não |
 
-Where they are better: **tweakcc** recolours all of Claude Code, not only what a hook can
-redraw, at the cost of patching the binary. **Prismantis** handles right-to-left text, copies
-tables as HTML and typesets math as images. **glint** makes file paths clickable and keeps a
-band of the last reply's links. **ccstatusline** has a far deeper status line.
-**claude-gfm-render** draws sequence and other diagrams as SVG on the desktop, where skins falls
-back to a code card. What skins plans next is in [ROADMAP.md](ROADMAP.md).
+Onde eles são melhores: **tweakcc** recolore toda a interface do Claude Code, não apenas o que um hook pode redesenhar, ao custo de fazer patch no binário. **Prismantis** trata texto da direita para a esquerda, copia tabelas como HTML e tipografa matemática como imagens. **glint** torna caminhos de arquivo clicáveis e mantém uma banda dos links da última resposta. **ccstatusline** tem uma linha de status muito mais profunda. **claude-gfm-render** desenha sequência e outros diagramas como SVG no desktop, onde o skins recorre a um card de código. O que o skins planeja a seguir está em [ROADMAP.md](ROADMAP.md).
 
-## Privacy
+## Privacidade
 
-skins draws and remembers, nothing else. It reads the session directory, your context and plan
-usage, the theme setting and `SKINS_THEME` / `COLORFGBG`, and keeps its settings in the mod store.
-Its one network call is the daily version check: a GET of this repo's
-[`plugin.json`](.claude-plugin/plugin.json) on `raw.githubusercontent.com`, sending nothing. On `auto`
-it asks the OS for light or dark mode (`defaults` on macOS, `gsettings` on GNOME). It compacts or
-copies only when you press the button. Check it yourself with `claude plugin validate .`.
+O skins desenha e lembra, nada mais. Ele lê o diretório da sessão, seu contexto e uso do plano, a configuração de tema e `SKINS_THEME` / `COLORFGBG`, e mantém suas configurações no mod store. Sua única chamada de rede é a verificação diária de versão: um GET do [`plugin.json`](.claude-plugin/plugin.json) deste repositório em `raw.githubusercontent.com`, sem enviar nada. Em `auto` ele pede ao SO o modo claro ou escuro (`defaults` no macOS, `gsettings` no GNOME). Ele compacta ou copia apenas quando você pressiona o botão. Confira você mesmo com `claude plugin validate .`.
 
-## Vendored code
+## Código vendored
 
-Terminal diagrams are laid out by [beautiful-mermaid](https://github.com/lukilabs/beautiful-mermaid)
-(MIT), bundled into `hooks/vendor/mermaid-ascii.js` with its licence in the header. To rebuild it:
+Diagramas de terminal são dispostos por [beautiful-mermaid](https://github.com/lukilabs/beautiful-mermaid) (MIT), empacotado em `hooks/vendor/mermaid-ascii.js` com sua licença no cabeçalho. Para reconstruí-lo:
 
 ```bash
 cd scripts/vendor && npm install && npm run build
 ```
 
-## Develop
+## Desenvolvimento
 
 ```bash
 git clone https://github.com/hellosverre/claude-skins && cd claude-skins
@@ -289,16 +264,14 @@ git clone https://github.com/hellosverre/claude-skins && cd claude-skins
 claude --plugin-dir .
 ```
 
-Saving a file reloads the mod in the running session. Tests: `claude plugin test .`. Previews:
-`npx tsx scripts/previews.ts`. A new built-in skin is one file: copy `hooks/themes/nord.ts`, change
-the colours and words, add a line to `hooks/themes/index.ts`.
+Salvar um arquivo recarrega o mod na sessão em execução. Testes: `claude plugin test .`. Pré-visualizações: `npx tsx scripts/previews.ts`. Uma nova skin embutida é um único arquivo: copie `hooks/themes/nord.ts`, mude as cores e palavras, adicione uma linha em `hooks/themes/index.ts`.
 
-## More mods
+## Mais mods
 
-- [redgreen](https://github.com/hellosverre/redgreen): test results in a pane beside the chat
-- [smart-compact](https://github.com/hellosverre/smart-compact): compacts after a commit, green tests, before the prompt cache expires, or when Claude asks
-- [mod-store](https://github.com/hellosverre/mod-store): browse, search and install 2,700 mods from a pane
+- [redgreen](https://github.com/hellosverre/redgreen): resultados de testes em um painel ao lado do chat
+- [smart-compact](https://github.com/hellosverre/smart-compact): compacta após um commit, testes verdes, antes do cache do prompt expirar ou quando o Claude pede
+- [mod-store](https://github.com/hellosverre/mod-store): navegue, busque e instale 2.700 mods a partir de um painel
 
-## License
+## Licença
 
 MIT

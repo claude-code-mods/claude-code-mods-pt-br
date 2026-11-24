@@ -1,11 +1,11 @@
-<h1 align="center">Claude Code Filetree</h1>
+<h1 align="center">Árvore de Arquivos do Claude Code</h1>
 
 <p align="center">
-  An IDE-style file tree for Claude Code that shows what Claude is doing and where in files
+  Uma árvore de arquivos estilo IDE para o Claude Code que mostra o que o Claude está fazendo e onde nos arquivos
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Claude_Code-%E2%89%A5_2.1.306-D97757?logo=claude&logoColor=fff" alt="Claude Code 2.1.306 or newer">
+  <img src="https://img.shields.io/badge/Claude_Code-%E2%89%A5_2.1.306-D97757?logo=claude&logoColor=fff" alt="Claude Code 2.1.306 ou mais recente">
   <img src="https://img.shields.io/badge/version-0.8.5-blue" alt="Version">
   <img src="https://img.shields.io/badge/type-mod-6f42c1" alt="Claude Code mod">
   <img src="https://img.shields.io/badge/license-MIT-green" alt="License">
@@ -15,170 +15,170 @@
 <summary><b>Claude Code CLI</b></summary>
 
 <p align="center">
-  <img src="media/filetree-shimmer.gif" alt="filetree shimmering the file Claude is editing" width="900">
+  <img src="media/filetree-shimmer.gif" alt="filetree cintilando o arquivo que o Claude está editando" width="900">
 </p>
 
 </details>
 
 <details>
-<summary><b>Claude Code in Desktop App</b></summary>
+<summary><b>Claude Code no aplicativo desktop</b></summary>
 
 <p align="center">
-  <img src="media/0.8.2/desktop-light.png" alt="The file tree in the Desktop app in light mode, with the header buttons including the Clawd shimmer button, the branch row, search row and folders" width="600">
+  <img src="media/0.8.2/desktop-light.png" alt="A árvore de arquivos no aplicativo desktop em modo claro, com os botões do cabeçalho incluindo o botão de cintilação do Clawd, a linha de branch, a linha de busca e as pastas" width="600">
 </p>
 
 </details>
 
-**Key features:**
+**Recursos principais:**
 
-* Show/nav all files in a directory (with support for Git status, nvim bindings)
-* Animations show where Claude is reading/working
-* Keyboard shortcuts:
-   * Nav directories with `z` (zoxide-like)
-   * Search with `s` or `i` (in highlighted folder) or `q` (in file contents)
-   * Diff files with `d` or all changed files in a folder
-* Terminal-first features: File previews, directory size treemap, and more
+* Mostrar/navegar todos os arquivos de um diretório (com suporte a status do Git, atalhos do nvim)
+* Animações mostram onde o Claude está lendo/trabalhando
+* Atalhos de teclado:
+   * Navegar diretórios com `z` (estilo zoxide)
+   * Buscar com `s` ou `i` (na pasta destacada) ou `q` (no conteúdo dos arquivos)
+   * Fazer diff de arquivos com `d` ou de todos os arquivos alterados em uma pasta
+* Recursos voltados ao terminal: pré-visualização de arquivos, treemap de tamanho de diretório e mais
 
 ---
 
-## Installation
+## Instalação
 
-The repo is its own plugin marketplace. Run this in the terminal:
+O repositório é seu próprio marketplace de plugins. Execute isto no terminal:
 
 ```bash
 claude plugin marketplace add data-goblin/claude-code-filetree
 claude plugin install filetree@claude-code-filetree
 ```
 
-Or inside a Claude Code session:
+Ou dentro de uma sessão do Claude Code:
 
 ```text
 /plugin marketplace add data-goblin/claude-code-filetree
 /plugin install filetree@claude-code-filetree
 ```
 
-An install fails with `Unrecognized key: "options"` on Claude Code older than 2.1.287: run `claude update`, then install again.
+Uma instalação falha com `Unrecognized key: "options"` no Claude Code anterior a 2.1.287: execute `claude update` e instale novamente.
 
-## Features
+## Recursos
 
-- File tree of the cwd or a pinned folder, with Git, size, line count and date columns ([tree](docs/tree.md))
-- Collapse all, and expand all up to three levels deep ([tree](docs/tree.md))
-- Symlink arrows, a brain on agent instruction files, and Nerd Font, plain or text glyphs ([tree](docs/tree.md))
-- Search by name across unopened folders, by case or regular expression, scoped to one folder ([search](docs/search.md))
-- Search inside files with `git grep` or `grep -r`, and open a match at its line ([search](docs/search.md))
-- Jump to any folder zoxide style with `z` ([search](docs/search.md))
-- Git status per file and folder, line counts on changed files, and the branch with ahead and behind ([git](docs/git.md))
-- Git and GitHub commands Claude runs show as a status line ([git](docs/git.md))
-- Claude's reads, writes and commits shimmer in the tree, and auto-collapse closes the folders it opened ([activity](docs/activity.md))
-- The Activity shimmer setting turns the shimmer off in every session; the Clawd button in the Desktop app header flips it ([activity](docs/activity.md))
-- File references with a line in Claude's replies become links to that line ([activity](docs/activity.md))
-- Follow work moves the session to the repo Claude works in ([activity](docs/activity.md))
-- IDE-style multi-select; the shaded rows go to Claude as context: the selected row, or up to 100 marked rows ([context](docs/context.md)):
-  - click selects one row and clears the marks
-  - with rows marked, j / k move only the cursor, and `v` marks or unmarks the row under it
-  - shift+click marks the range from the last click or j / k move, in tree order
-  - ctrl+click marks or unmarks one row without opening it; alt+click on macOS
-  - double-click or Enter opens a file
-  - the clear selection button clears every marked and selected row
-  - marked rows show the selection background; `y`, `Y` and `u` copy the shaded rows
-  - with rows marked, the row under the cursor shows an accent tint in the Desktop app and the accent cursor mark in the terminal
-- Split preview of code, Markdown, images, video frames, PDF and Word pages ([preview and treemap](docs/preview-treemap.md))
-- Treemap of a folder by bytes or lines, with Claude's activity lit ([preview and treemap](docs/preview-treemap.md))
-- Diff of a file or every changed file in a folder, in the pane or your diff tool ([diff](docs/diff.md))
-- Open files in their default app, an editor in a tmux or herdr pane, or any command ([open](docs/open.md))
-- Guard files and folders from Claude's edits, and see files written outside the repo ([guards](docs/guards.md))
-- Keyboard-driven: vim-style moves, a shortcuts overlay, and alt+l / alt+h in the terminal ([keys](docs/keys.md))
-- `/filetree` commands and where the pane shows in the terminal and the Desktop app ([sidebar](docs/sidebar.md))
+- Árvore de arquivos do cwd ou de uma pasta fixada, com colunas de Git, tamanho, contagem de linhas e data ([tree](docs/tree.md))
+- Recolher tudo e expandir tudo até três níveis de profundidade ([tree](docs/tree.md))
+- Setas de links simbólicos, um cérebro em arquivos de instrução do agente e glifos Nerd Font, simples ou de texto ([tree](docs/tree.md))
+- Buscar por nome em pastas não abertas, por maiúsculas/minúsculas ou expressão regular, restrita a uma pasta ([search](docs/search.md))
+- Buscar dentro de arquivos com `git grep` ou `grep -r`, e abrir uma ocorrência na sua linha ([search](docs/search.md))
+- Pular para qualquer pasta estilo zoxide com `z` ([search](docs/search.md))
+- Status do Git por arquivo e pasta, contagem de linhas em arquivos alterados e a branch com ahead e behind ([git](docs/git.md))
+- Comandos do Git e do GitHub que o Claude executa mostrados como uma linha de status ([git](docs/git.md))
+- As leituras, escritas e commits do Claude cintilam na árvore e o recolhimento automático fecha as pastas que ele abriu ([activity](docs/activity.md))
+- A configuração de cintilação da atividade do Claude desliga a cintilação em todas as sessões; o botão do Clawd no cabeçalho do aplicativo desktop a alterna ([activity](docs/activity.md))
+- Referências de arquivos com uma linha nas respostas do Claude viram links para essa linha ([activity](docs/activity.md))
+- Seguir o trabalho move a sessão para o repositório em que o Claude trabalha ([activity](docs/activity.md))
+- Seleção múltipla estilo IDE; as linhas sombreadas vão para o Claude como contexto: a linha selecionada, ou até 100 linhas marcadas ([context](docs/context.md)):
+  - clicar seleciona uma linha e limpa as marcas
+  - com linhas marcadas, j / k movem apenas o cursor, e `v` marca ou desmarca a linha sob ele
+  - shift+clique marca o intervalo da última clique ou movimento j / k, na ordem da árvore
+  - ctrl+clique marca ou desmarca uma linha sem abrir; alt+clique no macOS
+  - duplo clique ou Enter abre um arquivo
+  - o botão de limpar seleção limpa todas as linhas marcadas e selecionadas
+  - linhas marcadas mostram o fundo da seleção; `y`, `Y` e `u` copiam as linhas sombreadas
+  - com linhas marcadas, a linha sob o cursor mostra um tom de destaque no aplicativo desktop e a marca do cursor de destaque no terminal
+- Pré-visualização dividida de código, Markdown, imagens, quadros de vídeo, páginas de PDF e Word ([preview and treemap](docs/preview-treemap.md))
+- Treemap de uma pasta por bytes ou linhas, com a atividade do Claude acesa ([preview and treemap](docs/preview-treemap.md))
+- Diff de um arquivo ou de todos os arquivos alterados em uma pasta, no painel ou na sua ferramenta de diff ([diff](docs/diff.md))
+- Abrir arquivos no aplicativo padrão, um editor em um painel tmux ou herdr, ou qualquer comando ([open](docs/open.md))
+- Proteger arquivos e pastas das edições do Claude e ver arquivos escritos fora do repositório ([guards](docs/guards.md))
+- Dirigido por teclado: movimentos estilo vim, uma sobreposição de atalhos e alt+l / alt+h no terminal ([keys](docs/keys.md))
+- Comandos `/filetree` e onde o painel aparece no terminal e no aplicativo desktop ([sidebar](docs/sidebar.md))
 
-<img src="media/filetree-git.gif" alt="A committed file shimmers green and the footer shows the commit" width="800">
+<img src="media/filetree-git.gif" alt="Um arquivo commitado cintila em verde e o rodapé mostra o commit" width="800">
 
-<img src="docs/media/preview-media.gif" alt="An image, a video, a PDF turned to page 2 and a Word document in the preview" width="800">
+<img src="docs/media/preview-media.gif" alt="Uma imagem, um vídeo, um PDF na página 2 e um documento Word na pré-visualização" width="800">
 
-## Settings
+## Configurações
 
-All settings are in `/config` under filetree, each with its own description there.
-
-```yaml
-Claude activity:  reads and writes | writes | reads | none
-Activity shimmer: on | off
-Follow Claude:    on | off
-Jump moves Claude: tree and Claude | tree
-Right-click copies: relative | absolute
-Follow work:      on | off
-Open at start:    on | off
-Focus on open:    on | off
-Right column:     date | age | size | loc | files
-Date format:      year-month-day | day-month | month-day
-Clock:            24h | 12h
-Long file:        500 | a line count | off
-Remote branch:    off | on
-Hints:            on | off
-Search spacing:   on | off
-Column headers:   on | off
-Auto-collapse:    off | on
-Shortcuts:        auto | always | off
-Open with:        empty | editor | preview | a command with {path} and {dir}
-Binary files:     Open with | default app
-Edit with:        empty | a command with {path} and {line}
-Diff with:        empty | a command such as "hunk diff --" or "lazygit -f"
-Diff groups:      folder | kind | off
-Terminal target:  auto | pane right | pane below | tab | workspace
-Ignore:           names to hide, such as ".cache .tmp"
-Preview pane:     bottom | top
-Treemap:          auto | image | cells | off
-Palette:          key=#hex pairs over the terminal colors
-Glyphs:           auto | nerd | plain | text
-```
-
-In the terminal the accent colors folders, the root, the cursor, search matches and the top-level boxes of the cells treemap. It is the terminal's bright blue with a dark Claude theme and its blue with a light one. `accent=#hex` in Palette sets another color for all of them.
-
-Follow work is described in [Claude activity](docs/activity.md).
-
-Open at start applies to every new session, `/clear` included. When you open or close the tree with `/filetree`, that choice lasts until the next `/clear`. After `/clear`, the tree is open or closed as Open at start says.
-
-## Requirements
+Todas as configurações ficam em `/config` sob filetree, cada uma com sua própria descrição lá.
 
 ```yaml
-required:  Claude Code 2.1.306 or newer, git
-optional:
-  inotifywait:            live updates on Linux (inotify-tools)
-  magick or ffmpeg:       images other than PNG, video frames
-  pdftoppm or gs:         PDF pages
-  soffice:                Word and office pages
-  pandoc, pdftotext:      document text in tmux, herdr and other terminals
-  tmux or herdr:          an editor or diff tool in a new pane
-  Nerd Fonts 3.2+:        icons for Glyphs auto, which draws plain Unicode without one or with an older one
-pictures:  Ghostty or kitty, outside tmux and herdr, on Linux and macOS
+Atividade do Claude:  leituras e escritas | escritas | leituras | nenhuma
+Cintilação da atividade: ligada | desligada
+Seguir o Claude:      ligado | desligado
+Pular move o Claude:  árvore e Claude | árvore
+Clique com o botão direito copia: relativo | absoluto
+Seguir o trabalho:    ligado | desligado
+Abrir ao iniciar:     ligado | desligado
+Focar ao abrir:       ligado | desligado
+Coluna da direita:    data | idade | tamanho | loc | arquivos
+Formato da data:      ano-mês-dia | dia-mês | mês-dia
+Relógio:              24h | 12h
+Arquivo longo:        500 | uma contagem de linhas | desligado
+Branch remota:        desligado | ligado
+Dicas:                ligado | desligado
+Espaçamento da busca: ligado | desligado
+Cabeçalhos de coluna: ligado | desligado
+Recolhimento automático: desligado | ligado
+Atalhos:              automático | sempre | desligado
+Abrir com:            vazio | editor | pré-visualização | um comando com {path} e {dir}
+Arquivos binários:    Abrir com | aplicativo padrão
+Editar com:           vazio | um comando com {path} e {line}
+Fazer diff com:       vazio | um comando como "hunk diff --" ou "lazygit -f"
+Grupos de diff:       pasta | tipo | desligado
+Alvo do terminal:     automático | painel à direita | painel abaixo | aba | espaço de trabalho
+Ignorar:              nomes a ocultar, como ".cache .tmp"
+Painel de pré-visualização: inferior | superior
+Treemap:              automático | imagem | células | desligado
+Paleta:               pares chave=#hex sobre as cores do terminal
+Glifos:               automático | nerd | simples | texto
 ```
 
-## Considerations
+No terminal, as cores de destaque tingem pastas, a raiz, o cursor, as ocorrências da busca e as caixas de nível superior do treemap de células. É o azul claro do terminal com um tema escuro do Claude e seu azul com um tema claro. `accent=#hex` em Paleta define outra cor para todos eles.
 
-- The Desktop app has no split preview or treemap
-- The Desktop app shimmers at most four rows at once; more lit rows show in their color without the shimmer, while the terminal shimmers them all. If the pane still floods, the Clawd button in the header or the Activity shimmer setting turns the shimmer off
-- The Desktop app draws at most 150 rows around the cursor, and fewer when rows are deep, have long paths or show git changes; a note counts the rows it leaves out
-- GIFs and videos show one still frame
-- Windows sizes folders through file listings, and the treemap draws one level
-- Row clicks need herdr 0.9.1 or later; run `herdr update`
+Seguir o trabalho está descrito em [Atividade do Claude](docs/activity.md).
 
-## Contributing
+Abrir ao iniciar se aplica a toda nova sessão, incluindo `/clear`. Quando você abre ou fecha a árvore com `/filetree`, essa escolha dura até o próximo `/clear`. Depois do `/clear`, a árvore fica aberta ou fechada conforme diz Abrir ao iniciar.
 
-Open pull requests against a release branch, not `main`:
+## Requisitos
 
-- Fixes: the patch branch, such as `release/0.8.2`
-- Features: the minor branch, such as `release/0.9.0`
+```yaml
+necessário:  Claude Code 2.1.306 ou mais recente, git
+opcional:
+  inotifywait:            atualizações ao vivo no Linux (inotify-tools)
+  magick ou ffmpeg:       imagens que não sejam PNG, quadros de vídeo
+  pdftoppm ou gs:         páginas de PDF
+  soffice:                páginas de Word e de office
+  pandoc, pdftotext:      texto de documentos em tmux, herdr e outros terminais
+  tmux ou herdr:          um editor ou ferramenta de diff em um novo painel
+  Nerd Fonts 3.2+:        ícones para Glifos automático, que desenha Unicode simples sem uma fonte mais recente
+imagens:  Ghostty ou kitty, fora do tmux e do herdr, no Linux e no macOS
+```
 
-Keep the version of that branch.
+## Considerações
 
-Turn on the git hooks once per clone. The pre-commit hook runs the fast checks in seconds: grep rules, types, oxlint, and `claude plugin validate` when the manifests change. The pre-push hook checks the version against the release branch and runs the plugin tests:
+- O aplicativo desktop não tem pré-visualização dividida nem treemap
+- O aplicativo desktop cintila no máximo quatro linhas por vez; mais linhas acesas aparecem na sua cor sem cintilação, enquanto o terminal as cintila todas. Se o painel ainda sobrecarregar, o botão do Clawd no cabeçalho ou a configuração de cintilação da atividade desliga a cintilação
+- O aplicativo desktop desenha no máximo 150 linhas ao redor do cursor, e menos quando as linhas são profundas, têm caminhos longos ou mostram alterações do git; uma nota conta as linhas que ele deixa de fora
+- GIFs e vídeos mostram um único quadro estático
+- O Windows mede o tamanho de pastas por listagem de arquivos, e o treemap desenha um nível
+- Cliques em linhas precisam do herdr 0.9.1 ou mais recente; execute `herdr update`
+
+## Contribuindo
+
+Abra pull requests contra um branch de release, não `main`:
+
+- Correções: o branch de patch, como `release/0.8.2`
+- Recursos: o branch minor, como `release/0.9.0`
+
+Mantenha a versão desse branch.
+
+Ative os hooks do git uma vez por clone. O hook de pré-commit roda as verificações rápidas em segundos: regras de grep, tipos, oxlint e `claude plugin validate` quando os manifests mudam. O hook de pré-push verifica a versão contra o branch de release e roda os testes do plugin:
 
 ```bash
 git config core.hooksPath .githooks
 ```
 
-The same checks run on macOS, Windows and Linux in CI on every push that touches the plugin.
+As mesmas verificações rodam no macOS, no Windows e no Linux no CI em todo push que toca o plugin.
 
-## License
+## Licença
 
-[MIT](LICENSE). The treemap labels use glyphs from [Terminus Font](https://terminus-font.sourceforge.net/) by Dimitar Zhekov (Lat2-Terminus16, SIL Open Font License 1.1).
+[MIT](LICENSE). As legendas do treemap usam glifos da [Terminus Font](https://terminus-font.sourceforge.net/) de Dimitar Zhekov (Lat2-Terminus16, SIL Open Font License 1.1).
 
-*This project is inspired by my Omarchy app [FileBlade](https://github.com/data-goblin/fileblade)*
+*Este projeto é inspirado no meu aplicativo Omarchy [FileBlade](https://github.com/data-goblin/fileblade)*

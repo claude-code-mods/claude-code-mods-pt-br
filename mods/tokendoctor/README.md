@@ -8,9 +8,9 @@
 <h1 align="center">tokendoctor</h1>
 
 <p align="center">
-  <strong>The same Claude Code for up to 38% less</strong>
+  <strong>O mesmo Claude Code por até 38% menos</strong>
   <br>
-  Replays your own past sessions to show what each change would have saved, then changes only what you pick.
+  Reexecuta suas próprias sessões passadas para mostrar quanto cada mudança teria economizado e altera apenas o que você escolhe.
 </p>
 
 <p align="center">
@@ -20,106 +20,77 @@
 </p>
 
 <p align="center">
-  <a href="#install">Install</a> &bull;
-  <a href="https://tokendoctor.localix.ai/docs">Docs</a> &bull;
-  <a href="https://tokendoctor.localix.ai">Website</a> &bull;
+  <a href="#install">Instalação</a> &bull;
+  <a href="https://tokendoctor.localix.ai/docs">Documentação</a> &bull;
+  <a href="https://tokendoctor.localix.ai">Site</a> &bull;
   <a href="CHANGELOG.md">Changelog</a>
 </p>
 
 <p align="center">
-  <img src="docs/demo.gif" alt="tokendoctor in a real Claude Code session: /tokendoctor:sessions, then the daily trend" width="880">
+  <img src="docs/demo.gif" alt="tokendoctor numa sessão real do Claude Code: /tokendoctor:sessions e depois a tendência diária" width="880">
 </p>
 
-**Your past sessions decide, not anyone's benchmark.** What a setting saves depends on how you
-work: how long your sessions run, which models you use, what the work is. A number from someone
-else's sessions, mine included, says little about yours. So tokendoctor starts by looking back at
-your own.
+**Suas sessões passadas decidem, não o benchmark de ninguém.** Quanto uma configuração economiza depende de como você trabalha: quanto duram suas sessões, quais modelos você usa, qual é o trabalho. Um número das sessões de outra pessoa, inclusive das minhas, diz pouco sobre as suas. Por isso o tokendoctor começa olhando para as suas.
 
-**① Look back at your last 30 days.** `/tokendoctor:sessions` replays every session you had,
-request by request, at compaction windows of 200K, 300K, 400K and 600K, and shows what each would
-have cost. It only reads your transcripts, makes no model calls and changes nothing. The figure is
-an upper bound: a replay can't see work the model would have redone after a summary.
+**① Olhe para os últimos 30 dias.** `/tokendoctor:sessions` reexecuta cada sessão que você teve, requisição por requisição, em janelas de compactação de 200K, 300K, 400K e 600K, e mostra o que cada uma teria custado. Ele apenas lê suas transcrições, não faz chamadas ao modelo e não muda nada. O número é um limite superior: uma reexecução não consegue ver trabalho que o modelo refaria depois de um resumo.
 
-**② Change only what your sessions show pays, and undo it.** `/tokendoctor:optimize` proposes
-changes from those numbers and checks your settings against Claude Code's docs; it applies only the
-ones you pick, each shown as a diff first. `/tokendoctor undo` puts any of them back.
+**② Mude apenas o que suas sessões mostram que compensa — e desfaça.** `/tokendoctor:optimize` propõe mudanças com base nesses números e confere suas configurações com a documentação do Claude Code; ele aplica apenas as que você escolhe, cada uma mostrada antes como um diff. `/tokendoctor undo` desfaz qualquer uma delas.
 
-**③ Optional: slide instead of summarize.** When Claude Code would stop to summarize the
-conversation, tokendoctor drops old tool output instead and keeps every message. There is no model
-call, so it takes milliseconds, not a minute.
+**③ Opcional: deslizar em vez de resumir.** Quando o Claude Code pararia para resumir a conversa, o tokendoctor descarta a saída antiga de ferramentas e mantém todas as mensagens. Não há chamada ao modelo, então leva milissegundos, não um minuto.
 
-## Install
+## Instalação
 
 ```bash
 claude plugin marketplace add localixai/tokendoctor
 claude plugin install tokendoctor@tokendoctor
 ```
 
-Restart Claude Code and run `/tokendoctor:sessions` to see what your last 30 days would have cost
-at each window. Nothing changes until you pick it.
+Reinicie o Claude Code e execute `/tokendoctor:sessions` para ver quanto seus últimos 30 dias teriam custado em cada janela. Nada muda até você escolher.
 
-## What it found in mine
+## O que ele encontrou nas minhas sessões
 
-Every request sends the whole conversation to the model. On models with a 1M window, Claude Code
-compacts only near 967K tokens, so the end of a long session is the expensive part. For me, two
-thirds of main-thread cost went to requests with more than 400K in context.
+Cada requisição envia a conversa inteira ao modelo. Em modelos com janela de 1M, o Claude Code compacta só perto de 967K tokens, então o fim de uma sessão longa é a parte cara. Para mim, dois terços do custo da thread principal foram para requisições com mais de 400K de contexto.
 
-So I set a 400K window and Sonnet for subagents. Comparing the month before with the week after,
-about 23K and 19K main-thread requests, context per request went from 412K to 219K and cost per
-request fell 38% at API list prices. That's one person's before and after, not a controlled
-experiment.
+Por isso defini uma janela de 400K e Sonnet para os subagentes. Comparando o mês anterior com a semana seguinte, cerca de 23K e 19K requisições na thread principal, o contexto por requisição caiu de 412K para 219K e o custo por requisição caiu 38% nos preços de tabela da API. É o antes e depois de uma pessoa, não um experimento controlado.
 
-The catch is more summaries, and each is a pause: 79 seconds on average in my sessions. That's
-what the slide is for. Your sessions may show something else entirely, which is the point of
-looking at them first.
+O custo é mais resumos, e cada um é uma pausa: 79 segundos em média nas minhas sessões. É para isso que serve o deslizamento. Suas sessões podem mostrar algo completamente diferente — é justamente por isso que vale olhar para elas primeiro.
 
-## What the benchmark shows
+## O que o benchmark mostra
 
-On the [benchmark](bench/README.md), Claude Code builds a TypeScript project against tests it
-can't change, so a run counts only if the tests pass. Cost is per task, on Haiku 5.5:
+No [benchmark](bench/README.md), o Claude Code constrói um projeto TypeScript contra testes que não pode alterar, então uma execução só conta se os testes passam. O custo é por tarefa, no Haiku 5.5:
 
-| Compared | Cost | Time |
+| Comparação | Custo | Tempo |
 | --- | --- | --- |
-| Slide against a summary, a day of work | −19% | −33% |
-| Slide against a summary, an eval harness | −35% | −28% |
-| Slide against a summary, a short task | +6% | −17% |
-| The settings advice alone, against Claude Code as it ships | dearer in 3 of 4 runs | |
-| The advice and the slide, a week of work | −11% to −21% | |
+| Deslizar contra um resumo, um dia de trabalho | −19% | −33% |
+| Deslizar contra um resumo, um harness de avaliação | −35% | −28% |
+| Deslizar contra um resumo, uma tarefa curta | +6% | −17% |
+| Apenas as dicas de configuração, contra o Claude Code como vem de fábrica | mais caro em 3 de 4 execuções | |
+| As dicas e o deslizamento, uma semana de trabalho | −11% a −21% | |
 
-Every test passed in every run. The advice alone didn't pay here because these tasks rarely pass
-400K, which is where the window starts to matter. If your sessions don't either, your replay will
-show it, and you should leave your window alone. Every run, the losing ones too, is in
-[bench/HISTORY.md](bench/HISTORY.md).
+Todos os testes passaram em todas as execuções. As dicas sozinhas não compensaram aqui porque essas tarefas raramente passam de 400K, que é onde a janela começa a importar. Se as suas sessões também não passam, sua reexecução mostrará isso, e você deve deixar sua janela como está. Todas as execuções, inclusive as que perderam, estão em [bench/HISTORY.md](bench/HISTORY.md).
 
 <p align="center">
-  <img src="docs/dashboard.png" alt="The author's tokendoctor dashboard: 57% of the spend was Claude re-reading the conversation" width="880"><br>
-  <sub><code>/tokendoctor:dashboard</code>: where every token went, by day, model, subagent and project. One local file; this one is mine.</sub>
+  <img src="docs/dashboard.png" alt="O painel do tokendoctor do autor: 57% do gasto foi o Claude relendo a conversa" width="880"><br>
+  <sub><code>/tokendoctor:dashboard</code>: para onde foi cada token, por dia, modelo, subagente e projeto. Um único arquivo local; este é o meu.</sub>
 </p>
 
-## Commands
+## Comandos
 
-| Command | What it does |
+| Comando | O que faz |
 | --- | --- |
-| `/tokendoctor:sessions [days]` | Replays your past sessions (30 days, or `days`) at smaller windows: what each would have saved, then where your tokens went. Reads only. |
-| `/tokendoctor:audit` | Your settings, memory and CLAUDE.md checked against the docs, by severity. Reads only. |
-| `/tokendoctor:dashboard [days]` | Opens a local dashboard of every session on this machine. |
-| `/tokendoctor:optimize [focus]` | Proposes up to five changes from your numbers and applies the ones you pick. |
-| `/tokendoctor [name] [value]` | Shows, explains or changes a setting, with no model call. |
-| `/tokendoctor undo [n]` | Lists every change tokendoctor made and puts one back. |
+| `/tokendoctor:sessions [days]` | Reexecuta suas sessões passadas (30 dias, ou `days`) em janelas menores: quanto cada uma economizaria e para onde foram seus tokens. Apenas leitura. |
+| `/tokendoctor:audit` | Suas configurações, memória e CLAUDE.md conferidos com a documentação, por gravidade. Apenas leitura. |
+| `/tokendoctor:dashboard [days]` | Abre um painel local de todas as sessões nesta máquina. |
+| `/tokendoctor:optimize [focus]` | Propõe até cinco mudanças com base nos seus números e aplica as que você escolhe. |
+| `/tokendoctor [name] [value]` | Mostra, explica ou altera uma configuração, sem chamada ao modelo. |
+| `/tokendoctor undo [n]` | Lista todas as mudanças feitas pelo tokendoctor e desfaz uma delas. |
 
-Nothing leaves your machine: the only network call is to two public pages of Claude Code's docs,
-once a day. It never switches your models on its own.
+Nada sai da sua máquina: a única chamada de rede é para duas páginas públicas da documentação do Claude Code, uma vez por dia. Ele nunca troca seus modelos por conta própria.
 
-## Documentation
+## Documentação
 
-**[tokendoctor.localix.ai/docs](https://tokendoctor.localix.ai/docs)** has the rest: the
-[38 checks](https://tokendoctor.localix.ai/docs/audit), every
-[setting](https://tokendoctor.localix.ai/docs/settings),
-[how the slide works](https://tokendoctor.localix.ai/docs/slide) (and Team and Enterprise
-logins), the commands from a shell, the [measurements](https://tokendoctor.localix.ai/docs/proof)
-and the [limits](https://tokendoctor.localix.ai/docs/limits). To work on tokendoctor itself, see
-[CONTRIBUTING.md](CONTRIBUTING.md).
+**[tokendoctor.localix.ai/docs](https://tokendoctor.localix.ai/docs)** traz o resto: as [38 verificações](https://tokendoctor.localix.ai/docs/audit), cada [configuração](https://tokendoctor.localix.ai/docs/settings), [como o deslizamento funciona](https://tokendoctor.localix.ai/docs/slide) (e os logins de Team e Enterprise), os comandos pelo shell, as [medições](https://tokendoctor.localix.ai/docs/proof) e os [limites](https://tokendoctor.localix.ai/docs/limits). Para trabalhar no próprio tokendoctor, veja [CONTRIBUTING.md](CONTRIBUTING.md).
 
-## License
+## Licença
 
 MIT

@@ -24,21 +24,21 @@
   /></a>
 </p>
 
-**compact-adviser** is an agent plugin that answers a single question: should I /compact now?
+**compact-adviser** é um plugin de agente que responde a uma única pergunta: devo usar /compact agora?
 
-![Compact adviser status line: "Compact adviser: work appears completed or recorded. Run /compact to save tokens." shown above a terminal prompt](https://raw.githubusercontent.com/kunchenguid/compact-adviser/main/docs/hint-status-line.png)
+![Linha de status do compact adviser: "Compact adviser: o trabalho parece concluído ou registrado. Execute /compact para economizar tokens." exibida acima do prompt de um terminal](https://raw.githubusercontent.com/kunchenguid/compact-adviser/main/docs/hint-status-line.png)
 
-It uses [Jev](https://typesafe.ai) to instantly judge whether the current session is likely at a boundary that's safe to compact.
+Ele usa o [Jev](https://typesafe.ai) para julgar instantaneamente se a sessão atual está provavelmente em um ponto seguro para compactar.
 
-It can give you a hint to run `/compact` - or, on Pi and Claude Code, if you opt in, it can run it for you at the right time automatically. Codex CLI and Grok are hint-only: nothing outside their sessions can trigger `/compact`.
+Ele pode dar uma dica para executar `/compact` — ou, no Pi e no Claude Code, se você optar por isso, pode executá-lo automaticamente no momento certo. A Codex CLI e o Grok são apenas de dica: nada fora de suas sessões pode disparar `/compact`.
 
-Judgment is two one-sentence Jev questions in one request (is the unit finished; is this hands-on work or coordination), composed in code into one score. The hint floor is 0.90 while the context is mostly empty (through about 10%) and relaxes toward 0.50 by about 90% full - a wrong hint costs most when there is still room. "Full" means the point where the host compacts: on Claude Code that is its auto-compact threshold when enabled, elsewhere the model's window. If you would rather compact well before that (long contexts cost more every turn), set a context budget: the floor then relaxes as the context approaches the smaller of your budget and that point. Automatic mode is the same gate, plus a first-use confirmation.
+O julgamento é feito por duas perguntas curtas ao Jev em uma única requisição (a unidade está concluída? é trabalho prático ou coordenação?), compostas em código em uma única pontuação. O piso da dica é 0,90 enquanto o contexto está quase vazio (até cerca de 10%) e relaxa até 0,50 perto de 90% de ocupação — uma dica errada custa mais quando ainda há espaço. "Cheio" significa o ponto em que o host compacta: no Claude Code é o limite de compactação automática quando habilitada; nos outros, a janela do modelo. Se você prefere compactar bem antes disso (contextos longos custam mais a cada turno), defina um orçamento de contexto: o piso então relaxa conforme o contexto se aproxima do menor valor entre seu orçamento e aquele ponto. O modo automático é o mesmo critério, mais uma confirmação no primeiro uso.
 
-## Quick Start
+## Início rápido
 
-Prerequisites: Node 22+ (22.18+ for Codex and Grok), and one of [Pi](https://pi.dev) 0.82.0 or newer (verified on **0.85.1**), Claude Code 2.1.274 or newer (verified on **2.1.275**), Codex CLI 0.153.0 or newer (verified on **0.153.4**), or [Grok Build](https://docs.x.ai/build/overview) 1.0.34 or newer (verified on **1.0.34**), plus a [TypeSafe API key](https://console.typesafe.ai/settings/keys). Supply it as `TYPESAFE_API_KEY` in the launch environment or put it in the session cwd's `./.env`; Pi and Claude Code can also save it through their settings, while Codex and Grok provide an external compact-adviser CLI. Jev is TypeSafe's structured decision model; this package asks it two one-sentence classification questions and never asks it to write a summary.
+Pré-requisitos: Node 22+ (22.18+ para Codex e Grok) e um destes: [Pi](https://pi.dev) 0.82.0 ou mais recente (verificado na **0.85.1**), Claude Code 2.1.274 ou mais recente (verificado na **2.1.275**), Codex CLI 0.153.0 ou mais recente (verificada na **0.153.4**), ou [Grok Build](https://docs.x.ai/build/overview) 1.0.34 ou mais recente (verificado na **1.0.34**), além de uma [chave de API da TypeSafe](https://console.typesafe.ai/settings/keys). Forneça-a como `TYPESAFE_API_KEY` no ambiente de inicialização ou coloque-a no `./.env` do diretório da sessão; Pi e Claude Code também podem salvá-la pelas configurações, enquanto Codex e Grok contam com uma CLI externa do compact-adviser. Jev é o modelo de decisão estruturada da TypeSafe; este pacote faz a ele duas perguntas curtas de classificação e nunca pede que ele escreva um resumo.
 
-Installing the package is consent to send eligible checkpoint context to TypeSafe when a key is available and the other product gates pass. With `TYPESAFE_BASE` set, that context and the key go to that base instead.
+Instalar o pacote é consentir em enviar o contexto elegível de checkpoint à TypeSafe quando houver uma chave e os demais critérios dos produtos passarem. Com `TYPESAFE_BASE` definido, esse contexto e a chave vão para essa base em vez disso.
 
 ### Pi
 
@@ -46,14 +46,14 @@ Installing the package is consent to send eligible checkpoint context to TypeSaf
 pi install npm:compact-adviser
 ```
 
-Restart Pi or run `/reload`, then `/compact-adviser`.
-`/compact-adviser status` should say `Key: env`, `Key: saved`, or `Key: .env`.
+Reinicie o Pi ou execute `/reload` e depois `/compact-adviser`.
+`/compact-adviser status` deve dizer `Key: env`, `Key: saved` ou `Key: .env`.
 
-To install from git: `pi install git:github.com/kunchenguid/compact-adviser` (add `-l` for project-local).
+Para instalar pelo git: `pi install git:github.com/kunchenguid/compact-adviser` (use `-l` para instalação local ao projeto).
 
 ### Claude Code
 
-This plugin uses Claude Mod which is an experimental feature that requires `CLAUDE_CODE_ENABLE_FUNCTION_HOOKS=1` in your environment.
+Este plugin usa o Claude Mod, um recurso experimental que exige `CLAUDE_CODE_ENABLE_FUNCTION_HOOKS=1` no seu ambiente.
 
 ```sh
 claude plugin marketplace add kunchenguid/compact-adviser
@@ -61,24 +61,20 @@ claude plugin install compact-adviser@compact-adviser
 CLAUDE_CODE_ENABLE_FUNCTION_HOOKS=1 claude
 ```
 
-Then `/compact-adviser`.
+Depois, `/compact-adviser`.
 
 ### Codex CLI
 
-Codex support is **macOS and Linux only**. The plugin's hooks run through POSIX `sh`, matching
-this repository's platform badge; Windows is not supported this ship.
+O suporte ao Codex é **somente para macOS e Linux**. Os hooks do plugin rodam por `sh` POSIX, de acordo com o selo de plataforma deste repositório; o Windows não é suportado nesta entrega.
 
 ```sh
 codex plugin marketplace add kunchenguid/compact-adviser
 codex plugin add compact-adviser@compact-adviser
 ```
 
-Restart Codex and review the hook in `/hooks` once, so it is trusted. After a completed
-checkpoint the advice appears as a `↳ Hook · Compact adviser: ...` line under the answer.
+Reinicie o Codex e revise o hook em `/hooks` uma vez, para que ele seja confiável. Após um checkpoint concluído, o conselho aparece como uma linha `↳ Hook · Compact adviser: ...` abaixo da resposta.
 
-Codex is **hint-only**: it has no surface that lets another process run `/compact`, so there is
-no automatic mode there. Settings live in a small CLI instead of a slash command; ask Codex for
-"compact-adviser status" and the bundled skill runs it, or run it yourself:
+O Codex é **apenas de dica**: não há superfície que permita a outro processo executar `/compact`, então não há modo automático. As configurações ficam em uma pequena CLI em vez de um comando slash; peça ao Codex por "compact-adviser status" e a skill incluída a executa, ou execute-a você mesmo:
 
 ```sh
 node "$(ls -d "${CODEX_HOME:-$HOME/.codex}"/plugins/cache/*/compact-adviser/*/ | tail -1)src/cli.ts" status
@@ -86,126 +82,112 @@ node "$(ls -d "${CODEX_HOME:-$HOME/.codex}"/plugins/cache/*/compact-adviser/*/ |
 
 ### Grok Build
 
-Grok is **hint-only**: nothing outside a running session can trigger `/compact`, so there is no automatic mode here. The hint is painted on the status row and never enters the model's context.
+O Grok é **apenas de dica**: nada fora de uma sessão em execução pode disparar `/compact`, então não há modo automático aqui. A dica é pintada na linha de status e nunca entra no contexto do modelo.
 
 ```sh
 grok plugin install kunchenguid/compact-adviser#packages/grok-plugin --trust
 ```
 
-(Install from the subdirectory, not the repository root: Grok also reads the Claude marketplace index in this repo, so a plain `grok plugin marketplace add` offers two plugins of the same name and refuses an unqualified install.)
+(Instale pelo subdiretório, não pela raiz do repositório: o Grok também lê o índice de marketplace do Claude neste repositório, então um `grok plugin marketplace add` simples oferece dois plugins de mesmo nome e se recusa a instalar sem qualificação.)
 
-Then two one-time steps, because Grok does not let a plugin do either of them for you. Start Grok and run:
+Depois há duas etapas únicas, pois o Grok não deixa um plugin fazê-las por você. Inicie o Grok e execute:
 
 ```
 /compact-adviser-install
 ```
 
-That writes `${GROK_HOME:-~/.grok}/hooks/compact-adviser.json`, because **Grok 1.0.34 lists a plugin's own `hooks/hooks.json` but never loads it into a session**. Hooks in your own Grok home are always trusted, so nothing else is needed; delete that file to remove them. From a shell it is `node "$(node -e 'const l=JSON.parse(require("child_process").execFileSync("grok",["plugin","list","--json"],{encoding:"utf8"})); const p=(Array.isArray(l)?l:[]).find(x=>x&&x.name==="compact-adviser"); if(!p||typeof p.path!=="string") throw new Error("compact-adviser is not installed"); process.stdout.write(p.path)')/bin/adviser.ts" install`. After `install`, `${GROK_HOME:-~/.grok}/compact-adviser/adviser.sh` resolves the currently installed plugin the same way.
+Isso grava `${GROK_HOME:-~/.grok}/hooks/compact-adviser.json`, porque **o Grok 1.0.34 lista o `hooks/hooks.json` de um plugin, mas nunca o carrega em uma sessão**. Hooks no seu próprio home do Grok são sempre confiáveis, então nada mais é necessário; exclua esse arquivo para removê-los. Pelo shell, o comando é `node "$(node -e 'const l=JSON.parse(require("child_process").execFileSync("grok",["plugin","list","--json"],{encoding:"utf8"})); const p=(Array.isArray(l)?l:[]).find(x=>x&&x.name==="compact-adviser"); if(!p||typeof p.path!=="string") throw new Error("compact-adviser is not installed"); process.stdout.write(p.path)')/bin/adviser.ts" install`. Após `install`, `${GROK_HOME:-~/.grok}/compact-adviser/adviser.sh` resolve o plugin instalado no momento da mesma forma.
 
-Then paste the `[ui.status_line]` block `install` printed into the config.toml path it named and restart Grok. The status row is off by default and only your own config can turn it on - a plugin cannot, and neither can a repository. Grok has one status row, so this script paints the built-in segments (`cwd`, `model`, `context`) too. Minimal render mode has no status row at all.
+Depois cole o bloco `[ui.status_line]` que o `install` imprimiu no caminho config.toml que ele indicou e reinicie o Grok. A linha de status vem desligada por padrão, e só a sua própria configuração pode ligá-la — um plugin não pode, e nem um repositório. O Grok tem uma única linha de status, então este script também pinta os segmentos embutidos (`cwd`, `model`, `context`). O modo de renderização mínima não tem linha de status alguma.
 
-On Grok, save the TypeSafe key as `TYPESAFE_API_KEY` or a cwd `.env`, or with the CLI `key` command from a shell outside Grok. Do not type secrets after a Grok slash command; Grok appends those words to the model.
+No Grok, salve a chave da TypeSafe como `TYPESAFE_API_KEY`, em um `.env` do cwd, ou com o comando `key` da CLI em um shell fora do Grok. Não digite segredos depois de um comando slash do Grok; o Grok acrescenta essas palavras ao modelo.
 
-## If it does nothing
+## Se ele não fizer nada
 
-| Symptom | Cause |
+| Sintoma | Causa |
 | --- | --- |
-| TypeSafe requires payment (HTTP 402) | Check the TypeSafe account's billing and credits; waiting alone will not resolve a payment requirement. Context stays unchanged. |
-| `Key: missing` in `/compact-adviser status` (Pi, Claude Code) or `/compact-adviser` (Grok) | No `TYPESAFE_API_KEY` in the launch environment, saved settings, or the session cwd's `./.env` |
-| No `/compact-adviser` command in Claude Code | `CLAUDE_CODE_ENABLE_FUNCTION_HOOKS` is not exactly `1` |
-| Command exists, no hint | Context is below the constant 40,000-token minimum, the session is not idle, or the last turn was not a settled final answer |
-| Claude Code: "nonessential traffic" | `CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC` blocks plugin network requests |
-| No hint in Codex | The hook is untrusted (review it in `/hooks`), Node is older than 22.18, or the hook cannot find Node at all - Codex rebuilds its PATH, so set `COMPACT_ADVISER_NODE` to an absolute `node` path |
-| Grok: no hint row at all | `[ui.status_line]` is not set in the `config.toml` `install` named, or Grok is in minimal render mode |
-| Grok: no hint after a completed turn | `/compact-adviser-install` has not run, so no Stop hook is judging |
-| Pi print / RPC / JSON, Claude `-p`, or `codex exec` | The adviser stays inert in reliably detected non-interactive sessions |
-| Nothing at all, in any host | `COMPACT_ADVISER_DISABLE` is set to a truthy value |
+| A TypeSafe exige pagamento (HTTP 402) | Verifique a cobrança e os créditos da conta TypeSafe; esperar sozinho não resolve uma exigência de pagamento. O contexto permanece inalterado. |
+| `Key: missing` em `/compact-adviser status` (Pi, Claude Code) ou `/compact-adviser` (Grok) | Não há `TYPESAFE_API_KEY` no ambiente de inicialização, nas configurações salvas ou no `./.env` da sessão |
+| Nenhum comando `/compact-adviser` no Claude Code | `CLAUDE_CODE_ENABLE_FUNCTION_HOOKS` não é exatamente `1` |
+| Comando existe, sem dica | O contexto está abaixo do mínimo fixo de 40.000 tokens, a sessão não está ociosa, ou o último turno não foi uma resposta final definida |
+| Claude Code: "tráfego não essencial" | `CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC` bloqueia requisições de rede do plugin |
+| Sem dica no Codex | O hook não é confiável (revise em `/hooks`), o Node é mais antigo que 22.18, ou o hook não encontra o Node — o Codex reconstrói seu PATH, então defina `COMPACT_ADVISER_NODE` com um caminho absoluto para `node` |
+| Grok: nenhuma linha de dica | `[ui.status_line]` não está definido no `config.toml` indicado pelo `install`, ou o Grok está em modo de renderização mínima |
+| Grok: sem dica após um turno concluído | `/compact-adviser-install` não foi executado, então nenhum hook Stop está julgando |
+| Pi print / RPC / JSON, Claude `-p` ou `codex exec` | O adviser fica inerte em sessões não interativas detectadas de forma confiável |
+| Nada, em nenhum host | `COMPACT_ADVISER_DISABLE` está com um valor verdadeiro |
 
-## Environment variables
+## Variáveis de ambiente
 
-| Variable | Effect |
+| Variável | Efeito |
 | --- | --- |
-| `TYPESAFE_API_KEY` | The Jev key; a saved key or the session cwd's `./.env` is used when this is unset |
-| `TYPESAFE_BASE` | Replaces the TypeSafe API base URL, `https://api.typesafe.ai` by default; the request goes to `<base>/v1/systemone` with a trailing slash dropped. Read from the launch environment only, never a saved setting or `./.env`. It must be an `https` URL; plain `http` is accepted only for a loopback host (`127.0.0.1`, `[::1]`, `localhost`). Any other value, or one that carries credentials, a query or a fragment, is a configuration error: no request and no advice |
-| `COMPACT_ADVISER_DISABLE` | `1`, `true`, `yes` or `on` (any case) makes the session inert: no TypeSafe request, no hint, no automatic compaction, no command. It wins over a saved `hint` or `auto` mode |
-| `CLAUDE_CODE_ENABLE_FUNCTION_HOOKS` | Claude Code only; must be exactly `1` for the mod to load |
-| `COMPACT_ADVISER_NODE` | Codex only; absolute path to a Node 22.18 or newer executable when the hook cannot find one on its rebuilt PATH |
+| `TYPESAFE_API_KEY` | A chave do Jev; uma chave salva ou o `./.env` da sessão é usada quando indefinida |
+| `TYPESAFE_BASE` | Substitui a URL base da API TypeSafe, `https://api.typesafe.ai` por padrão; a requisição vai para `<base>/v1/systemone` sem barra final. Lida apenas do ambiente de inicialização, nunca de configuração salva ou `./.env`. Precisa ser uma URL `https`; `http` simples só é aceito para um host loopback (`127.0.0.1`, `[::1]`, `localhost`). Qualquer outro valor, ou um que traga credenciais, query ou fragmento, é erro de configuração: sem requisição e sem conselho |
+| `COMPACT_ADVISER_DISABLE` | `1`, `true`, `yes` ou `on` (em qualquer caixa) deixa a sessão inerte: sem requisição à TypeSafe, sem dica, sem compactação automática, sem comando. Tem prioridade sobre um modo `hint` ou `auto` salvo |
+| `CLAUDE_CODE_ENABLE_FUNCTION_HOOKS` | Apenas Claude Code; precisa ser exatamente `1` para o mod carregar |
+| `COMPACT_ADVISER_NODE` | Apenas Codex; caminho absoluto para um executável Node 22.18 ou mais recente quando o hook não encontra um em seu PATH reconstruído |
 
-Export `COMPACT_ADVISER_DISABLE=1` for unattended agent sessions, where advice has nobody to read it.
+Exporte `COMPACT_ADVISER_DISABLE=1` para sessões de agente sem supervisão, em que ninguém vai ler o conselho.
 
-## What is sent to TypeSafe
+## O que é enviado à TypeSafe
 
-| Included | Not sent |
+| Incluído | Não enviado |
 | --- | --- |
-| Bounded user constraints, up to the last 64 visible replies and tool results (clipped), short tool-result excerpts, an existing summary, saved-artifact names, omission markers | System prompts, hidden reasoning, images, environment variables, the API key in the model context and request body, complete transcripts |
-| Best-effort redaction of known key patterns and obvious sensitive-file results | A guarantee. Uninstall or set mode Off for material that must not leave the machine |
+| Restrições limitadas do usuário, até as últimas 64 respostas e resultados de ferramentas visíveis (cortados), trechos curtos de resultados de ferramentas, um resumo existente, nomes de artefatos salvos, marcadores de omissão | Prompts de sistema, raciocínio oculto, imagens, variáveis de ambiente, a chave de API no contexto do modelo e no corpo da requisição, transcrições completas |
+| Tentativa de redação de padrões conhecidos de chaves e de resultados óbvios de arquivos sensíveis | Uma garantia. Desinstale ou defina o modo Off para material que não deve sair da máquina |
 
-Requests go to `https://api.typesafe.ai/v1/systemone`, or `<TYPESAFE_BASE>/v1/systemone` when that is set, are capped at 32,000 serialized UTF-8 bytes, and never treat an error as an affirmative judgment.
-The TypeSafe API key never enters the model context or the request body; it is sent as the Authorization header to authenticate the call.
-Details: [SECURITY.md](https://github.com/kunchenguid/compact-adviser/blob/main/SECURITY.md).
+As requisições vão para `https://api.typesafe.ai/v1/systemone`, ou `<TYPESAFE_BASE>/v1/systemone` quando definido, têm limite de 32.000 bytes UTF-8 serializados e nunca tratam um erro como julgamento afirmativo.
+A chave de API da TypeSafe nunca entra no contexto do modelo nem no corpo da requisição; ela é enviada como cabeçalho Authorization para autenticar a chamada.
+Detalhes: [SECURITY.md](https://github.com/kunchenguid/compact-adviser/blob/main/SECURITY.md).
 
-## How It Works
+## Como funciona
 
 ```
-settled turn
+turno definido
       │
       ▼
 ┌───────────────────┐
-│ cheap local gates │  mode, 40k minimum, idle session, key, cooldowns
+│ portões locais baratos │  modo, mínimo de 40k, sessão ociosa, chave, resfriamentos
 └─────────┬─────────┘
           ▼
 ┌───────────────────┐
-│ TypeSafe Jev      │  done × shape score, floor slides 0.90→0.50 with usage
+│ TypeSafe Jev      │  pontuação concluído × formato, piso desliza 0,90→0,50 com o uso
 └─────────┬─────────┘
           ▼
- hint: run /compact     or, with explicit auto, native compaction
+ dica: execute /compact     ou, com auto explícito, compactação nativa
 ```
 
-Automatic compaction is available on Pi and Claude Code. On Codex the same judgment only ever
-produces the hint, as a `↳ Hook ·` line in the scrollback. On Grok the two halves are separate
-processes: a `Stop` hook judges and records a verdict, and the `[ui.status_line]` script reads
-that verdict and paints the hint. The Grok hook always allows the stop and prints nothing, so a
-hint can never be fed back to the model.
+A compactação automática está disponível no Pi e no Claude Code. No Codex, o mesmo julgamento só produz a dica, como uma linha `↳ Hook ·` no histórico. No Grok, as duas metades são processos separados: um hook `Stop` julga e registra um veredito, e o script `[ui.status_line]` lê esse veredito e pinta a dica. O hook do Grok sempre permite a parada e não imprime nada, então a dica nunca pode voltar para o modelo.
 
-On Claude Code, an optional `beforeCompactPrompt` setting (empty by default; set it in `/config`)
-runs one turn before that automatic compaction, and only after auto mode is confirmed. Set it to
-`/stow` to run the `stow` command first. Claude Code does not expand slash commands or `@file`
-mentions in a prompt a plugin submits, and it rejects a plugin prompt that starts with `/`, so a
-value that starts with `/` is run as a command instead of being sent to the model as text. If you
-send your own prompt or run a command in between, or that turn is interrupted, errors, or does not
-finish within 5 minutes, nothing is compacted. Hint mode, off, and an empty setting are unchanged. Pi, Codex, and
-Grok do not have this setting.
+No Claude Code, uma configuração opcional `beforeCompactPrompt` (vazia por padrão; defina em `/config`) executa um turno antes dessa compactação automática, e só após o modo auto ser confirmado. Defina-a como `/stow` para executar o comando `stow` antes. O Claude Code não expande comandos slash nem menções `@file` em um prompt enviado por plugin, e rejeita um prompt de plugin que começa com `/`, então um valor que começa com `/` é executado como comando em vez de enviado ao modelo como texto. Se você enviar seu próprio prompt ou executar um comando nesse meio tempo, ou se o turno for interrompido, der erro ou não terminar em 5 minutos, nada é compactado. Modo dica, desligado e configuração vazia permanecem iguais. Pi, Codex e Grok não têm essa configuração.
 
-## Usage
+## Uso
 
-| Command | Effect |
+| Comando | Efeito |
 | --- | --- |
-| `/compact-adviser` (Pi and Claude Code) | Settings (mode, minimum, request log, TypeSafe API key) |
-| `/compact-adviser auto` / `hint` / `off` (Pi and Claude Code) | Save that mode; auto asks for first-use confirmation |
-| `/compact-adviser status` (Pi and Claude Code) | Mode, minimum, budget, context, key source (`env` / `saved` / `.env` / `missing`), cooldown |
-| `/compact-adviser threshold 60000` (Pi and Claude Code) | Save an absolute token minimum |
-| `/compact-adviser budget 450000` / `budget off` (Pi and Claude Code) | Save a context budget: the hint floor is fully relaxed at this many tokens, or at the host's own compaction point if that is smaller (off by default) |
-| `/compact-adviser snooze` / `dismiss` (Pi and Claude Code) | Suppress the next three exchanges, or clear the current hint |
-| `beforeCompactPrompt` in `/config` (Claude Code) | Optional text run before automatic compaction. Empty by default. `/stow` runs that command |
-| `/compact-adviser` (Grok) | Show status; do not add arguments because Grok sends them to the model |
-| `/compact-adviser-hint` / `/compact-adviser-off` (Grok) | Save hint-only mode, or disable the adviser |
-| `/compact-adviser-snooze` / `/compact-adviser-dismiss` (Grok) | Suppress the next three exchanges, or clear the current hint |
-| `/compact-adviser-install` (Grok) | Register the hooks and print the status-line block to paste into the named `config.toml` |
-| `${GROK_HOME:-$HOME/.grok}/compact-adviser/adviser.sh threshold 60000` (Grok shell) | Save an absolute token minimum; `budget <tokens\|off>` saves a context budget; `help` lists the other shell-only settings |
+| `/compact-adviser` (Pi e Claude Code) | Configurações (modo, mínimo, log de requisições, chave de API da TypeSafe) |
+| `/compact-adviser auto` / `hint` / `off` (Pi e Claude Code) | Salva esse modo; auto pede confirmação no primeiro uso |
+| `/compact-adviser status` (Pi e Claude Code) | Modo, mínimo, orçamento, contexto, origem da chave (`env` / `saved` / `.env` / `missing`), resfriamento |
+| `/compact-adviser threshold 60000` (Pi e Claude Code) | Salva um mínimo absoluto de tokens |
+| `/compact-adviser budget 450000` / `budget off` (Pi e Claude Code) | Salva um orçamento de contexto: o piso da dica relaxa totalmente nessa quantidade de tokens, ou no ponto de compactação do host se for menor (desligado por padrão) |
+| `/compact-adviser snooze` / `dismiss` (Pi e Claude Code) | Suprime as próximas três trocas, ou limpa a dica atual |
+| `beforeCompactPrompt` em `/config` (Claude Code) | Texto opcional executado antes da compactação automática. Vazio por padrão. `/stow` executa esse comando |
+| `/compact-adviser` (Grok) | Mostra status; não acrescente argumentos, pois o Grok os envia ao modelo |
+| `/compact-adviser-hint` / `/compact-adviser-off` (Grok) | Salva modo apenas de dica, ou desativa o adviser |
+| `/compact-adviser-snooze` / `/compact-adviser-dismiss` (Grok) | Suprime as próximas três trocas, ou limpa a dica atual |
+| `/compact-adviser-install` (Grok) | Registra os hooks e imprime o bloco de linha de status para colar no `config.toml` indicado |
+| `${GROK_HOME:-$HOME/.grok}/compact-adviser/adviser.sh threshold 60000` (shell do Grok) | Salva um mínimo absoluto de tokens; `budget <tokens\|off>` salva um orçamento de contexto; `help` lista as outras configurações exclusivas do shell |
 
-On Codex the same commands are arguments to the plugin's `src/cli.ts` (`status`, `hint`, `off`,
-`threshold`, `budget <tokens|off>`, `log on|off`, `key set|clear|status`) rather than a slash
-command, because Codex plugins cannot register a command with code behind it. Codex has no
-snooze or dismiss: the CLI cannot tell which session is current.
+No Codex, os mesmos comandos são argumentos do `src/cli.ts` do plugin (`status`, `hint`, `off`, `threshold`, `budget <tokens|off>`, `log on|off`, `key set|clear|status`) em vez de um comando slash, porque plugins do Codex não podem registrar um comando com código por trás. O Codex não tem snooze nem dismiss: a CLI não sabe qual sessão está atual.
 
-## Judge profiles
+## Perfis de julgamento
 
-An optional [judge profile](https://github.com/kunchenguid/compact-adviser/blob/main/docs/judge-profiles.md) changes the two questions, score weight, or floor schedule without changing shipped defaults. All four hosts accept the same bounded JSON string in the `profile` setting. Keep hint mode while evaluating a profile. Invalid profiles disable advice, and loading a profile never grants automatic-mode consent.
+Um [perfil de julgamento](https://github.com/kunchenguid/compact-adviser/blob/main/docs/judge-profiles.md) opcional altera as duas perguntas, o peso da pontuação ou a curva do piso sem mudar os padrões entregues. Os quatro hosts aceitam a mesma string JSON limitada na configuração `profile`. Mantenha o modo dica ao avaliar um perfil. Perfis inválidos desativam o conselho, e carregar um perfil nunca concede consentimento para o modo automático.
 
-## Eval
+## Avaliação
 
-Local judgment eval uses real session checkpoints to score when the adviser should suggest `/compact`. The curve below is from a follow-up-aware gold set (96 checkpoints, 40 sessions): as the context window fills, the score threshold loosens from **0.90** (≤10% used) to **0.50** (≥90% used) so **recall rises** while precision stays high - favoring token savings when compaction is about to be forced anyway.
+A avaliação local do julgamento usa checkpoints reais de sessão para pontuar quando o adviser deve sugerir `/compact`. A curva abaixo vem de um conjunto de referência com atenção a follow-ups (96 checkpoints, 40 sessões): conforme a janela de contexto se enche, o limite da pontuação relaxa de **0,90** (≤10% usado) para **0,50** (≥90% usado), de modo que a **recall aumenta** enquanto a precisão se mantém alta — favorecendo economia de tokens quando a compactação vai ser forçada de qualquer forma.
 
-![Use Jev to answer "should I /compact now?" — precision stays high while recall rises as context used goes from ≤10% to ≥90%](https://raw.githubusercontent.com/kunchenguid/compact-adviser/main/docs/eval-usage-floor-curve.png)
+![Use o Jev para responder "devo usar /compact agora?" — a precisão se mantém alta enquanto a recall aumenta conforme o contexto usado vai de ≤10% a ≥90%](https://raw.githubusercontent.com/kunchenguid/compact-adviser/main/docs/eval-usage-floor-curve.png)
 
-The judgment-eval harness lives in [packages/pi-extension/eval/](https://github.com/kunchenguid/compact-adviser/blob/main/packages/pi-extension/eval/README.md). It is not a published dataset: point it at your own sessions and keep transcripts local.
+O harness de avaliação de julgamento fica em [packages/pi-extension/eval/](https://github.com/kunchenguid/compact-adviser/blob/main/packages/pi-extension/eval/README.md). Não é um conjunto de dados publicado: aponte-o para suas próprias sessões e mantenha as transcrições localmente.

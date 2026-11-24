@@ -1,304 +1,304 @@
-# Lot Map for Claude Code
+# Lot Map para o Claude Code
 
-`lot-map` is a mod for Claude Code: a live map of the work, in a pane beside the chat. Every tool call, model step, hook and skill sends a pulse from the centre to its station, so you see memory, files, shell, web and agents at work instead of reading a list of commands.
+`lot-map` é um mod para o Claude Code: um mapa ao vivo do trabalho, em um painel ao lado do chat. Cada chamada de ferramenta, passo do modelo, hook e skill envia um pulso do centro até sua estação, então você vê memória, arquivos, shell, web e agentes trabalhando, em vez de ler uma lista de comandos.
 
-It runs on your machine and sends nothing anywhere. Local does not mean blind: like any mod that follows tool calls it is handed each call whole, and it takes names from that and nothing else. [What it reads and keeps](PRIVACY.md), and [the checks that hold it to that](PRINCIPLES.md).
+Ele roda na sua máquina e não envia nada a lugar nenhum. Local não significa cego: como qualquer mod que acompanha chamadas de ferramentas, ele recebe cada chamada inteira, e dela toma apenas os nomes. [O que ele lê e guarda](PRIVACY.md) e [as verificações que o mantêm nisso](PRINCIPLES.md).
 
-![The map during a work session](docs/demo.gif)
+![O mapa durante uma sessão de trabalho](docs/demo.gif)
 
-*A made-up session replayed through the mod's own drawing code. [Video (MP4)](docs/demo.mp4). Or [play it in your browser](https://alexeyw.github.io/lot-map/), where the page runs the same code and shows what each call hands the mod and what the mod keeps.*
+*Uma sessão inventada, reproduzida pelo próprio código de desenho do mod. [Vídeo (MP4)](docs/demo.mp4). Ou [rode no seu navegador](https://alexeyw.github.io/lot-map/), onde a página executa o mesmo código e mostra o que cada chamada entrega ao mod e o que ele guarda.*
 
-## Install
+## Instalação
 
-At the prompt of a terminal session:
+No prompt de uma sessão de terminal:
 
 ```
 /plugin install lot-map --marketplace alexeyw/lot-map
 ```
 
-Answer `y` to add the marketplace, then choose a scope. From a shell:
+Responda `y` para adicionar o marketplace e escolha um escopo. Pelo shell:
 
 ```bash
 claude plugin install lot-map --marketplace alexeyw/lot-map
 ```
 
-If it answers that the plugin is not found in any marketplace, add the marketplace first:
+Se ele responder que o plugin não foi encontrado em nenhum marketplace, adicione o marketplace primeiro:
 
 ```bash
 claude plugin marketplace add alexeyw/lot-map
 claude plugin install lot-map@lot-map
 ```
 
-In the desktop app: click **+** next to the prompt box, then **Plugins**, **Add marketplace** with `alexeyw/lot-map`, then **Add plugin**.
+No aplicativo desktop: clique em **+** ao lado da caixa de prompt, depois em **Plugins**, **Adicionar marketplace** com `alexeyw/lot-map` e então **Adicionar plugin**.
 
-The pane opens by itself when a session starts; with `openAtStart` off it waits for `/lot-map`. In a terminal it needs at least 144 columns, otherwise type `/lot-map`, and it draws text only unless you ask for the map, as a picture or in braille dots: see [In a terminal](#in-a-terminal). Built and tested on Claude Code 2.1.321 on macOS; users report it working on Windows and Linux as well.
+O painel se abre sozinho quando a sessão começa; com `openAtStart` desligado, ele espera por `/lot-map`. Em um terminal, precisa de pelo menos 144 colunas; caso contrário, digite `/lot-map`, e ele desenha só texto, a menos que você peça o mapa como imagem ou em pontos de braille: veja [Em um terminal](#in-a-terminal). Construído e testado no Claude Code 2.1.321 no macOS; usuários relatam que funciona também no Windows e no Linux.
 
-On a Team or Enterprise login the transcript may get notices like `lot-map: its classic.PreToolUse hook was skipped`. Turn `guardedHooks` off and they stop; [Options](#what-it-shows) says what the map loses for it.
+Em um login Team ou Enterprise, a transcrição pode receber avisos como `lot-map: its classic.PreToolUse hook was skipped`. Desligue `guardedHooks` e eles param; [Opções](#what-it-shows) diz o que o mapa perde por isso.
 
-## Updating
+## Atualização
 
-From a shell:
+Pelo shell:
 
 ```bash
 claude plugin marketplace update lot-map
 claude plugin update lot-map@lot-map
 ```
 
-Then start a new session. The first command is needed: without it the second one reports the installed version as the latest.
+Depois inicie uma nova sessão. O primeiro comando é necessário: sem ele, o segundo informa a versão instalada como a mais recente.
 
-What each version changed is in [CHANGELOG.md](CHANGELOG.md).
+O que mudou em cada versão está em [CHANGELOG.md](CHANGELOG.md).
 
-## What lights up
+## O que acende
 
-| Station | When |
+| Estação | Quando |
 | --- | --- |
-| You | your messages, questions and files sent to you, the task list, the plan, and what you are asked to approve |
-| Model | each model request, context compaction |
-| Memory | Claude Code's memory folder, plus whatever you name in the options |
-| Files | Read, Write, Edit, Grep, Glob, a language server's code intelligence, and shell commands that work on files and nothing else: they read, search, move, delete or edit in place (`cat`, `grep`, `mv`, `rm`, `sed`, `tee`, `find … -delete`) |
-| Shell | every other shell command |
-| Network | web fetch and search, MCP servers, work kept on claude.ai (artifacts, projects, designs), and shell commands known to reach the network: `curl`, `gh`, `ssh`, `rsync`, `git push`, `npm install`, `docker pull` and the like, also inside `$(…)` |
-| Browser | browser tools |
-| Agents | subagents, workflows, schedules, and waiting on background work; their own calls start from this station |
-| Skills | skills, tool search, and the skill, plugin and connector catalogue |
-| Hooks | settings hooks that refuse a call, ask for permission, add context or take a moment |
+| Você | suas mensagens, perguntas e arquivos enviados a você, a lista de tarefas, o plano e o que você é pedido a aprovar |
+| Modelo | cada requisição ao modelo, compactação de contexto |
+| Memória | a pasta de memória do Claude Code, mais o que você nomear nas opções |
+| Arquivos | Read, Write, Edit, Grep, Glob, a inteligência de código de um language server e comandos de shell que só trabalham com arquivos: leem, buscam, movem, excluem ou editam no lugar (`cat`, `grep`, `mv`, `rm`, `sed`, `tee`, `find … -delete`) |
+| Shell | todo outro comando de shell |
+| Rede | busca e fetch web, servidores MCP, trabalho mantido no claude.ai (artifacts, projetos, designs) e comandos de shell conhecidos por alcançar a rede: `curl`, `gh`, `ssh`, `rsync`, `git push`, `npm install`, `docker pull` e semelhantes, inclusive dentro de `$(…)` |
+| Navegador | ferramentas de navegador |
+| Agentes | subagentes, workflows, agendamentos e espera por trabalho em segundo plano; as chamadas próprias deles partem desta estação |
+| Skills | skills, busca de ferramentas e o catálogo de skills, plugins e conectores |
+| Hooks | hooks de configurações que recusam uma chamada, pedem permissão, acrescentam contexto ou demoram |
 
-On Windows the PowerShell tool is read the same way as Bash, with PowerShell's own names: `Get-Content` and `Select-String` light Files, `Invoke-WebRequest` lights Network. A program run by its full path is read by its name, also from a quoted path with a space, and `CURL.EXE` is `curl`.
+No Windows, a ferramenta PowerShell é lida como o Bash, com os nomes próprios do PowerShell: `Get-Content` e `Select-String` acendem Arquivos, `Invoke-WebRequest` acende Rede. Um programa rodado pelo caminho completo é lido pelo nome, inclusive a partir de um caminho citado com espaço, e `CURL.EXE` é `curl`.
 
-The shell stations go by the command's name, not by what it does: a script that opens a connection itself, such as `python -c "…"`, shows as Shell. A command behind `sudo`, `env`, `timeout`, `nohup`, `xargs` and the like is read as the command it runs, and `find … -exec` as the command it is told to run. So is a command inside a loop or a condition (`for … do`, `if … then`, `while`, `!`, `{ … }`), and a line handed to a shell or to `eval` (`bash -c "…"`). The text of a here-document is not read, so a file written through one shows as Files whatever the text says. A line is read up to its first 8,000 characters. `npx` counts as Network only with `-y`, since without it it mostly runs what is installed already.
+As estações de shell seguem o nome do comando, não o que ele faz: um script que abre uma conexão por conta própria, como `python -c "…"`, aparece como Shell. Um comando atrás de `sudo`, `env`, `timeout`, `nohup`, `xargs` e semelhantes é lido como o comando que ele roda, e `find … -exec` como o comando que ele recebe para rodar. O mesmo vale para um comando dentro de um loop ou condição (`for … do`, `if … then`, `while`, `!`, `{ … }`) e uma linha entregue a um shell ou ao `eval` (`bash -c "…"`). O texto de um here-document não é lido, então um arquivo escrito por um deles aparece como Arquivos, seja qual for o texto. Uma linha é lida até seus primeiros 8.000 caracteres. `npx` conta como Rede só com `-y`, pois sem isso ele roda principalmente o que já está instalado.
 
-A pulse flies out when something starts and returns when it ends. Refusals and errors turn red.
+Um pulso sai quando algo começa e volta quando termina. Recusas e erros ficam vermelhos.
 
-## Reading the map
+## Lendo o mapa
 
-- **The route.** A thin line joins the last few stations the main loop went through, in order, and its newest leg draws itself. A leg stays for 40 seconds and then fades over 20, so a minute after the work stops only the spokes are left; their thickness keeps where the work went. Model steps are left out, or every leg would pass through Model.
-- **Worn spokes.** A spoke grows thicker and brighter the more its station is used, so at the end of a session the map shows where the work went.
-- **How long.** Two clock hands grow around a station while a call runs: the inner one goes round in a minute, the outer one in ten.
-- **Background work.** A command sent to the background, a monitor, a background subagent or a workflow stays lit on its station after the turn that started it is over, with the clock hands growing, until the task reports that it ended. A task that failed leaves the red dot. The report itself is not shown as a message of yours.
-- **Several at once.** Calls that start together fly side by side, and the station carries their number, such as `×3`.
-- **What went wrong.** A red dot with a count stays on a station from an error or a refusal until your next message.
-- **Memory.** It has a colour of its own. A solid pulse is a memory Claude asked for; a hollow one on a dashed line is what a hook brought unasked. Under the station, the plain number counts the first and `↓` the second.
-- **The context window.** The ring around the centre fills as the session goes, with the percentage above the name. It turns amber at 70% and red at 90%.
-- **A change of model.** The centre and the Model station ring for a few seconds, and the feed gets a row such as `opus 5.5 → fable 5.2`. This also happens when a session starts on a different model from the last session in the same folder.
-- **Subagents.** Each one still at work circles the Agents station as a small dot, and its calls start from there.
-- **The answer.** One wide ring leaves the centre when the answer is ready.
+- **A rota.** Uma linha fina liga as últimas estações percorridas pelo loop principal, em ordem, e seu trecho mais novo se desenha sozinho. Um trecho fica 40 segundos e desaparece em 20, então um minuto após o trabalho parar só sobram os raios; a espessura deles guarda para onde o trabalho foi. Passos do modelo ficam de fora, senão todo trecho passaria por Modelo.
+- **Raios gastos.** Um raio fica mais espesso e brilhante quanto mais sua estação é usada, então no fim de uma sessão o mapa mostra para onde o trabalho foi.
+- **Quanto tempo.** Dois ponteiros de relógio crescem ao redor de uma estação enquanto uma chamada roda: o interno dá uma volta em um minuto, o externo em dez.
+- **Trabalho em segundo plano.** Um comando enviado ao segundo plano, um monitor, um subagente em segundo plano ou um workflow fica aceso em sua estação depois que o turno que o iniciou termina, com os ponteiros crescendo, até a tarefa informar que terminou. Uma tarefa que falhou deixa o ponto vermelho. O relatório em si não aparece como mensagem sua.
+- **Vários ao mesmo tempo.** Chamadas que começam juntas voam lado a lado, e a estação mostra a quantidade, como `×3`.
+- **O que deu errado.** Um ponto vermelho com contagem fica numa estação de um erro ou recusa até sua próxima mensagem.
+- **Memória.** Tem cor própria. Um pulso sólido é uma memória que o Claude pediu; um oco, em linha tracejada, é o que um hook trouxe sem ser pedido. Abaixo da estação, o número simples conta o primeiro e `↓` o segundo.
+- **A janela de contexto.** O anel ao redor do centro se enche conforme a sessão avança, com a porcentagem acima do nome. Fica âmbar em 70% e vermelho em 90%.
+- **Mudança de modelo.** O centro e a estação Modelo tocam por alguns segundos, e o feed recebe uma linha como `opus 5.5 → fable 5.2`. Isso também acontece quando uma sessão começa com modelo diferente da última sessão na mesma pasta.
+- **Subagentes.** Cada um ainda em trabalho circula a estação Agentes como um ponto pequeno, e suas chamadas partem de lá.
+- **A resposta.** Um anel largo sai do centro quando a resposta está pronta.
 
-Below the map are a line that says what runs now, and the last 16 rows (with `logRows` set to `fill`, as many as the desktop pane has room for): `●` running, `·` done, `✕` failed or blocked, `◆` a change of model. Finished calls that follow one another at one station fold into one row, marked `+2` for the two it stands for besides the one named. A call still running is never pushed out of the list by what came after it: it stays as the last row until it ends, so the list and the map say the same. Such rows take half the list at most; with more still running than that, the last one is marked `+22` for the rest.
+Abaixo do mapa há uma linha que diz o que roda agora e as últimas 16 linhas (com `logRows` em `fill`, quantas couberem no painel desktop): `●` rodando, `·` pronto, `✕` falhou ou foi bloqueado, `◆` mudança de modelo. Chamadas concluídas que se seguem na mesma estação se juntam em uma linha, marcada `+2` pelas duas que representa além da nomeada. Uma chamada ainda rodando nunca é empurrada da lista pelo que veio depois: fica como última linha até terminar, para que a lista e o mapa digam o mesmo. Essas linhas ocupam no máximo metade da lista; com mais chamadas rodando do que isso, a última é marcada `+22` pelas restantes.
 
-Each row is one line. Its words are cut at the pane's edge; its time stands in a column at the right, with a dash for what took none, such as a message arriving, and on the answer's row the length of the whole turn. A row with a long label has a `▸` before its time: press it to read the row whole, and again to close it. One row is open at a time. In a terminal the line of now also holds the context percentage and the model at its right, since no drawing is there to show them.
+Cada linha é uma linha só. Suas palavras são cortadas na borda do painel; seu tempo fica numa coluna à direita, com um traço para o que não levou tempo, como uma mensagem chegando, e na linha da resposta o comprimento do turno inteiro. Uma linha com rótulo longo tem um `▸` antes do tempo: pressione para ler a linha inteira e de novo para fechar. Só uma linha fica aberta por vez. Em um terminal, a linha do agora também traz a porcentagem de contexto e o modelo à direita, já que não há desenho para mostrá-los.
 
-### What each call adds to the context
+### Quanto cada chamada acrescenta ao contexto
 
-The ring says how full the context window is, not what filled it. With `contextCost` on, a call's row says about how many tokens the context grew by with its answer, after its time: `85 ms +42k`. On the map each station's count line adds the sum for the session: `9 · 180k`. The figure takes the colour of what stands beside it, the time on the row and the count on the map, so it reads wherever they do, on a light theme and on a dark one.
+O anel diz o quanto a janela de contexto está cheia, não o que a encheu. Com `contextCost` ligado, a linha de uma chamada diz aproximadamente quantos tokens o contexto cresceu com sua resposta, depois do tempo: `85 ms +42k`. No mapa, a linha de contagem de cada estação acrescenta a soma da sessão: `9 · 180k`. O número toma a cor do que está ao lado dele — o tempo na linha e a contagem no mapa — então lê bem onde quer que eles leiam, em tema claro e escuro.
 
-It is an estimate. Claude Code tells a mod how many tokens the last response was answered over, so the mod sees how much the context grew from one model step to the next, and puts that on the calls whose answers went with the step. The growth also holds the model's own words, what hooks added and, at the start of a turn, your message.
+É uma estimativa. O Claude Code informa a um mod sobre quantos tokens a última resposta foi respondida, então o mod vê quanto o contexto cresceu de um passo do modelo para o seguinte e atribui isso às chamadas cujas respostas acompanharam aquele passo. O crescimento também inclui as palavras do próprio modelo, o que os hooks acrescentaram e, no começo de um turno, sua mensagem.
 
-- **One step late.** A call's figure shows when the next step has been answered, not when the call ends. A call made in the last step of a turn, before an interrupted turn or before a compaction never gets one, and a compaction, which makes the context smaller, puts nothing anywhere.
-- **Shared.** Two or three calls in one step share its growth evenly, and their figures are marked `~`: `~+14k`. With more calls in one step their rows get none, since an even share would give a large read and a short command the same figure; when all of them were at one station, that station's sum still gets the whole of it. A folded row adds up its calls' figures, marked `~` when some of them have none.
-- **The main loop only.** A subagent fills a context of its own, which Claude Code does not report: its calls get no figure. The growth its answer brought shows on the main loop's call that started it.
+- **Um passo atrasado.** O número de uma chamada aparece quando o próximo passo foi respondido, não quando a chamada termina. Uma chamada feita no último passo de um turno, antes de um turno interrompido ou antes de uma compactação, nunca recebe um; e uma compactação, que torna o contexto menor, não coloca número em nada.
+- **Compartilhado.** Duas ou três chamadas em um passo dividem o crescimento igualmente, e seus números são marcados com `~`: `~+14k`. Com mais chamadas no mesmo passo, suas linhas não recebem nada, pois uma divisão igual daria o mesmo número a uma leitura grande e a um comando curto; quando todas estavam na mesma estação, a soma daquela estação ainda recebe o total. Uma linha dobrada soma os números de suas chamadas, marcada `~` quando algumas não têm.
+- **Só o loop principal.** Um subagente enche um contexto próprio, que o Claude Code não informa: suas chamadas não recebem número. O crescimento trazido pela resposta dele aparece na chamada do loop principal que o iniciou.
 
-The sums are on every drawing of the map: the desktop app's, VS Code's and the terminal picture, which are one drawing, and the braille map, which writes a station's sum after its count, in the colour of its name and with the plus the rows' figures carry: `Files 9 +180k`. A terminal that shows the rows alone has them in its line of counts, written the same way.
+As somas aparecem em todo desenho do mapa: o do aplicativo desktop, o do VS Code e a imagem do terminal, que são um mesmo desenho, e o mapa em braille, que escreve a soma de uma estação depois de sua contagem, na cor de seu nome e com o sinal de mais dos números das linhas: `Files 9 +180k`. Um terminal que mostra só as linhas as tem em sua linha de contagens, escritas da mesma forma.
 
-The braille map draws the sums for every station or for none. Where its grid has no room for the widest sum beside every name, in a narrow pane or with long names and large counts, it leaves them all off, keeps every name whole, and the rows still have their figures. English names with counts under ten fit from 50 columns; with larger counts at every station they need up to 68.
+O mapa em braille desenha as somas de todas as estações ou de nenhuma. Onde sua grade não tem espaço para a soma mais larga ao lado de todo nome, em painel estreito ou com nomes longos e contagens grandes, ele deixa todas de fora, mantém cada nome inteiro, e as linhas continuam com seus números. Nomes em inglês com contagens abaixo de dez cabem a partir de 50 colunas; com contagens maiores em todas as estações, precisam de até 68.
 
-| At work | Subagents | A hook refuses |
+| Trabalhando | Subagentes | Um hook recusa |
 | --- | --- | --- |
-| ![At work](docs/map-working.png) | ![Subagents](docs/map-agents.png) | ![A hook refuses](docs/map-blocked.png) |
+| ![Trabalhando](docs/map-working.png) | ![Subagentes](docs/map-agents.png) | ![Um hook recusa](docs/map-blocked.png) |
 
-| A change of model | After the answer | Light colours |
+| Mudança de modelo | Depois da resposta | Cores claras |
 | --- | --- | --- |
-| ![A change of model](docs/map-switch.png) | ![After the answer](docs/map-after.png) | ![Light colours](docs/map-light.png) |
+| ![Mudança de modelo](docs/map-switch.png) | ![Depois da resposta](docs/map-after.png) | ![Cores claras](docs/map-light.png) |
 
-## In a terminal
+## Em um terminal
 
-A terminal shows the rows alone. With `terminalView` set to `picture`, a terminal that shows pictures, such as kitty or Ghostty, gets the map as a picture above the rows, moving as it does in the desktop app. Claude Code must draw in fullscreen. If the pane stands under the conversation and not beside it, Claude Code is drawing on the main screen, and the rows stay alone: type `/tui fullscreen`, or start it as `CLAUDE_CODE_NO_FLICKER=1 claude`. Inside tmux, set `allow-passthrough on` and `focus-events on`. Any other terminal shows the rows alone, as before, and so does a pane narrower than 24 columns.
+Um terminal mostra só as linhas. Com `terminalView` em `picture`, um terminal que mostra imagens, como kitty ou Ghostty, recebe o mapa como imagem acima das linhas, movendo-se como no aplicativo desktop. O Claude Code precisa desenhar em tela cheia. Se o painel fica abaixo da conversa e não ao lado, o Claude Code está desenhando na tela principal e as linhas ficam sozinhas: digite `/tui fullscreen` ou inicie com `CLAUDE_CODE_NO_FLICKER=1 claude`. Dentro do tmux, defina `allow-passthrough on` e `focus-events on`. Qualquer outro terminal mostra só as linhas, como antes, e o mesmo vale para um painel mais estreito que 24 colunas.
 
-In iTerm2 the picture needs iTerm2 3.7.8 or later. An earlier one keeps every picture it is sent until its tab is closed: in iTerm2 3.7.7 a moving map took about 2 MB a frame, 17 GB in five minutes (#81). There the picture is off, and a line above the rows says so; update iTerm2, or set `terminalView` to `braille`. The mod knows iTerm2 by `TERM_PROGRAM`, and by `LC_TERMINAL` over ssh or inside tmux, and its version by `TERM_PROGRAM_VERSION` or `LC_TERMINAL_VERSION`; where the version is not given, the picture stays off.
+No iTerm2, a imagem precisa do iTerm2 3.7.8 ou mais recente. Versões anteriores guardam toda imagem recebida até a aba fechar: no iTerm2 3.7.7, um mapa em movimento usava cerca de 2 MB por quadro, 17 GB em cinco minutos (#81). Lá a imagem fica desligada, e uma linha acima das linhas avisa; atualize o iTerm2 ou defina `terminalView` como `braille`. O mod reconhece o iTerm2 por `TERM_PROGRAM` e, por ssh ou dentro do tmux, por `LC_TERMINAL`, e sua versão por `TERM_PROGRAM_VERSION` ou `LC_TERMINAL_VERSION`; sem a versão, a imagem fica desligada.
 
-The mod paints the picture itself, from the same drawing as the desktop app's, with letters from the X.Org misc-fixed bitmap fonts, which are in the public domain; [FONTS.md](FONTS.md) says where they come from. It paints up to five frames a second while anything on the map moves. The core breathes in the picture only while something runs, smoothly for ten minutes after the map last changed and then a frame every five seconds; at rest the picture stands still once the trails have faded.
+O mod pinta a imagem sozinho, a partir do mesmo desenho do aplicativo desktop, com letras das fontes bitmap misc-fixed da X.Org, que são de domínio público; [FONTS.md](FONTS.md) diz de onde vêm. Pinta até cinco quadros por segundo enquanto algo no mapa se move. O núcleo só respira na imagem quando algo roda, suavemente por dez minutos após a última mudança do mapa e depois um quadro a cada cinco segundos; em repouso, a imagem fica parada quando as trilhas desaparecem.
 
-With `theme` on `auto` the picture is light or dark by the terminal's `COLORFGBG`, which iTerm2, rxvt and Konsole set; where nothing says, it is dark, and on a light terminal that does not say, set `theme` to `light`. The picture has no background of its own, so the terminal's shows through it; where that is a shade off the pane's grey, it leaves a faint box around the map. `paneBackground` set to `transparent` takes the grey away, so the terminal shows behind the map and the rows alike, also where the terminal is see-through; set to the terminal's colour as `#rrggbb`, it paints the pane in it. `colors` with `background=#rrggbb` gives the picture a background of its own instead.
+Com `theme` em `auto`, a imagem é clara ou escura conforme o `COLORFGBG` do terminal, que iTerm2, rxvt e Konsole definem; onde nada diz, é escura, e em terminal claro que não informa, defina `theme` como `light`. A imagem não tem fundo próprio, então a do terminal aparece através dela; quando é um tom diferente do cinza do painel, deixa uma caixa fraca ao redor do mapa. `paneBackground` em `transparent` tira o cinza, para que o terminal apareça atrás do mapa e das linhas, inclusive quando o terminal é transparente; definido com a cor do terminal como `#rrggbb`, pinta o painel nela. `colors` com `background=#rrggbb` dá à imagem um fundo próprio.
 
-Nor does a terminal say how tall its cells are. `cellShape` does: how many times taller a cell is than it is wide, 2.4 by default, as iTerm2 draws Monaco 12, and about 2 for Menlo in kitty. If the picture leaves an empty band below it, raise it; if the band is at its right, lower it.
+Tampouco um terminal diz quão altas são suas células. `cellShape` diz: quantas vezes uma célula é mais alta do que larga, 2,4 por padrão, como o iTerm2 desenha Monaco 12, e cerca de 2 para Menlo no kitty. Se a imagem deixar uma faixa vazia abaixo de si, aumente; se a faixa estiver à direita, diminua.
 
-### The map in braille dots
+### O mapa em pontos de braille
 
-With `terminalView` set to `braille`, the map stands above the rows as cells of text: braille dots for the spokes, the stations and the centre, letters for the names. It needs no pictures, only a font that has braille, so it shows in Windows Terminal and in most Linux terminals, where `picture` shows nothing. It is never a fallback: a terminal that cannot show the picture keeps the rows alone until you choose `braille` yourself.
+Com `terminalView` em `braille`, o mapa fica acima das linhas como células de texto: pontos de braille para os raios, as estações e o centro, letras para os nomes. Não precisa de imagens, só de uma fonte com braille, então aparece no Windows Terminal e na maioria dos terminais Linux, onde `picture` não mostra nada. Nunca é um fallback: um terminal que não consegue mostrar a imagem mantém só as linhas até você escolher `braille`.
 
-![The braille map in Windows Terminal](docs/map-braille.png)
+![O mapa em braille no Windows Terminal](docs/map-braille.png)
 
-It is the same board, read the same way, with what a cell can carry:
+É o mesmo tabuleiro, lido da mesma forma, com o que uma célula pode carregar:
 
-- **Stations.** An empty ring has not been used yet, a ring with a dot has, and a full one is at work now and beats. A station that just finished stays bright for a few seconds. Red is an error or a refusal, and `!1` after the name counts them until your next message; `x3` is how many calls run there at once. With `contextCost` on, the station's sum stands after its count, where the grid has room for every station's: `Files 9 +180k`.
-- **Spokes.** A spoke takes its station's colour with the first call and a second line with much use. It lights when a call starts; a pulse flies out along it, and back when the call ends. What a hook brought unasked flies in from its station.
-- **The centre.** Its outline is the context window, filling clockwise from the top, amber at 70% and red at 90%, with the percentage over the name and the model under it. The model's name is bright for a few seconds after a change. One ring leaves the centre when the answer is ready.
-- **Subagents.** Each one still at work circles the Agents station as a dot.
+- **Estações.** Um anel vazio ainda não foi usado, um com ponto já foi, e um cheio está trabalhando agora e latece. Uma estação que terminou agora fica brilhante por alguns segundos. Vermelho é erro ou recusa, e `!1` depois do nome os conta até sua próxima mensagem; `x3` é quantas chamadas rodam lá ao mesmo tempo. Com `contextCost` ligado, a soma da estação fica depois de sua contagem, onde a grade tem espaço para a soma de todas: `Files 9 +180k`.
+- **Raios.** Um raio toma a cor de sua estação com a primeira chamada e uma segunda linha com muito uso. Acende quando uma chamada começa; um pulso voa por ele e volta quando a chamada termina. O que um hook trouxe sem pedido voa de sua estação para dentro.
+- **O centro.** Seu contorno é a janela de contexto, enchendo no sentido horário a partir do topo, âmbar em 70% e vermelho em 90%, com a porcentagem sobre o nome e o modelo abaixo. O nome do modelo fica brilhante por alguns segundos após uma mudança. Um anel sai do centro quando a resposta está pronta.
+- **Subagentes.** Cada um ainda em trabalho circula a estação Agentes como um ponto.
 
-What it does not draw, since a cell holds one colour and a dot is all the detail there is:
+O que ele não desenha, já que uma célula tem uma cor e um ponto é todo o detalhe:
 
-- the route between the stations, and its fading trail;
-- the clock hands around a station at work;
-- the icons in the stations, the dashed contours and the breathing of the centre;
-- the rings where a pulse lands and where the model changes;
-- pulses side by side: calls that start together fly as one, and `x3` says how many;
-- memory's second count, `↓`, of what a hook brought unasked: one number counts both;
-- a subagent's call leaving from the Agents station: every call flies from the centre;
-- the fading of a glow: a station is bright, and then it is not.
+- a rota entre as estações e sua trilha desbotando;
+- os ponteiros do relógio ao redor de uma estação em trabalho;
+- os ícones nas estações, os contornos tracejados e a respiração do centro;
+- os anéis onde um pulso chega e onde o modelo muda;
+- pulsos lado a lado: chamadas que começam juntas voam como uma, e `x3` diz quantas;
+- a segunda contagem da memória, `↓`, do que um hook trouxe sem pedido: um número conta os dois;
+- a chamada de um subagente saindo da estação Agentes: toda chamada voa do centro;
+- o desbotar de um brilho: uma estação fica brilhante e depois deixa de ficar.
 
-Its colours are the map's own, as in the desktop app. `theme` and `colors` hold; under `auto` it is light or dark by `COLORFGBG`, as the picture is, and dark where nothing says, so on a light terminal that does not say, set `theme` to `light`. `background` means here what it means there:
+Suas cores são as próprias do mapa, como no aplicativo desktop. `theme` e `colors` valem; em `auto`, é claro ou escuro conforme `COLORFGBG`, como a imagem, e escuro onde nada diz, então em terminal claro que não informa, defina `theme` como `light`. `background` significa aqui o mesmo que ali:
 
-- `solid`, the default: the cells stand on the palette's background and the words take its text colour, so the map reads in any pane. The pane's own ground comes from Claude Code's theme, which the map cannot ask for; where that and the terminal differ, such as a light terminal under the dark theme, it is a light map in a dark pane, as the picture is.
-- `transparent`: the cells have no ground and the words take the terminal's own colour. Choose it where the terminal and Claude Code's theme agree: the map then sits in the pane with no box around it. Where they differ the words can hardly be read. With `paneBackground` on `transparent` as well, the map and the pane both show the terminal behind them.
+- `solid`, o padrão: as células ficam sobre o fundo da paleta e as palavras tomam sua cor de texto, então o mapa lê em qualquer painel. O fundo do próprio painel vem do tema do Claude Code, que o mapa não consegue pedir; quando ele e o terminal diferem, como terminal claro sob tema escuro, é um mapa claro em painel escuro, como a imagem.
+- `transparent`: as células não têm fundo e as palavras tomam a cor própria do terminal. Escolha onde terminal e tema do Claude Code concordam: o mapa fica no painel sem caixa ao redor. Onde diferem, as palavras mal podem ser lidas. Com `paneBackground` também em `transparent`, o mapa e o painel mostram o terminal atrás dos dois.
 
-`layout` turns the ring. With `motion` on `reduced` nothing flies, beats or circles: a call lights its station and its spoke, and the subagents stand beside theirs.
+`layout` gira o anel. Com `motion` em `reduced`, nada voa, latece ou circula: uma chamada acende sua estação e seu raio, e os subagentes ficam ao lado dos seus.
 
-Like the picture, the map shows only where the pane stands beside the conversation. Under Claude Code's default renderer the pane stands under the conversation and is too short for the map, so the rows stay alone: type `/tui fullscreen`, or start it as `CLAUDE_CODE_NO_FLICKER=1 claude`. The map needs a pane body of at least 50 columns and 25 rows, and takes up to 76 by 21; in a smaller pane the rows stay alone. It is painted again only when it will look different: about eight times a second while a pulse flies or a subagent circles, at each beat of a station at work, and not at all at rest. Ten minutes after the map last changed, what still runs gets a frame every five seconds.
+Como a imagem, o mapa só aparece onde o painel fica ao lado da conversa. Sob o renderizador padrão do Claude Code, o painel fica abaixo da conversa e é curto demais para o mapa, então as linhas ficam sozinhas: digite `/tui fullscreen` ou inicie com `CLAUDE_CODE_NO_FLICKER=1 claude`. O mapa precisa de um corpo de painel com pelo menos 50 colunas e 25 linhas, e chega a 76 por 21; em painel menor, as linhas ficam sozinhas. Ele é pintado de novo só quando vai ficar diferente: cerca de oito vezes por segundo enquanto um pulso voa ou um subagente circula, a cada batida de uma estação em trabalho e nunca em repouso. Dez minutos após a última mudança do mapa, o que ainda roda recebe um quadro a cada cinco segundos.
 
-## In VS Code
+## No VS Code
 
-In the VS Code extension the pane is short, and the map drawn as wide as the pane does not fit it. There, and only there, three buttons stand at the end of the line of now. **Zoom out** and **Zoom in** draw the map at one of six widths, from 160 to 400 pixels, or as wide as the pane. **Hide map** folds the pane to that one line, and **Show map** brings the map back. What you chose is kept for the next session.
+Na extensão do VS Code, o painel é curto e o mapa desenhado da largura do painel não cabe. Lá, e só lá, três botões ficam no fim da linha do agora. **Reduzir** e **Ampliar** desenham o mapa em uma de seis larguras, de 160 a 400 pixels, ou da largura do painel. **Ocultar mapa** dobra o painel até aquela linha, e **Mostrar mapa** traz o mapa de volta. O que você escolhe é mantido para a próxima sessão.
 
-## Options
+## Opções
 
-The install offers them on a screen. Later, use `/config` in a terminal or `claude plugin configure`, then restart the session. They come in four groups below. Every one has a default, and the map works with none of them set.
+A instalação as oferece em uma tela. Depois, use `/config` em um terminal ou `claude plugin configure` e reinicie a sessão. Vêm em quatro grupos abaixo. Todas têm padrão, e o mapa funciona sem nenhuma definida.
 
-### How it looks
+### Aparência
 
-Each of these with a picture of its values: [How the options look](docs/options.md).
+Cada uma delas com uma imagem de seus valores: [Como as opções aparecem](docs/options.md).
 
-| Option | Default | Meaning |
+| Opção | Padrão | Significado |
 | --- | --- | --- |
-| `language` | `en` | `en`, `ru`, `es`, `fr`, `de`, `it` or `pt` |
-| `coreName` | `CLAUDE` | what the circle in the middle says, up to ten characters |
-| `theme` | `auto` | the map's colours: `dark`, `light`, or `auto`, which is dark on a dark surface and light on a light one |
-| `background` | `solid` | the map's own background, or `transparent`, which lets the pane behind it show through. The rim around the labels keeps the background's colour, so on a surface of another shade it shows as a faint halo |
-| `paneBackground` | `theme` | what the pane itself is painted with: `theme`, Claude Code's own; `transparent`, which lets the terminal behind it show through, wallpaper and blur included; or a colour as `#rrggbb`, to match an opaque terminal. A surface that cannot do it keeps its own. See [In a terminal](#in-a-terminal) |
-| `colors` | none | colours of your own, each as `name=#rrggbb`; see [Colours of your own](#colours-of-your-own) |
-| `layout` | `you-top` | where you are on the map: `you-top`, or `you-bottom`, which turns the ring half a turn so that you are at the bottom and the network and the browser at the top |
-| `motion` | `full` | `full`, or `reduced`: nothing flies, spreads or spins. A call still lights its station and flashes its spoke, the route still gets its leg, and those only fade; the clock hands around a running station stay, as slow as a clock's |
-| `textSize` | `footnote` | the size of the rows under the map: `caption`, `footnote` or `body`. A terminal has one size and ignores it |
-| `openAtStart` | `true` | whether the pane opens by itself when a session starts. With `false` it stays closed until you type `/lot-map`; the map is kept from the session's first call all the same, so it is whole when you open it |
-| `logRows` | `16` | how many rows the list under the map shows: `16`, or `fill`, as many as the pane has room for below the map, never fewer than 16. The oldest rows that do not fit are cut off at the bottom, above the calls still running. Only in the desktop app's docked pane; a terminal, the editor and the mobile app keep 16 |
+| `language` | `en` | `en`, `ru`, `es`, `fr`, `de`, `it` ou `pt` |
+| `coreName` | `CLAUDE` | o que o círculo do meio diz, até dez caracteres |
+| `theme` | `auto` | as cores do mapa: `dark`, `light` ou `auto`, escura em superfície escura e clara em clara |
+| `background` | `solid` | o fundo próprio do mapa, ou `transparent`, que deixa o painel atrás aparecer. A borda ao redor dos rótulos mantém a cor do fundo, então em superfície de outro tom aparece como uma aura fraca |
+| `paneBackground` | `theme` | com que o próprio painel é pintado: `theme`, o do próprio Claude Code; `transparent`, que deixa o terminal atrás aparecer, inclusive papel de parede e desfoque; ou uma cor como `#rrggbb`, para combinar com terminal opaco. Uma superfície que não consegue fazer isso mantém a sua. Veja [Em um terminal](#in-a-terminal) |
+| `colors` | nenhuma | cores suas, cada uma como `name=#rrggbb`; veja [Cores próprias](#colours-of-your-own) |
+| `layout` | `you-top` | onde você está no mapa: `you-top` ou `you-bottom`, que gira o anel meia volta para que você fique embaixo e a rede e o navegador em cima |
+| `motion` | `full` | `full` ou `reduced`: nada voa, se espalha ou gira. Uma chamada ainda acende sua estação e pisca seu raio, a rota ainda recebe seu trecho, e esses só desbotam; os ponteiros ao redor de uma estação em execução ficam, lentos como os de um relógio |
+| `textSize` | `footnote` | o tamanho das linhas sob o mapa: `caption`, `footnote` ou `body`. Um terminal tem um tamanho só e ignora isso |
+| `openAtStart` | `true` | se o painel se abre sozinho quando a sessão começa. Com `false`, fica fechado até você digitar `/lot-map`; o mapa é mantido desde a primeira chamada da sessão de todo modo, então fica inteiro quando você abre |
+| `logRows` | `16` | quantas linhas a lista sob o mapa mostra: `16` ou `fill`, quantas couberem no painel abaixo do mapa, nunca menos de 16. As linhas mais antigas que não cabem são cortadas embaixo, acima das chamadas ainda rodando. Só no painel acoplado do aplicativo desktop; um terminal, o editor e o aplicativo mobile mantêm 16 |
 
-### What it shows
+### O que ele mostra
 
-| Option | Default | Meaning |
+| Opção | Padrão | Significado |
 | --- | --- | --- |
-| `hookReasons` | `false` | show the first line of a hook's refusal, up to 72 characters; off, the map says only which tool was stopped |
-| `guardedHooks` | `true` | turn off on a Team or Enterprise login where the transcript gets notices like `lot-map: its classic.PreToolUse hook was skipped`. An organisation's guard keeps mods away from five events there, and with this off the mod adds no hook on them. The map then loses the Hooks station, the records a hook adds, the row of a typed slash command and the mark of a compaction; a call a hook refused still gets its `✕`, as a failed call and not as a blocked one |
-| `subagentNames` | `false` | a subagent's model step says which subagent it is, by the few words it was started with, up to 40 characters; off, it says only that it is a subagent |
-| `contextCost` | `false` | each row says about how many tokens the context grew by with its call's answer, and the map adds each station's sum to its count. An estimate, shown one step late; see [What each call adds to the context](#what-each-call-adds-to-the-context) |
-| `contextWindow` | `model` | what the ring and its percentage measure the context against: `model`, the model's whole window, as the status line does; or `compaction`, the auto-compact window, such as one set with `autoCompactWindow`, where it is smaller than the model's. Without one, or with auto-compaction off, `compaction` shows the same as `model`. The window is read at a session's first model step, after a compaction and on a change of model; with `guardedHooks` off, not after a compaction |
+| `hookReasons` | `false` | mostra a primeira linha da recusa de um hook, até 72 caracteres; desligado, o mapa diz só qual ferramenta foi parada |
+| `guardedHooks` | `true` | desligue em login Team ou Enterprise em que a transcrição recebe avisos como `lot-map: its classic.PreToolUse hook was skipped`. A guarda de uma organização mantém mods longe de cinco eventos lá, e com isso desligado o mod não acrescenta hook nenhum neles. O mapa perde a estação Hooks, os registros que um hook acrescenta, a linha de um comando slash digitado e a marca de uma compactação; uma chamada que um hook recusou ainda recebe seu `✕`, como chamada falha e não bloqueada |
+| `subagentNames` | `false` | o passo do modelo de um subagente diz qual subagente é, pelas poucas palavras com que foi iniciado, até 40 caracteres; desligado, diz só que é um subagente |
+| `contextCost` | `false` | cada linha diz aproximadamente quantos tokens o contexto cresceu com a resposta de sua chamada, e o mapa soma o total de cada estação à sua contagem. Estimativa, mostrada um passo atrasada; veja [Quanto cada chamada acrescenta ao contexto](#what-each-call-adds-to-the-context) |
+| `contextWindow` | `model` | em relação ao que o anel e sua porcentagem medem o contexto: `model`, a janela inteira do modelo, como a linha de status; ou `compaction`, a janela de compactação automática, como uma definida com `autoCompactWindow`, quando menor que a do modelo. Sem uma, ou com compactação automática desligada, `compaction` mostra o mesmo que `model`. A janela é lida no primeiro passo do modelo de uma sessão, após uma compactação e numa mudança de modelo; com `guardedHooks` desligado, não após uma compactação |
 
-### Memory and servers
+### Memória e servidores
 
-| Option | Default | Meaning |
+| Opção | Padrão | Significado |
 | --- | --- | --- |
-| `memoryServers` | `memory` | MCP servers whose tools light Memory |
-| `memoryCommands` | none | shell commands or scripts that light Memory; a name counts when it is the command itself or begins with it and `-`, `_` or `.`, so `recall` also names `recall-sync.py` |
-| `memorySubcommands` | none | words after a memory command that the map may show, such as `add` or `search`; without them the command goes by its own name |
-| `memoryPaths` | none | parts of a path that make a file a memory |
-| `memoryLabels` | none | short names for memory tools, each as `tool=name` |
-| `serverStations` | none | put an MCP server's tools on a station of your choice, each as `server=station`, with `files`, `shell`, `web`, `browser`, `agents`, `skills` or `you`; the row still reads `server: tool`. What you set wins over the mod's own routes for the servers it knows. Memory keeps `memoryServers`, which wins if a server is in both; an unknown station is ignored |
-| `hookRecords` | `false` | turn on if a hook of yours adds memory records numbered like `[#123]`; they appear on Memory by number only. Such a number in the text of any hook counts, not only a memory hook's |
+| `memoryServers` | `memory` | servidores MCP cujas ferramentas acendem Memória |
+| `memoryCommands` | nenhum | comandos ou scripts de shell que acendem Memória; um nome conta quando é o próprio comando ou começa com ele e `-`, `_` ou `.`, então `recall` também nomeia `recall-sync.py` |
+| `memorySubcommands` | nenhum | palavras depois de um comando de memória que o mapa pode mostrar, como `add` ou `search`; sem elas, o comando vai pelo próprio nome |
+| `memoryPaths` | nenhum | partes de um caminho que fazem de um arquivo uma memória |
+| `memoryLabels` | nenhum | nomes curtos para ferramentas de memória, cada um como `tool=name` |
+| `serverStations` | nenhum | coloca as ferramentas de um servidor MCP numa estação de sua escolha, cada uma como `server=station`, com `files`, `shell`, `web`, `browser`, `agents`, `skills` ou `you`; a linha ainda diz `servidor: ferramenta`. O que você define prevalece sobre as rotas próprias do mod para os servidores que ele conhece. Memória mantém `memoryServers`, que prevalece se um servidor estiver nos dois; uma estação desconhecida é ignorada |
+| `hookRecords` | `false` | ligue se um hook seu acrescenta registros de memória numerados como `[#123]`; aparecem em Memória só pelo número. Esse número no texto de qualquer hook conta, não só de um hook de memória |
 
-### In a terminal only
+### Só em terminal
 
-| Option | Default | Meaning |
+| Opção | Padrão | Significado |
 | --- | --- | --- |
-| `terminalView` | `text` | how the map looks in a terminal: `text`, the rows alone; `picture`, the map's picture above them in a terminal that shows pictures, in iTerm2 from 3.7.8; or `braille`, the map above them in braille dots, in any terminal whose font has braille. See [In a terminal](#in-a-terminal) |
-| `cellShape` | `2.4` | for the terminal picture: how many times taller a terminal cell is than it is wide, from 1.2 to 4, so that the picture fills its box; see [In a terminal](#in-a-terminal) |
+| `terminalView` | `text` | como o mapa aparece em um terminal: `text`, só as linhas; `picture`, o mapa como imagem acima delas em terminal que mostra imagens, no iTerm2 a partir da 3.7.8; ou `braille`, o mapa acima delas em pontos de braille, em qualquer terminal cuja fonte tenha braille. Veja [Em um terminal](#in-a-terminal) |
+| `cellShape` | `2.4` | para a imagem do terminal: quantas vezes uma célula de terminal é mais alta do que larga, de 1.2 a 4, para que a imagem preencha sua caixa; veja [Em um terminal](#in-a-terminal) |
 
-For example, Russian labels and your own memory server:
+Por exemplo, rótulos em russo e seu próprio servidor de memória:
 
 ```bash
 echo '{"language":"ru","memoryServers":"my-memory"}' | claude plugin configure lot-map@lot-map --values-stdin
 ```
 
-The map itself in a terminal that shows no pictures:
+O mapa em si em um terminal que não mostra imagens:
 
 ```bash
 echo '{"terminalView":"braille"}' | claude plugin configure lot-map@lot-map --values-stdin
 ```
 
-No notices about skipped hooks on a Team or Enterprise login:
+Sem avisos sobre hooks ignorados em login Team ou Enterprise:
 
 ```bash
 echo '{"guardedHooks":"false"}' | claude plugin configure lot-map@lot-map --values-stdin
 ```
 
-Every value is written as a string, `"false"` and `"2.4"` too, and lists are written with commas.
+Todo valor é escrito como string, `"false"` e `"2.4"` inclusive, e listas são escritas com vírgulas.
 
-| Russian labels | `layout` set to `you-bottom` |
+| Rótulos em russo | `layout` em `you-bottom` |
 | --- | --- |
-| <img src="docs/map-russian.png" width="320" alt="The map with Russian labels"> | <img src="docs/map-turned.png" width="320" alt="The map turned, with the person at the bottom"> |
+| <img src="docs/map-russian.png" width="320" alt="O mapa com rótulos em russo"> | <img src="docs/map-turned.png" width="320" alt="O mapa girado, com a pessoa embaixo"> |
 
-## Colours of your own
+## Cores próprias
 
-`colors` replaces the map's colours one by one. Set one, a few, or all thirteen; what you leave out stays as it is.
+`colors` substitui as cores do mapa uma a uma. Defina uma, algumas ou todas as treze; o que deixar de fora fica como está.
 
 ```bash
 echo '{"theme":"dark","colors":"accent=#7fb4ff,active=#b8d6ff,text=#e6edf7"}' | claude plugin configure lot-map@lot-map --values-stdin
 ```
 
-| Name | What it colours |
+| Nome | O que colore |
 | --- | --- |
-| `background` | the map's ground, and the rim around the labels |
-| `node` | the inside of a station and of the centre |
-| `line`, `spoke` | the dashed contours and the idle spokes |
-| `text`, `label`, `faint` | the name in the centre and lit labels, the other labels, the counts |
-| `accent`, `active` | the main colour, and a station at work |
-| `error` | errors and refusals |
-| `memory`, `memoryActive` | the Memory station and its spoke |
-| `route` | the route between stations |
+| `background` | o fundo do mapa e a borda ao redor dos rótulos |
+| `node` | o interior de uma estação e do centro |
+| `line`, `spoke` | os contornos tracejados e os raios parados |
+| `text`, `label`, `faint` | o nome no centro e os rótulos acesos, os outros rótulos, as contagens |
+| `accent`, `active` | a cor principal e uma estação em trabalho |
+| `error` | erros e recusas |
+| `memory`, `memoryActive` | a estação Memória e seu raio |
+| `route` | a rota entre estações |
 
-<img src="docs/map-colors.png" width="640" alt="The map in two palettes of one's own: a cool blue one and a green one">
+<img src="docs/map-colors.png" width="640" alt="O mapa em duas paletas próprias: uma azul fria e uma verde">
 
-- Only `#rgb` and `#rrggbb` are taken. Anything else, and any other name, counts as not set.
-- With `theme` left on `auto`, a colour of your own holds on a light surface as well, and the rest is repainted as before. With a whole palette of your own, set `theme` to `dark` or `light`.
-- With `background` set to `transparent`, still give `background` here the colour of your pane: the rim around the labels takes it, and the halo is gone.
+- Só `#rgb` e `#rrggbb` são aceitos. Qualquer outra coisa, e qualquer outro nome, conta como não definido.
+- Com `theme` em `auto`, uma cor própria vale também em superfície clara, e o resto é repintado como antes. Com paleta própria completa, defina `theme` como `dark` ou `light`.
+- Com `background` em `transparent`, ainda dê aqui a `background` a cor do seu painel: a borda ao redor dos rótulos a toma, e a aura desaparece.
 
-## What it shows and what it keeps
+## O que ele mostra e o que guarda
 
-The mod makes no network requests, reads no files, runs no processes, calls no model and adds nothing to the conversation. Its rows live only for the session. The same on one page: [Privacy](PRIVACY.md).
+O mod não faz requisições de rede, não lê arquivos, não roda processos, não chama modelo e não acrescenta nada à conversa. Suas linhas vivem só para a sessão. O mesmo em uma página: [Privacidade](PRIVACY.md).
 
-Like any mod that follows tool calls, it is handed every call's whole input, including command lines and the text written to files. It takes names from that and nothing else; the code that does so is `classify` in `hooks/classify.ts`. A marketplace added from this repository follows its `main` branch, so an update brings whatever is there: read the diff before updating if that matters to you.
+Como qualquer mod que acompanha chamadas de ferramentas, ele recebe a entrada inteira de cada chamada, inclusive linhas de comando e o texto escrito em arquivos. Delas toma apenas os nomes; o código que faz isso é `classify` em `hooks/classify.ts`. Um marketplace acrescentado a partir deste repositório acompanha seu branch `main`, então uma atualização traz o que quer que esteja lá: leia o diff antes de atualizar se isso importa para você.
 
-By default it asks Claude Code for one thing: how full the context window is, after each model step. With `contextCost` on it also keeps, from the same answer, how many tokens that is, and puts a number on each row and station; it reads nothing more for it. With `contextWindow` set to `compaction` it also asks how the context divides up, at a session's first model step and again after a compaction or a change of model, and takes from the answer only the size of the auto-compact window. Between sessions it keeps one thing, the name of the model last used in each folder, so that it can show a change. Each is stored under the folder's full path, in Claude Code's own store for the plugin.
+Por padrão, ele pede ao Claude Code uma coisa: o quanto a janela de contexto está cheia, após cada passo do modelo. Com `contextCost` ligado, guarda também, da mesma resposta, quantos tokens aquilo é e coloca um número em cada linha e estação; não lê mais nada para isso. Com `contextWindow` em `compaction`, pede também como o contexto se divide, no primeiro passo do modelo de uma sessão e de novo após uma compactação ou mudança de modelo, e da resposta toma só o tamanho da janela de compactação automática. Entre sessões, guarda uma coisa: o nome do modelo usado por último em cada pasta, para poder mostrar uma mudança. Cada item é armazenado sob o caminho completo da pasta, no próprio armazenamento do plugin do Claude Code.
 
-What its hooks do. The mod listens to the session's start, prompts, turns, model steps, tool calls, skills, compaction, with `subagentNames` on a subagent's start, and to three events of settings hooks: `PreToolUse`, where it sees whether a hook refused the call, asked for permission or took a moment, and `UserPromptSubmit` and `SessionStart`, where it sees the context a hook added. Each of its hooks passes the event on as it came and returns what came back as it was: it changes no input, no result, no context and no permission decision, and makes none of its own. Its one command, `/lot-map`, opens the pane.
+O que seus hooks fazem. O mod escuta o início da sessão, prompts, turnos, passos do modelo, chamadas de ferramentas, skills, compactação e, com `subagentNames` ligado, o início de um subagente, além de três eventos de hooks de configurações: `PreToolUse`, em que vê se um hook recusou a chamada, pediu permissão ou demorou, e `UserPromptSubmit` e `SessionStart`, em que vê o contexto que um hook acrescentou. Cada um de seus hooks repassa o evento como veio e devolve o que voltou como era: não muda entrada, resultado, contexto nem decisão de permissão, e não faz nenhuma própria. Seu único comando, `/lot-map`, abre o painel.
 
-A label holds a name, never content:
+Um rótulo guarda um nome, nunca conteúdo:
 
-- a file: the last two parts of its path;
-- a web address: the host alone, without a login, password, path or query; an address that can be read two ways shows only its scheme;
-- a shell command or a monitor: the short description Claude wrote for it, or the command's name, never the command line. The description is the model's own words, and the mod shows them as written;
-- a search: the tool's name for `Grep` and `Glob`, the words `web search` for a web search and `loading tools` for a tool search, in the map's language, never the pattern or the query;
-- a memory call: the tool's name and a record number or short identifier, never the text or the query;
-- a memory command: its name, and the word after it only if you listed that word in `memorySubcommands`;
-- a subagent: the short description it was started with; with `subagentNames` on, its first 40 characters on that subagent's model steps as well;
-- a background task's report: that the task ended and whether it failed, never its summary or its output;
-- a hook's refusal: the name of the tool it stopped. Its first line shows only with `hookReasons` on, because a refusal may quote what the hook found.
+- um arquivo: as duas últimas partes de seu caminho;
+- um endereço web: só o host, sem login, senha, caminho ou query; um endereço que pode ser lido de duas formas mostra apenas seu scheme;
+- um comando de shell ou monitor: a descrição curta que o Claude escreveu para ele, ou o nome do comando, nunca a linha de comando. A descrição são as palavras do próprio modelo, e o mod as mostra como escritas;
+- uma busca: o nome da ferramenta para `Grep` e `Glob`, as palavras `web search` para busca web e `loading tools` para busca de ferramentas, no idioma do mapa, nunca o padrão ou a query;
+- uma chamada de memória: o nome da ferramenta e um número de registro ou identificador curto, nunca o texto ou a query;
+- um comando de memória: seu nome e a palavra seguinte só se você listou essa palavra em `memorySubcommands`;
+- um subagente: a descrição curta com que foi iniciado; com `subagentNames` ligado, seus primeiros 40 caracteres também nos passos do modelo daquele subagente;
+- o relatório de uma tarefa em segundo plano: que a tarefa terminou e se falhou, nunca seu resumo ou sua saída;
+- a recusa de um hook: o nome da ferramenta que ele parou. Sua primeira linha aparece só com `hookReasons` ligado, porque uma recusa pode citar o que o hook encontrou.
 
-Control characters are taken out of every label before it is drawn.
+Caracteres de controle são retirados de todo rótulo antes de ele ser desenhado.
 
-A fault on the map never reaches a tool call or a model turn.
+Uma falha no mapa nunca alcança uma chamada de ferramenta ou um turno do modelo.
 
-## Developing
+## Desenvolvendo
 
 ```bash
 claude plugin test .
 claude plugin validate .
 ```
 
-Words live in `hooks/text.ts`; a new language is one more table there and one more value of `language` in `.claude-plugin/plugin.json`.
+As palavras ficam em `hooks/text.ts`; um novo idioma é mais uma tabela lá e mais um valor de `language` em `.claude-plugin/plugin.json`.
 
-The terminal picture is made by three files: `hooks/scene.ts` reads the drawing `drawMap` makes, `hooks/raster.ts` paints it, and `hooks/png.ts` packs the pixels for the terminal. A test paints every kind of drawing and fails on anything the painter does not know, so a change to the drawing that needs more of SVG shows there first. Another, `the terminal picture's font has every letter the map writes, in every language`, names the letters a new language needs added to `hooks/font.ts`; [FONTS.md](FONTS.md) says how to make that file again.
+A imagem do terminal é feita por três arquivos: `hooks/scene.ts` lê o desenho que `drawMap` faz, `hooks/raster.ts` o pinta e `hooks/png.ts` empacota os pixels para o terminal. Um teste pinta todo tipo de desenho e falha em qualquer coisa que o pintor não conhece, então uma mudança no desenho que precise de mais SVG aparece primeiro ali. Outro, `the terminal picture's font has every letter the map writes, in every language`, nomeia as letras que um novo idioma precisa acrescentar a `hooks/font.ts`; [FONTS.md](FONTS.md) diz como refazer esse arquivo.
 
-The braille map is drawn by `hooks/braille.ts`: a second drawing of the same board, which takes its stations from `STATIONS` and its timings from `hooks/draw.ts`. Tests in `hooks/braille.test.tsx` hold it to every station under both layouts, and one in `hooks/lot-map.test.tsx` to the names of every language. Something new on the map is either drawn there too or added to the list of what braille leaves out, in [In a terminal](#the-map-in-braille-dots): the `INVENTORY` in `hooks/braille.test.tsx` has a line for each thing the first drawing shows, a test holds both drawings to it, and `scripts/check-surface.mjs` holds that list to the same lines.
+O mapa em braille é desenhado por `hooks/braille.ts`: um segundo desenho do mesmo tabuleiro, que toma suas estações de `STATIONS` e seus tempos de `hooks/draw.ts`. Testes em `hooks/braille.test.tsx` o mantêm fiel a toda estação nos dois layouts, e um em `hooks/lot-map.test.tsx` aos nomes de todo idioma. Algo novo no mapa ou é desenhado lá também ou entra na lista do que o braille deixa de fora, em [Em um terminal](#the-map-in-braille-dots): o `INVENTORY` em `hooks/braille.test.tsx` tem uma linha para cada coisa que o primeiro desenho mostra, um teste mantém os dois desenhos ligados a ele, e `scripts/check-surface.mjs` mantém essa lista nas mesmas linhas.
 
-Before you send a change, read [CONTRIBUTING.md](CONTRIBUTING.md). What the mod holds to, and the check behind each point, is in [PRINCIPLES.md](PRINCIPLES.md).
+Antes de enviar uma mudança, leia [CONTRIBUTING.md](CONTRIBUTING.md). A que o mod se mantém fiel, e a verificação por trás de cada ponto, está em [PRINCIPLES.md](PRINCIPLES.md).
 
-## License
+## Licença
 
 [MIT](LICENSE)
