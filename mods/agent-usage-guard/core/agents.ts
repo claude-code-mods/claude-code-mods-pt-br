@@ -22,14 +22,14 @@ export function isHaiku(model: string | undefined): boolean {
   return model !== undefined && /haiku/i.test(model)
 }
 
-const AGENT_ALLOW = 'Allow'
+const AGENT_ALLOW = 'Permitir'
 /**
  * How long an approval of the subagent token budget lasts. A busy hour brings
  * one burst after another, and asking again at each burst only asks the same
  * question: over 30 days of use, 29 such questions were all allowed.
  */
 const AGENT_TOKENS_LIFT_MS = 60 * 60_000
-const AGENT_REFUSE = "Don't start it"
+const AGENT_REFUSE = "Não iniciar"
 
 export function agentGate(
   state: SessionState,
@@ -39,20 +39,20 @@ export function agentGate(
   request: AgentRequest,
 ): Verdict {
   if (!config.enabled || overrideCovers(state, now, 'agents')) return ALLOW
-  const what = request.resume ? 'resuming this agent' : 'this agent'
+  const what = request.resume ? 'retomar este agente' : 'este agente'
 
   if (request.depth > config.depthMax) {
-    const base = `${request.resume ? 'This agent cannot be resumed' : 'This agent was not started'}: subagents may not start agents of their own here (depth limit ${config.depthMax}). Do the work yourself and report back.`
+    const base = `${request.resume ? 'Este agente não pôde ser retomado' : 'Este agente não foi iniciado'}: subagentes não podem iniciar outros agentes aqui (limite de profundidade ${config.depthMax}). Faça o trabalho e relate.`
     return refuse(state, config, now, 'depth', 'depth', base, true)
   }
   if (state.fuseUntil !== undefined && now < state.fuseUntil) {
-    const base = `Agent spawns in this session are paused until ${shortClock(state.fuseUntil)} after repeated refused agent calls. Continue without agents; the user can lift this with /agent-guard allow.`
+    const base = `Novos agentes nesta sessão ficam pausados até ${shortClock(state.fuseUntil)} após recusas repetidas. Continue sem agentes; o usuário pode liberar com /agent-guard allow.`
     return refuse(state, config, now, 'fuse', 'fuse', base, false)
   }
 
   const limit = highestLimit(state, peers, now)
   if (limit && limit.percent >= config.limitDenyPercent) {
-    const base = `${sentence(what)} was refused: ${limitDetail(limit)}, and the guard keeps the rest of the window for the user. Continue without agents; the user can lift this with /agent-guard allow.`
+    const base = `${sentence(what)} was refused: ${limitDetail(limit)}, and the guard keeps the rest of the window for the user. Continue sem agentes; o usuário pode liberar com /agent-guard allow.`
     return refuse(state, config, now, 'limit-deny', 'limit-deny', base, true)
   }
 
@@ -62,7 +62,7 @@ export function agentGate(
   const details = join(trips.map((t) => t.detail))
   const declinedAt = state.refusals.agents
   if (declinedAt !== undefined && now < declinedAt) {
-    const base = `The user declined new agents for now (${details}). Continue without starting agents; the user can lift this with /agent-guard allow.`
+    const base = `O usuário recusou novos agentes por agora (${details}). Continue sem iniciar agentes; o usuário pode liberar com /agent-guard allow.`
     return refuse(state, config, now, trips[0]!.rule, `agents:${trips[0]!.rule}`, base, true)
   }
   if (!state.canAsk) return unattended(state, config, now, trips, details, request.resume)
@@ -71,7 +71,7 @@ export function agentGate(
     family: 'agents',
     loop: request.loop,
     trips,
-    question: `${sentence(details)}. Allowing lifts ${trips.length > 1 ? 'these limits' : 'this limit'} until ${shortClock(Math.max(...trips.map((t) => t.leaseUntil)))}. ${request.resume ? 'Resume this agent' : 'Start this agent'}?`,
+    question: `${sentence(details)}. Permitir libera ${trips.length > 1 ? 'estes limites' : 'este limite'} até ${shortClock(Math.max(...trips.map((t) => t.leaseUntil)))}. ${request.resume ? 'Retomar este agente' : 'Iniciar este agente'}?`,
     options: [AGENT_ALLOW, AGENT_REFUSE],
   }
 }
@@ -97,11 +97,11 @@ export function resolveAgentAsk(
   const details = join(ask.trips.map((t) => t.detail))
   const said =
     answer === undefined
-      ? `The user dismissed the question about ${resume ? 'resuming' : 'starting'} it`
+      ? `O usuário dispensou a pergunta sobre ${resume ? 'retomar' : 'iniciar'}`
       : answer === AGENT_REFUSE
-        ? `The user chose not to ${resume ? 'resume' : 'start'} it`
-        : `The user answered "${answer}" instead of allowing it`
-  const base = `${notRun(resume)}: ${details}. ${said}. Continue without starting agents unless the user says otherwise.`
+        ? `O usuário escolheu não ${resume ? 'retomar' : 'iniciar'}`
+        : `O usuário respondeu "${answer}" em vez de permitir`
+  const base = `${notRun(resume)}: ${details}. ${said}. Continue sem iniciar agentes, a menos que o usuário diga o contrário.`
   return refuse(state, config, now, ask.trips[0]!.rule, `agents:${ask.trips[0]!.rule}`, base, true)
 }
 
@@ -114,8 +114,8 @@ export function resolveAgentAsk(
 export function heldForQuestion(subject: 'agents' | 'heavy'): Deny {
   const message =
     subject === 'agents'
-      ? 'The user is being asked about starting agents. Wait for that answer, then start this agent again.'
-      : 'The user is being asked whether to keep working at this context size. Wait for that answer, then make this call again.'
+      ? 'O usuário está sendo perguntado sobre iniciar agentes. Aguarde a resposta e inicie este agente novamente.'
+      : 'O usuário está sendo perguntado se deve continuar com este tamanho de contexto. Aguarde a resposta e faça a chamada novamente.'
   return { kind: 'deny', rule: 'asking', message: `${message} [${SIGNATURE}]` }
 }
 
@@ -136,7 +136,7 @@ function agentTrips(
   if (!cheap && running >= config.agentMax) {
     trips.push({
       rule: 'concurrency',
-      detail: `${count(running, 'agent')} ${running === 1 ? 'is' : 'are'} running on this machine (limit ${config.agentMax})`,
+      detail: `${count(running, 'agent')} ${running === 1 ? 'está' : 'estão'} em execução nesta máquina (limite ${config.agentMax})`,
       leaseKey: 'concurrency',
       leaseUntil: until,
     })
@@ -146,7 +146,7 @@ function agentTrips(
   if (!cheap && starts >= config.rollingMax) {
     trips.push({
       rule: 'starts',
-      detail: `${count(starts, 'agent')} started on this machine in the last ${span} (limit ${config.rollingMax})`,
+      detail: `${count(starts, 'agent')} iniciados nesta máquina nos últimos ${span} (limite ${config.rollingMax})`,
       leaseKey: 'starts',
       leaseUntil: until,
     })
@@ -156,7 +156,7 @@ function agentTrips(
   if (processed >= config.agentTokensMax) {
     trips.push({
       rule: 'agent-tokens',
-      detail: `subagents processed ${tokens(processed)} tokens in the last ${span} (limit ${tokens(config.agentTokensMax)})`,
+      detail: `subagentes processaram ${tokens(processed)} tokens nos últimos ${span} (limit ${tokens(config.agentTokensMax)})`,
       leaseKey: 'agent-tokens',
       leaseUntil: now + AGENT_TOKENS_LIFT_MS,
       tokens: processed,
@@ -167,14 +167,14 @@ function agentTrips(
   if (burned && burned.points >= config.burnPercent) {
     trips.push({
       rule: 'burn',
-      detail: `the 5-hour window rose ${burned.points} points in the last ${span} (now ${burned.percent}%)`,
+      detail: `a janela de 5 horas subiu ${burned.points} pontos nos últimos ${span} (agora ${burned.percent}%)`,
       leaseKey: 'burn',
       leaseUntil: until,
     })
   } else if (burned?.fullAt !== undefined && burned.resetsAt !== undefined) {
     trips.push({
       rule: 'burn',
-      detail: `at this pace the 5-hour window fills by ${shortClock(burned.fullAt)}, before it resets at ${shortClock(burned.resetsAt)} (now ${burned.percent}%)`,
+      detail: `a este ritmo a janela de 5 horas se esgota às ${shortClock(burned.fullAt)}, antes de renovar às ${shortClock(burned.resetsAt)} (agora ${burned.percent}%)`,
       leaseKey: 'burn',
       leaseUntil: until,
     })
@@ -194,13 +194,13 @@ function agentTrips(
 function unattended(state: SessionState, config: Config, now: number, trips: Trip[], details: string, resume: boolean): Deny {
   const first = trips[0]!
   const advice: Record<string, string> = {
-    concurrency: 'Wait for a running agent to finish before starting another',
-    starts: 'Starts free up as they age out of the window; batch the work or do it yourself',
-    'agent-tokens': 'Do the remaining work yourself instead of in agents',
-    burn: 'Continue without agents until the burn slows',
-    limit: 'Continue without agents',
+    concurrency: 'Aguarde um agente em execução terminar antes de iniciar outro',
+    starts: 'Inícios ficam disponíveis quando saem da janela; agrupe o trabalho ou faça você mesmo',
+    'agent-tokens': 'Faça o restante do trabalho você mesmo, sem agentes',
+    burn: 'Continue sem agentes até o consumo desacelerar',
+    limit: 'Continue sem agentes',
   }
-  const base = `${notRun(resume)}: ${details}. Nobody can approve it in this session. ${advice[first.rule] ?? 'Continue without agents'}.`
+  const base = `${notRun(resume)}: ${details}. Nobody can approve it in this session. ${advice[first.rule] ?? 'Continue sem agentes'}.`
   return refuse(state, config, now, first.rule, `agents:${first.rule}`, base, true)
 }
 
@@ -225,7 +225,7 @@ export function highestLimit(state: SessionState, peers: readonly PeerRecord[], 
 
 export function limitDetail(limit: LimitReading): string {
   const reset = limit.resetsAt === undefined ? '' : ` (resets ${shortClock(limit.resetsAt)})`
-  return `the ${windowName(limit.kind)} window is ${limit.percent}% used${reset}`
+  return `a janela ${windowName(limit.kind)} está ${limit.percent}% usada${reset}`
 }
 
 /** A rise shorter or smaller than this is too coarse to project a pace from: readings move in steps. */
@@ -274,5 +274,5 @@ function burn(
 }
 
 function notRun(resume: boolean): string {
-  return resume ? 'This agent was not resumed' : 'This agent was not started'
+  return resume ? 'Este agente não foi retomado' : 'Este agente não foi iniciado'
 }

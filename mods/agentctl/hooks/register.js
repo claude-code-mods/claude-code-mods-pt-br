@@ -179,13 +179,13 @@ async function readGate($, c) {
     c.gate = { failed: sanitize('cannot look for review-state.js: ' + (err && err.message ? err.message : err), 80), at }
     return
   }
-  if (!script) { c.gate = { failed: 'no review-state.js here', at }; return }
+  if (!script) { c.gate = { failed: 'nenhum review-state.js aqui', at }; return }
   try {
     // `check` only — this mod never writes a verdict (FR-19).
     const r = await $.process.run(['node', script, 'check', '--format=json'], { cwd: c.cwd, timeoutMs: TIMEOUT_MS })
     c.gate = { ...gateReading(r, at), staleAfterMs: GATE_STALE_MS }
   } catch (err) {
-    c.gate = { failed: sanitize('check failed: ' + (err && err.message ? err.message : err), 80), at }
+    c.gate = { failed: sanitize('falha na verificação: ' + (err && err.message ? err.message : err), 80), at }
   }
 }
 
@@ -239,7 +239,7 @@ async function observe($, c, observation, taskId) {
   const now = await $.clock.now()
   const { toSend, sent } = decideNotices(c.state.interventions, c.notices, now)
   c.notices = sent
-  for (const n of toSend) $.ui.toast(`agentctl: ${n.reason.replace('-', ' ')} — /agentctl for details`)
+  for (const n of toSend) $.ui.toast(`agentctl: ${n.reason.replace('-', ' ')} — /agentctl para detalhes`)
   persist(c, taskId)
   $.ui.invalidate('ui.render')
 }
@@ -275,27 +275,27 @@ async function taskCommand($, c, e, rest) {
   const [sub, ...more] = rest
   if (!sub || sub === 'show') {
     const t = await boundTask($, c)
-    return t ? policyText(t) : 'No task bound to this worktree. Set one with /agentctl task set <json>.'
+    return t ? policyText(t) : 'Nenhuma tarefa vinculada a esta árvore de trabalho. Defina uma com /agentctl task set <json>.'
   }
-  if (sub !== 'set' && sub !== 'clear') return 'Usage: /agentctl task show | set <json> | clear'
+  if (sub !== 'set' && sub !== 'clear') return 'Uso: /agentctl task show | set <json> | clear'
   // Scope changes come only from the person at the prompt (FR-25).
-  if (e.origin?.kind !== 'composer') return 'agentctl refused: the task can be set or cleared only from your own prompt.'
+  if (e.origin?.kind !== 'composer') return 'agentctl recusou: a tarefa só pode ser definida ou limpa a partir do seu próprio prompt.'
   const now = await $.clock.now()
   if (sub === 'clear') {
     // Report what persisted (INV-006): a failed delete leaves the old policy in force.
     if (!(await c.writer.delete(keys.binding(worktreeKey(c.cwd))))) {
-      return 'agentctl: the task could not be cleared (store error); the previous task still applies.'
+      return 'agentctl: a tarefa não pôde ser limpa (erro de armazenamento); a tarefa anterior continua valendo.'
     }
-    return 'Task cleared for this worktree; only the built-in classes are refused now.'
+    return 'Tarefa limpa para esta árvore de trabalho; agora apenas as classes internas são recusadas.'
   }
   let input
-  try { input = JSON.parse(more.join(' ')) } catch { return 'agentctl: the task must be JSON.' }
-  if (!input || typeof input !== 'object' || Array.isArray(input)) return 'agentctl: the task must be a JSON object.'
+  try { input = JSON.parse(more.join(' ')) } catch { return 'agentctl: a tarefa deve ser JSON.' }
+  if (!input || typeof input !== 'object' || Array.isArray(input)) return 'agentctl: a tarefa deve ser um objeto JSON.'
   // The worktree is this session's; a task naming another one is refused, never re-pointed.
-  if (input.worktree !== undefined && input.worktree !== c.cwd) return 'agentctl: task rejected —\n- the task names another worktree'
+  if (input.worktree !== undefined && input.worktree !== c.cwd) return 'agentctl: tarefa rejeitada —\n- a tarefa nomeia outra árvore de trabalho'
   const raw = { ...input, worktree: c.cwd }
   const v = validateTask(raw)
-  if (!v.ok) return `agentctl: task rejected —\n- ${v.errors.map((x) => sanitize(x, 200)).join('\n- ')}`
+  if (!v.ok) return `agentctl: tarefa rejeitada —\n- ${v.errors.map((x) => sanitize(x, 200)).join('\n- ')}`
   // The policy version only rises: re-setting an id that already has a record continues from it, so
   // evidence and proposals tied to the earlier policy never read as this one's.
   const id = raw.id ?? `T${now}`
@@ -311,14 +311,14 @@ async function bindTask($, c, task) {
   const bindingKey = keys.binding(worktreeKey(c.cwd))
   const current = await $.store.get(bindingKey)
   if (!(await c.writer.set(keys.task(scopeOf(c, task.id)), task))) {
-    return 'agentctl: the task could not be saved (store error); the previous task, if any, still applies.'
+    return 'agentctl: a tarefa não pôde ser salva (erro de armazenamento); a tarefa anterior, se houver, continua valendo.'
   }
   if (current !== task.id && !(await c.writer.set(bindingKey, task.id))) {
-    return 'agentctl: the task was saved but could not be bound (store error); the previous task, if any, still applies.'
+    return 'agentctl: a tarefa foi salva, mas não pôde ser vinculada (erro de armazenamento); a tarefa anterior, se houver, continua valendo.'
   }
   persist(c, task.id)
   $.ui.invalidate('ui.render')
-  return `Task ${task.id} bound to this worktree.\n${policyText(task)}`
+  return `Tarefa ${task.id} vinculada a esta árvore de trabalho.\n${policyText(task)}`
 }
 
 // ── Proposals ───────────────────────────────────────────────────────────────────────────────────
@@ -345,10 +345,10 @@ async function checkProposal($, c) {
   const bound = await boundTask($, c)
   // A malformed submission is a rejection, never a failed hook.
   let r
-  try { r = readProposal(text, { cwd: c.cwd, boundId: bound?.id ?? null }) } catch { r = { ok: false, errors: ['the proposal could not be validated'] } }
+  try { r = readProposal(text, { cwd: c.cwd, boundId: bound?.id ?? null }) } catch { r = { ok: false, errors: ['a proposta não pôde ser validada'] } }
   if (!r.ok) {
     // No `agentctl:` prefix: the host already names the mod on every transcript line (found live).
-    $.ui.log(`proposal not shown — ${r.errors.join('; ')}`)
+    $.ui.log(`proposta não exibida — ${r.errors.join('; ')}`)
     persist(c, bound?.id)
     return
   }
@@ -417,20 +417,20 @@ async function settleProposal($, c, p) {
 
 async function acceptCommand($, c, e, given) {
   // Scope comes only from the person at the prompt (FR-25).
-  if (e.origin?.kind !== 'composer') return 'agentctl refused: a proposal can be accepted only from your own prompt.'
+  if (e.origin?.kind !== 'composer') return 'agentctl recusou: uma proposta só pode ser aceita a partir do seu próprio prompt.'
   const p = c.pending
-  if (!p) return c.lang === 'zh' ? '目前沒有等待中的草稿。要起草：/agentctl <你要做的事>' : 'No proposal is waiting. To draft one: /agentctl <what you are doing>'
-  if (!digestMatches(given, p.digest)) return `agentctl refused: ${sanitize(given, 30)} does not match the waiting proposal ${p.digest.slice(0, 8)}. Check /agentctl proposal.`
+  if (!p) return c.lang === 'zh' ? '目前沒有等待中的草稿。要起草：/agentctl <你要做的事>' : 'Nenhuma proposta aguardando. Para criar uma: /agentctl <o que você está fazendo>'
+  if (!digestMatches(given, p.digest)) return `agentctl recusou: ${sanitize(given, 30)} não corresponde à proposta aguardando ${p.digest.slice(0, 8)}. Verifique /agentctl proposal.`
   const bound = await boundTask($, c)
   if ((bound?.id ?? null) !== p.effective.base || revisionOf(bound) !== p.baseRev) {
     await settleProposal($, c, p)
     persist(c, bound?.id)
-    return 'agentctl refused: the bound task changed since this proposal was drafted (stale); it was discarded. Ask for a new draft.'
+    return 'agentctl recusou: a tarefa vinculada mudou desde que esta proposta foi criada (desatualizada); ela foi descartada. Peça uma nova proposta.'
   }
   const now = await $.clock.now()
   const record = acceptedRecord(p.effective, { now, baseTask: bound })
   const text = await bindTask($, c, record)
-  if (!text.startsWith('Task ')) return text
+  if (!text.startsWith('Tarefa ')) return text
   await settleProposal($, c, p)
   persist(c, `T${now}`)
   // Say what accepting did and did not do; the full policy is one command away.
@@ -446,22 +446,22 @@ async function stopCommand($, c) {
   const h = await saveHandoff($, c)
   const turnId = c.state.runtime.turnId
   // Say what happened: a checkpoint exists only when a task is bound.
-  const lines = [h.saved ? 'Hand-over saved before stopping.'
-    : h.reason === 'no-task' ? 'No task bound: the hand-over was not saved (see /agentctl handoff).'
-      : 'The hand-over could not be saved (store error); /agentctl handoff still prints it.']
-  if (!turnId) lines.push('No running turn was observed; nothing was cancelled.')
+  const lines = [h.saved ? 'Passagem de bastão salva antes de parar.'
+    : h.reason === 'no-task' ? 'Nenhuma tarefa vinculada: a passagem de bastão não foi salva (veja /agentctl handoff).'
+      : 'A passagem de bastão não pôde ser salva (erro de armazenamento); /agentctl handoff ainda a exibe.']
+  if (!turnId) lines.push('Nenhuma rodada em execução foi observada; nada foi cancelado.')
   else {
     try {
       await $.turn.abort({ turnId })
-      lines.push(`Cancellation requested for turn ${turnId}; it reads as ended only once its end is observed.`)
+      lines.push(`Cancelamento solicitado para a rodada ${turnId}; só é considerada encerrada quando seu fim for observado.`)
     } catch (err) {
-      lines.push(`Cancellation request failed; turn outcome unconfirmed (${sanitize(err && err.message ? err.message : err, 120)}).`)
+      lines.push(`Falha ao solicitar cancelamento; desfecho da rodada não confirmado (${sanitize(err && err.message ? err.message : err, 120)}).`)
     }
   }
   const open = Object.entries(c.state.ops).filter(([, o]) => o.endedAt === undefined && o.outcome !== 'refused')
-  lines.push(open.length ? 'Tracked operations, as last observed:' : 'No tracked operation was running.')
+  lines.push(open.length ? 'Operações acompanhadas, conforme última observação:' : 'Nenhuma operação acompanhada estava em execução.')
   for (const [id, o] of open) lines.push(`- ${sanitize(o.requested, 120)} (${o.tool}) — ${o.outcome}, ${id}`)
-  lines.push('Untracked processes cannot be confirmed; this is never "all stopped".')
+  lines.push('Processos não acompanhados não podem ser confirmados; isso nunca significa "tudo parado".')
   return lines.join('\n')
 }
 
@@ -492,13 +492,13 @@ export function register(on) {
     if (c.checkpoint) {
       // Shown before any work: a transcript notice (not sent to the model; `-p` receives it as
       // ui_log) and the band. Nothing is replayed, and the mod holds no approvals to carry over.
-      $.ui.log(`last hand-over for task ${task.id}, saved ${new Date(c.checkpoint.savedAt).toISOString()} — /agentctl last shows it again`)
+      $.ui.log(`última passagem de bastão da tarefa ${task.id}, salva em ${new Date(c.checkpoint.savedAt).toISOString()} — /agentctl last mostra novamente`)
       // The whole checkpoint (already bounded by the hand-over cap), never a silent preview.
       for (const line of String(c.checkpoint.markdown).split('\n')) $.ui.log(line)
     }
     await checkProposal($, c)
     // `immediate`: /agentctl stop must run while the turn it cancels is still in flight.
-    await $.command.register({ name: 'agentctl', description: 'Agent Control Plane — describe the work and Claude drafts a scope you accept', argumentHint: '<what you are doing> | accept <digest> | help', immediate: true })
+    await $.command.register({ name: 'agentctl', description: 'Painel de controle de agent — descreva o trabalho e o Claude propõe um escopo para você aceitar', argumentHint: '<what you are doing> | accept <digest> | help', immediate: true })
     $.ui.invalidate('ui.render')
     return next(e)
   })
@@ -576,8 +576,8 @@ export function register(on) {
       // propose widening a task that cannot widen it (found live).
       const builtIn = BUILT_IN_RULES.has(v.rule)
       return { deny: builtIn
-        ? `agentctl refused (${rule}): a built-in class no task can lift. Run it yourself, or through your project's own push or deploy workflow.`
-        : `agentctl refused (${rule}). Do not reach the same result another way (a shell redirect, a script); if it is needed, ask the person to accept a wider scope. The task's scope is shown by /agentctl policy.` }
+        ? `agentctl recusou (${rule}): classe interna que nenhuma tarefa pode liberar. Execute você mesmo ou pelo fluxo de push/deploy do seu projeto.`
+        : `agentctl recusou (${rule}). Não chegue ao mesmo resultado por outro meio (redirecionamento de shell, script); se necessário, peça à pessoa que aceite um escopo maior. O escopo da tarefa aparece em /agentctl policy.` }
     }
     // Delegated: the host's permission flow (or auto mode) decides; the mod only records that it did
     // not classify the call, so the events list can show it.
@@ -594,7 +594,7 @@ export function register(on) {
     await observe($, c, { type: 'tool.end', id, outcome: outcomeOf(r), at: endAt }, task?.id)
     await observe($, c, { type: 'permission.settled', at: endAt }, task?.id)
     return r
-  }).catch(($, e, next) => (next.called ? next(e) : { deny: 'agentctl refused: the policy check failed before the call ran' }))
+  }).catch(($, e, next) => (next.called ? next(e) : { deny: 'agentctl recusou: a verificação de política falhou antes da chamada' }))
 
   // Evidence, beneath the policy hook: brackets Bash calls; its failures are evidence failures,
   // never refusals (feasibility § 6).
@@ -660,14 +660,14 @@ export function register(on) {
       persist(c, task?.id)
     }
     return out
-  }).catch(() => ({ decision: 'deny', reason: 'agentctl refused: the verdict check failed' }))
+  }).catch(() => ({ decision: 'deny', reason: 'agentctl recusou: a verificação de veredito falhou' }))
 
   // Text replies for every surface, answered without a model call.
   on('command.run', { command: 'agentctl' }, async ($, e) => {
     const c = await context($)
     // Replies carry no `agentctl:` prefix of their own: the host already adds one (found in a
     // first-run test, where every reply read "agentctl: agentctl:").
-    const reply = (text) => ({ text: String(text).replace(/^agentctl: /gm, '').replace(/^agentctl refused: /gm, 'Refused: ') })
+    const reply = (text) => ({ text: String(text).replace(/^agentctl: /gm, '').replace(/^agentctl recusou: /gm, 'Recusado: ') })
     const t = copy(c.lang)
     const p = parseCommand(e.args)
     if (p.kind === 'goal') return reply(await goalCommand($, c, e, p.text))
@@ -679,16 +679,16 @@ export function register(on) {
       const m = await model($, c)
       const bound = m.task && !m.task.recordMissing
       const next = c.pending ? t.next.proposal(c.pending.digest.slice(0, 8)) : bound ? nextForTask(t, checkProgress(m.task, m.evidence, m.fingerprint)) : t.next.none
-      const extra = c.checkpoint ? [`Last hand-over saved ${new Date(c.checkpoint.savedAt).toISOString()} — /agentctl last`] : []
+      const extra = c.checkpoint ? [`Última passagem de bastão salva ${new Date(c.checkpoint.savedAt).toISOString()} — /agentctl last`] : []
       return reply([next, statusText(m, { details: rest[0] === '--details' }), ...extra].join('\n'))
     }
     if (sub === 'help') return reply(helpText(c.lang, rest[0] === 'advanced'))
     if (sub === 'last') {
-      if (c.checkpoint) return reply(`Last hand-over (${new Date(c.checkpoint.savedAt).toISOString()}):\n${c.checkpoint.markdown}`)
+      if (c.checkpoint) return reply(`Última passagem de bastão (${new Date(c.checkpoint.savedAt).toISOString()}):\n${c.checkpoint.markdown}`)
       return reply((await boundTask($, c)) ? t.noHandover : t.noTaskLast)
     }
     if (sub === 'proposal') {
-      if (!c.pending) return reply(c.lang === 'zh' ? '目前沒有等待中的草稿。要起草：/agentctl <你要做的事>' : 'No proposal is waiting. To draft one: /agentctl <what you are doing>')
+      if (!c.pending) return reply(c.lang === 'zh' ? '目前沒有等待中的草稿。要起草：/agentctl <你要做的事>' : 'Nenhuma proposta aguardando. Para criar uma: /agentctl <o que você está fazendo>')
       await suggestAccept($, c)
       return reply(preview(c).join('\n'))
     }
@@ -698,7 +698,7 @@ export function register(on) {
       await settleProposal($, c, c.pending)
       persist(c, (await boundTask($, c))?.id)
       $.ui.invalidate('ui.render')
-      return reply(had ? 'Proposal discarded; the bound task is unchanged.' : 'No proposal was waiting.')
+      return reply(had ? 'Proposta descartada; a tarefa vinculada não mudou.' : 'Nenhuma proposta aguardava.')
     }
     if (sub === 'task') {
       // A sentence where a subcommand belongs is a goal, not a usage error (found in a first-run test).

@@ -97,24 +97,24 @@ export function draftingRequest({ goal, worktree, base, root, lang }) {
 
 const COPY = {
   en: {
-    filled: (bound) => `A request for Claude to draft the scope is in your prompt box — press Enter to send it. ${bound ? 'The current task stays in force until you accept the new scope.' : 'Nothing is bound yet.'}`,
-    mixed: (bound) => `The request was added after text you typed meanwhile; both are in your prompt box. Edit it before you press Enter. ${bound ? 'The current task stays in force until you accept the new scope.' : 'Nothing is bound yet.'}`,
-    copy: (bound) => `Send this to Claude to have it draft the scope (${bound ? 'the current task stays in force until you accept the new one' : 'nothing is bound yet'}):`,
-    typo: (v) => `Did you mean "/agentctl ${v}"? To start a task, describe it: /agentctl <what you are doing>`,
-    extra: (v) => `"/agentctl ${v}" takes no such arguments. ${v === 'proposal' ? 'It shows a waiting draft; to make one, describe the work: /agentctl <what you are doing>' : 'See /agentctl help.'}`,
-    acceptLine: (d) => `Accept this scope: /agentctl accept ${d} — it binds the scope only; it does not start any work.`,
-    accepted: 'Scope bound. Next: ask Claude to start the work.',
-    runChecks: (checks) => `To leave evidence, run each check as written: ${checks.join(' · ')} — a pipe, redirect or wrapper keeps a run from counting, and added arguments may check less than declared.`,
-    wholeScope: '/agentctl policy shows the whole scope.',
-    noTaskLast: 'No task is bound, so there is no hand-over yet. Start one: /agentctl <what you are doing>',
-    noHandover: 'This task has no saved hand-over yet: /agentctl handoff saves one.',
+    filled: (bound) => `Um pedido para o Claude propor o escopo está na sua caixa de entrada — pressione Enter para enviar. ${bound ? 'A tarefa atual continua valendo até você aceitar o novo escopo.' : 'Nada está vinculado ainda.'}`,
+    mixed: (bound) => `O pedido foi adicionado depois do texto que você digitou enquanto isso; ambos estão na caixa de entrada. Edite antes de pressionar Enter. ${bound ? 'A tarefa atual continua valendo até você aceitar o novo escopo.' : 'Nada está vinculado ainda.'}`,
+    copy: (bound) => `Envie isto ao Claude para que ele proponha o escopo (${bound ? 'a tarefa atual continua valendo até você aceitar a nova' : 'nada está vinculado ainda'}):`,
+    typo: (v) => `Você quis dizer "/agentctl ${v}"? Para iniciar uma tarefa, descreva-a: /agentctl <o que você está fazendo>`,
+    extra: (v) => `"/agentctl ${v}" não aceita esses argumentos. ${v === 'proposal' ? 'Ele mostra uma proposta aguardando; para criar uma, descreva o trabalho: /agentctl <o que você está fazendo>' : 'Veja /agentctl help.'}`,
+    acceptLine: (d) => `Aceitar este escopo: /agentctl accept ${d} — isso apenas vincula o escopo; não inicia nenhum trabalho.`,
+    accepted: 'Escopo vinculado. A seguir: peça ao Claude para começar o trabalho.',
+    runChecks: (checks) => `Para deixar evidência, execute cada verificação exatamente como escrita: ${checks.join(' · ')} — pipes, redirecionamentos ou wrappers impedem que a execução conte, e argumentos adicionados podem verificar menos do que o declarado.`,
+    wholeScope: '/agentctl policy mostra o escopo completo.',
+    noTaskLast: 'Nenhuma tarefa está vinculada, então ainda não há passagem de bastão. Comece uma: /agentctl <o que você está fazendo>',
+    noHandover: 'Esta tarefa ainda não tem passagem de bastão salva: /agentctl handoff salva uma.',
     next: {
-      none: 'Next: describe the work — /agentctl <what you are doing>. Built-in refusals (direct git push, production writes) apply even now.',
-      proposal: (d) => `Next: review /agentctl proposal, then /agentctl accept ${d}`,
-      task: 'Next: ask Claude to work; /agentctl handoff saves where things stand.',
-      taskThenChecks: (checks) => `Next: ask Claude to work, then to run the checks exactly as written: ${checks.join(' · ')}. Once they are current: /agentctl handoff`,
-      rerun: (checks) => `Next: not current on this tree — ask Claude to run exactly as written: ${checks.join(' · ')}. Then: /agentctl handoff`,
-      checksCurrent: 'Next: every declared check is current on this tree — /agentctl handoff saves the hand-over.',
+      none: 'A seguir: descreva o trabalho — /agentctl <o que você está fazendo>. Recusas internas (git push direto, gravações em produção) valem desde agora.',
+      proposal: (d) => `A seguir: revise /agentctl proposal e depois /agentctl accept ${d}`,
+      task: 'A seguir: peça ao Claude para trabalhar; /agentctl handoff salva o estado atual.',
+      taskThenChecks: (checks) => `A seguir: peça ao Claude para trabalhar e executar as verificações exatamente como escritas: ${checks.join(' · ')}. Once they are current: /agentctl handoff`,
+      rerun: (checks) => `A seguir: não estão atualizadas nesta árvore — peça ao Claude para executar exatamente como escrito: ${checks.join(' · ')}. Then: /agentctl handoff`,
+      checksCurrent: 'A seguir: todas as verificações declaradas estão atualizadas nesta árvore — /agentctl handoff salva a passagem de bastão.',
     },
   },
   zh: {
@@ -183,19 +183,19 @@ export function helpText(lang, advanced) {
     ].join('\n')
   }
   return advanced ? [
-    'Advanced:',
-    '  /agentctl task show | set <json> | clear — view or set the task directly',
-    '  /agentctl policy — the scope in force and its limits',
-    '  /agentctl events [n] — recent refusals and calls left to the host',
-    '  /agentctl handoff · last — save a hand-over · show the last one',
-    '  /agentctl stop — cancel the turn and save a hand-over',
-    '  /agentctl status --details · discard — full status · drop a draft',
+    'Avançado:',
+    '  /agentctl task show | set <json> | clear — ver ou definir a tarefa diretamente',
+    '  /agentctl policy — o escopo em vigor e seus limites',
+    '  /agentctl events [n] — recusas recentes e chamadas deixadas ao host',
+    '  /agentctl handoff · last — salvar uma passagem de bastão · mostrar a última',
+    '  /agentctl stop — cancelar a rodada e salvar uma passagem de bastão',
+    '  /agentctl status --details · discard — status completo · descartar uma proposta',
   ].join('\n') : [
-    'agentctl keeps Claude inside a scope you confirm and records check evidence.',
-    '  /agentctl <what you are doing> — Claude drafts a scope (binds nothing)',
-    '  /agentctl accept <digest> — you confirm it (starts no work)',
-    '  /agentctl — where things stand and what to do next',
-    'More: /agentctl help advanced',
+    'O agentctl mantém o Claude dentro de um escopo que você confirma e registra evidências das verificações.',
+    '  /agentctl <o que você está fazendo> — o Claude propõe um escopo (não vincula nada)',
+    '  /agentctl accept <digest> — você confirma o escopo (não inicia trabalho)',
+    '  /agentctl — estado atual e o que fazer a seguir',
+    'Mais: /agentctl help advanced',
   ].join('\n')
 }
 

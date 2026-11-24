@@ -25,9 +25,9 @@ export interface ResolvedJevCredentials {
 }
 
 export const MISSING_JEV_KEY_MESSAGE =
-  'Jev compaction needs your own key. A Vercel AI Gateway key is not a TypeSafe key. ' +
+  'A compactação com Jev precisa da sua própria chave. Uma chave do Vercel AI Gateway não é uma chave TypeSafe. ' +
   'Set AI_GATEWAY_API_KEY (https://vercel.com/docs/ai-gateway/authentication-and-byok) ' +
-  'or TYPESAFE_API_KEY (https://typesafe.ai) and retry. Caliber does not provide a key.';
+  'ou TYPESAFE_API_KEY (https://typesafe.ai) e tente novamente. A Caliber não fornece chave.';
 
 function nonEmpty(value: string | undefined): value is string {
   return typeof value === 'string' && value.length > 0;

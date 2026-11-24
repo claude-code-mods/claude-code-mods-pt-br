@@ -29,14 +29,14 @@ export function parseCommand(args: string): Command {
   if (verb === 'resume') return { action: 'resume' }
   if (verb === 'report') {
     const days = rest[0] === undefined ? DEFAULT_REPORT_DAYS : Number(rest[0])
-    if (!Number.isInteger(days) || days < 1 || days > MAX_REPORT_DAYS) return { action: 'help', error: `"${rest[0]}" is not a number of days` }
+    if (!Number.isInteger(days) || days < 1 || days > MAX_REPORT_DAYS) return { action: 'help', error: `"${rest[0]}" não é um número de dias` }
     return { action: 'report', days }
   }
   if (verb === 'simulate') {
     const rule = SIMULATED.find((r) => r === rest[0])
     if (rule) return { action: 'simulate', rule }
     const rules = SIMULATED.join(', ')
-    return { action: 'help', error: rest[0] === undefined ? `name a rule to simulate: ${rules}` : `"${rest[0]}" is not a rule; the rules are ${rules}` }
+    return { action: 'help', error: rest[0] === undefined ? `nomeie uma regra para simular: ${rules}` : `"${rest[0]}" não é uma regra; as regras são ${rules}` }
   }
   if (verb === 'allow' || verb === 'pause') {
     let scope: Scope = 'all'
@@ -48,13 +48,13 @@ export function parseCommand(args: string): Command {
       }
       const n = Number(word.replace(/m(in(utes?)?)?$/, ''))
       if (!Number.isInteger(n) || n < 1 || n > MAX_ALLOW_MINUTES) {
-        return { action: 'help', error: `"${word}" is not ${verb === 'allow' ? 'agents, context or ' : ''}a number of minutes from 1 to ${MAX_ALLOW_MINUTES}` }
+        return { action: 'help', error: `"${word}" não é ${verb === 'allow' ? 'agents, context ou ' : ''}um número de minutos de 1 a ${MAX_ALLOW_MINUTES}` }
       }
       minutes = n
     }
     return { action: 'allow', scope, minutes }
   }
-  return { action: 'help', error: `unknown subcommand "${verb}"` }
+  return { action: 'help', error: `subcomando desconhecido "${verb}"` }
 }
 
 /** Lifts limits for this session, and forgets the declines and the fuse they cover. */
@@ -70,7 +70,7 @@ export function applyOverride(state: SessionState, now: number, scope: Scope, mi
     for (const loop of Object.values(state.loops)) loop.stopped = false
     state.failures = {}
   }
-  return `${sentence(scopeName(scope))} lifted for ${duration(minutes * 60_000)}, until ${shortClock(until)}. /agent-guard resume ends it early.`
+  return `${sentence(scopeName(scope))} liberado por ${duration(minutes * 60_000)}, até ${shortClock(until)}. /agent-guard resume encerra antes.`
 }
 
 /** Ends an override and clears declined questions, so the guard asks again. */
@@ -82,8 +82,8 @@ export function resumeGuard(state: SessionState): string {
   state.denials = state.denials.filter((d) => !d.agent)
   loopOf(state, MAIN).stopped = false
   return had
-    ? 'Limits apply again.'
-    : 'No override was active. Declined questions are cleared, so the guard asks again.'
+    ? 'Os limites voltam a valer.'
+    : 'Nenhuma liberação estava ativa. Perguntas recusadas foram limpas, então a proteção pergunta novamente.'
 }
 
 export function helpText(error?: string): string {

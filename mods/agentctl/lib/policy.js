@@ -55,30 +55,30 @@ export function tokenize(command) {
     const c = s[i]
     if (c === ' ' || c === '\t') { push(); i++; continue }
     if (c === '|') {
-      if (s[i + 1] === '|') return { ok: false, why: 'operator ||' }
+      if (s[i + 1] === '|') return { ok: false, why: 'operador ||' }
       push()
-      if (argv.length === 0) return { ok: false, why: 'empty pipeline segment' }
+      if (argv.length === 0) return { ok: false, why: 'segmento de pipeline vazio' }
       segments.push(argv); argv = []; i++; continue
     }
     if (c === "'") {
       const end = s.indexOf("'", i + 1)
-      if (end < 0) return { ok: false, why: 'unbalanced quote' }
+      if (end < 0) return { ok: false, why: 'aspas desbalanceadas' }
       word = (word ?? '') + s.slice(i + 1, end); i = end + 1; continue
     }
     if (c === '"') {
       const end = s.indexOf('"', i + 1)
-      if (end < 0) return { ok: false, why: 'unbalanced quote' }
+      if (end < 0) return { ok: false, why: 'aspas desbalanceadas' }
       const inner = s.slice(i + 1, end)
-      if (/[$`\\!]/.test(inner)) return { ok: false, why: 'expansion inside double quotes' }
+      if (/[$`\\!]/.test(inner)) return { ok: false, why: 'expansão dentro de aspas duplas' }
       word = (word ?? '') + inner; i = end + 1; continue
     }
     // `~` expands only at the start of a word (`~/x`), so `HEAD~1` is a plain word.
-    if (c === '~' && word === null) return { ok: false, why: 'shell syntax "~"' }
+    if (c === '~' && word === null) return { ok: false, why: 'sintaxe de shell "~"' }
     if (/[;&<>()`$\\\n\r{}*?[\]!#]/.test(c)) return { ok: false, why: `shell syntax ${JSON.stringify(c)}` }
     word = (word ?? '') + c; i++
   }
   push()
-  if (argv.length === 0) return segments.length ? { ok: false, why: 'empty pipeline segment' } : { ok: false, why: 'empty command' }
+  if (argv.length === 0) return segments.length ? { ok: false, why: 'segmento de pipeline vazio' } : { ok: false, why: 'comando vazio' }
   segments.push(argv)
   return { ok: true, segments }
 }
@@ -176,7 +176,7 @@ function inside(path, root) {
 
 // ── Classification ──────────────────────────────────────────────────────────────────────────────
 // call: { tool, command?, file_path?, notebook_path? }  task: the bound task, or null.
-const delegated = (rule) => ({ outcome: 'pass', rule: `delegated to the host: ${rule}`, delegated: true })
+const delegated = (rule) => ({ outcome: 'pass', rule: `delegado ao host: ${rule}`, delegated: true })
 
 export function classify(task, call) {
   const tool = call?.tool
@@ -184,13 +184,13 @@ export function classify(task, call) {
   // classes refuse, observational adapters pass, and everything else is marked delegated — and is
   // therefore recorded, task or not (found by an adversarial test). Other tools are not judged.
   if (!task) {
-    if (tool !== 'Bash') return { outcome: 'pass', rule: 'no task bound' }
+    if (tool !== 'Bash') return { outcome: 'pass', rule: 'nenhuma tarefa vinculada' }
     return classifyBash(NO_TASK, call.command)
   }
   // A binding whose record is missing: only the Read tool inside the worktree, whose path is checked,
   // passes. Bash is refused outright — an observational command's paths are not verified here.
   if (task.recordMissing) {
-    return tool === 'Read' ? classifyTool(task, call) : { outcome: 'deny', rule: 'task record missing: only reads inside the worktree' }
+    return tool === 'Read' ? classifyTool(task, call) : { outcome: 'deny', rule: 'registro da tarefa ausente: apenas leituras dentro da árvore de trabalho' }
   }
   if (tool === 'Bash') return classifyBash(task, call.command)
   return classifyTool(task, call)
@@ -198,7 +198,7 @@ export function classify(task, call) {
 
 function classifyBash(task, command) {
   const t = tokenize(command)
-  if (!t.ok) return delegated(`unclassifiable: ${t.why}`)
+  if (!t.ok) return delegated(`não classificável: ${t.why}`)
   const classes = forbiddenClasses(task)
   for (const seg of t.segments) {
     const hit = matchForbidden(seg, classes)
@@ -207,7 +207,7 @@ function classifyBash(task, command) {
   if (t.segments.length === 1) {
     const { env, argv } = splitEnv(t.segments[0])
     if (Object.keys(env).length === 0) {
-      for (const n of task.needsUser ?? []) if (startsWith(argv, n)) return { outcome: 'needs-user', rule: `needs-user: ${n.join(' ')}` }
+      for (const n of task.needsUser ?? []) if (startsWith(argv, n)) return { outcome: 'needs-user', rule: `precisa de usuário: ${n.join(' ')}` }
     }
   }
   // Executors before adapters: a declared check that is also observational (`git status`) must still
@@ -215,7 +215,7 @@ function classifyBash(task, command) {
   if (t.segments.length === 1) {
     const { env, argv } = splitEnv(t.segments[0])
     if (Object.keys(env).length === 0) {
-      for (const e of task.executors ?? []) if (startsWith(argv, e.argv)) return { outcome: 'pass', rule: `authorized executor: ${e.argv.join(' ')}`, executor: e }
+      for (const e of task.executors ?? []) if (startsWith(argv, e.argv)) return { outcome: 'pass', rule: `executor autorizado: ${e.argv.join(' ')}`, executor: e }
     }
   }
   let allAdapters = true
@@ -226,7 +226,7 @@ function classifyBash(task, command) {
   if (allAdapters) return { outcome: 'pass', rule: 'observational adapter' }
   const first = splitEnv(t.segments[0]).argv
   const why = checkAdapter(first, splitEnv(t.segments[0]).env).why
-  return delegated(`unclassified: ${why}`)
+  return delegated(`não classificado: ${why}`)
 }
 
 function classifyTool(task, call) {
@@ -234,52 +234,52 @@ function classifyTool(task, call) {
   const worktree = normalizePath(task.worktree, '/')
   if (tool === 'Read') {
     const p = normalizePath(call.file_path, worktree)
-    return p && worktree && inside(p, worktree) ? { outcome: 'pass', rule: 'read inside the worktree' } : { outcome: 'deny', rule: 'read outside the worktree' }
+    return p && worktree && inside(p, worktree) ? { outcome: 'pass', rule: 'leitura dentro da árvore de trabalho' } : { outcome: 'deny', rule: 'leitura fora da árvore de trabalho' }
   }
   if (EDIT_TOOLS.has(tool)) {
-    if (!(task.allow ?? []).includes('edit')) return { outcome: 'deny', rule: 'edits not allowed by this task' }
+    if (!(task.allow ?? []).includes('edit')) return { outcome: 'deny', rule: 'edições não permitidas por esta tarefa' }
     const p = normalizePath(call.file_path ?? call.notebook_path, worktree)
     // A root outside the worktree grants nothing, even on a record stored before validation refused it.
     const roots = (task.editRoots ?? ['.']).map((r) => normalizePath(r, worktree)).filter((r) => r && worktree && inside(r, worktree))
-    return p && roots.some((r) => inside(p, r)) ? { outcome: 'pass', rule: 'edit inside an allowed root' } : { outcome: 'deny', rule: 'edit outside the allowed roots' }
+    return p && roots.some((r) => inside(p, r)) ? { outcome: 'pass', rule: 'edição dentro de uma raiz permitida' } : { outcome: 'deny', rule: 'edição fora das raízes permitidas' }
   }
-  if (INTERNAL_TOOLS.has(tool)) return { outcome: 'pass', rule: `host-internal tool: ${tool}` }
-  if ((task.tools ?? []).includes(tool)) return { outcome: 'pass', rule: `tool named by the task: ${tool}` }
-  return delegated(`tool not classified: ${tool}`)
+  if (INTERNAL_TOOLS.has(tool)) return { outcome: 'pass', rule: `ferramenta interna do host: ${tool}` }
+  if ((task.tools ?? []).includes(tool)) return { outcome: 'pass', rule: `ferramenta nomeada pela tarefa: ${tool}` }
+  return delegated(`ferramenta não classificada: ${tool}`)
 }
 
 // ── Task validation (at `/agentctl task set`) ──────────────────────────────────────────────────────
 export function validateTask(task) {
   const errors = []
-  if (!task || typeof task !== 'object') return { ok: false, errors: ['task must be an object'] }
+  if (!task || typeof task !== 'object') return { ok: false, errors: ['tarefa deve ser um objeto'] }
   // A task id becomes a store key and is shown everywhere: a bounded identifier, never free text.
   if (task.id !== undefined && (typeof task.id !== 'string' || !/^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$/.test(task.id) || redactLike(task.id) !== task.id)) {
-    errors.push('id must be 1-64 letters, digits, dot, underscore or hyphen, and carry no credential')
+    errors.push('id deve ter de 1 a 64 letras, dígitos, ponto, sublinhado ou hífen, e não conter credenciais')
   }
-  if (!task.goal || typeof task.goal !== 'string') errors.push('goal is required')
-  if (!task.worktree || typeof task.worktree !== 'string' || !task.worktree.startsWith('/')) errors.push('worktree must be an absolute path')
+  if (!task.goal || typeof task.goal !== 'string') errors.push('objetivo é obrigatório')
+  if (!task.worktree || typeof task.worktree !== 'string' || !task.worktree.startsWith('/')) errors.push('árvore de trabalho deve ser um caminho absoluto')
   for (const k of ['executors', 'needsUser', 'forbid', 'allow', 'editRoots', 'tools']) {
-    if (task[k] !== undefined && !Array.isArray(task[k])) errors.push(`${k} must be an array`)
+    if (task[k] !== undefined && !Array.isArray(task[k])) errors.push(`${k} deve ser um array`)
   }
   if (errors.length) return { ok: false, errors }
-  for (const e of task.executors ?? []) if (!e || typeof e !== 'object' || !Array.isArray(e.argv) || e.argv.length === 0 || !e.argv.every((x) => typeof x === 'string')) errors.push('each executor needs a non-empty argv array')
-  for (const n of task.needsUser ?? []) if (!Array.isArray(n) || n.length === 0) errors.push('each needsUser entry must be a non-empty argv array')
+  for (const e of task.executors ?? []) if (!e || typeof e !== 'object' || !Array.isArray(e.argv) || e.argv.length === 0 || !e.argv.every((x) => typeof x === 'string')) errors.push('cada executor precisa de um array argv não vazio')
+  for (const n of task.needsUser ?? []) if (!Array.isArray(n) || n.length === 0) errors.push('cada entrada needsUser deve ser um array argv não vazio')
   // A credential in a policy value would be stored and shown verbatim; such a task is refused.
   const secretLike = (argv) => argv.join(' ') !== redactLike(argv.join(' '))
-  for (const e of task.executors ?? []) if (Array.isArray(e?.argv) && secretLike(e.argv)) errors.push('an executor carries a credential-like value; keep secrets out of the task')
-  for (const n of task.needsUser ?? []) if (Array.isArray(n) && secretLike(n)) errors.push('a needsUser entry carries a credential-like value; keep secrets out of the task')
-  for (const f of task.forbid ?? []) if (secretLike(toWords(f))) errors.push('a forbid entry carries a credential-like value')
-  for (const k of ['allow', 'editRoots', 'tools']) for (const x of task[k] ?? []) if (secretLike([String(x)])) errors.push(`a ${k} entry carries a credential-like value`)
+  for (const e of task.executors ?? []) if (Array.isArray(e?.argv) && secretLike(e.argv)) errors.push('um executor contém um valor semelhante a credencial; mantenha segredos fora da tarefa')
+  for (const n of task.needsUser ?? []) if (Array.isArray(n) && secretLike(n)) errors.push('uma entrada needsUser contém um valor semelhante a credencial; mantenha segredos fora da tarefa')
+  for (const f of task.forbid ?? []) if (secretLike(toWords(f))) errors.push('uma entrada forbid contém um valor semelhante a credencial')
+  for (const k of ['allow', 'editRoots', 'tools']) for (const x of task[k] ?? []) if (secretLike([String(x)])) errors.push(`uma entrada ${k} contém um valor semelhante a credencial`)
   // Edit roots stay inside the worktree: `../other` or an absolute path elsewhere would let the task
   // authorize writes the worktree does not own (found by an adversarial test).
   const wt = typeof task.worktree === 'string' ? normalizePath(task.worktree, '/') : null
   for (const r of task.editRoots ?? []) {
     const n = wt ? normalizePath(String(r), wt) : null
-    if (!n || !inside(n, wt)) errors.push(`edit root ${String(r).slice(0, 80)} is outside the worktree`)
+    if (!n || !inside(n, wt)) errors.push(`raiz de edição ${String(r).slice(0, 80)} está fora da árvore de trabalho`)
   }
-  if (typeof task.worktree === 'string' && secretLike([task.worktree])) errors.push('the worktree carries a credential-like value')
+  if (typeof task.worktree === 'string' && secretLike([task.worktree])) errors.push('a árvore de trabalho contém um valor semelhante a credencial')
   const classes = forbiddenClasses(task)
-  const overlap = (argv, label) => { const hit = matchForbidden(argv, classes); if (hit) errors.push(`${label} ${argv.join(' ')} overlaps forbidden class (${hit.rule})`) }
+  const overlap = (argv, label) => { const hit = matchForbidden(argv, classes); if (hit) errors.push(`${label} ${argv.join(' ')} sobrepõe classe proibida (${hit.rule})`) }
   for (const e of task.executors ?? []) if (Array.isArray(e?.argv)) overlap(e.argv, 'executor')
   for (const n of task.needsUser ?? []) if (Array.isArray(n)) overlap(n, 'needsUser')
   return { ok: errors.length === 0, errors }

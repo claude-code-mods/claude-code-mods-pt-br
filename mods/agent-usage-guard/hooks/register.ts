@@ -141,12 +141,12 @@ export function register(on: On): void {
     try {
       await $.command.register({
         name: COMMAND,
-        description: 'agent-usage-guard: status, allow, resume, report',
+        description: 'agent-usage-guard: status, permitir, retomar, relatório (proteção de uso)',
         argumentHint: '[status | allow [agents|context] [minutes] | pause [minutes] | resume | report [days] | help]',
         immediate: true,
       })
     } catch (error) {
-      $.ui.log(`agent-usage-guard could not add /${COMMAND}: ${String(error)}`, { to: 'debug' })
+      $.ui.log(`agent-usage-guard não pôde adicionar /${COMMAND}: ${String(error)}`, { to: 'debug' })
     }
     return next(e)
   }).catch(($, e, next) => failOpen($, 'session.start', next.error, () => next(e)))
@@ -235,7 +235,7 @@ export function register(on: On): void {
         if (now - lastPublished >= HEARTBEAT_MS) await publish($, now)
       }
     } catch (error) {
-      $.ui.log(`agent-usage-guard: could not record a response (${String(error)})`, { to: 'debug' })
+      $.ui.log(`agent-usage-guard: não pôde registrar uma resposta (${String(error)})`, { to: 'debug' })
     }
     return result
   })
@@ -258,7 +258,7 @@ export function register(on: On): void {
       compactAfterTurn = false
       $.clock.after(0, async () => {
         const failed = await compact($)
-        if (failed !== undefined) $.ui.log(`could not compact (${failed}).`)
+        if (failed !== undefined) $.ui.log(`não foi possível compactar (${failed}).`)
       })
     }
     await refreshStatus($)
@@ -362,7 +362,7 @@ export function register(on: On): void {
     // would let a broken guard wave through every agent of a parallel batch.
     next.called
       ? failOpen($, 'agent.spawn', next.error, () => next(e))
-      : { deny: `agent-usage-guard could not judge this agent${next.error?.kind === 'timeout' ? ' in time' : ''}. Start it again. [${SIGNATURE}]` },
+      : { deny: `agent-usage-guard não pôde avaliar este agente${next.error?.kind === 'timeout' ? ' a tempo' : ''}. Inicie novamente. [${SIGNATURE}]` },
   )
 
   on('tool.call', async ($, e, next) => {
@@ -387,7 +387,7 @@ export function register(on: On): void {
 
     const print = fingerprint(canonical(argumentsOf(e)))
     if (!resumed) {
-      const label = loop === MAIN ? 'this conversation' : agentLabel(loop)
+      const label = loop === MAIN ? 'esta conversa' : agentLabel(loop)
       const request = { loop, tool: e.tool, fingerprint: print, label }
       if (isScheduling(e.tool)) await loadPeers($, now)
       let verdict = scheduleGate(session, peers, config, now, request)
@@ -434,9 +434,9 @@ export function register(on: On): void {
     if (command.action === 'allow') {
       // Only the person lifts limits: another plugin's $.command.run reaches this hook too.
       if (!fromPerson(e.origin.kind)) {
-        const from = e.origin.kind === 'plugin' ? `the ${e.origin.name} plugin` : `a ${e.origin.kind} prompt`
-        $.ui.log(`refused /${COMMAND} ${e.args.trim()} from ${from}.`)
-        return { text: `Only you can lift the guard's limits, and this came from ${from}, so nothing changed. Type /${COMMAND} ${e.args.trim()} to lift them.` }
+        const from = e.origin.kind === 'plugin' ? `o plugin ${e.origin.name}` : `um prompt ${e.origin.kind}`
+        $.ui.log(`recusou /${COMMAND} ${e.args.trim()} vindo de ${from}.`)
+        return { text: `Só você pode suspender os limites da proteção, e isso veio de ${from}; nada foi alterado. Digite /${COMMAND} ${e.args.trim()} para suspender.` }
       }
       const text = applyOverride(session, now, command.scope, command.minutes)
       await journal($, now, { ev: 'override', rule: command.scope })
@@ -451,7 +451,7 @@ export function register(on: On): void {
     }
     await loadPeers($, now)
     return { text: statusReport(session, peers, config, now, problems, await pluginVersion($), storeFailure) }
-  }).catch(($, e, next) => ({ text: `The command failed: ${next.error?.message ?? 'unknown error'}` }))
+  }).catch(($, e, next) => ({ text: `O comando falhou: ${next.error?.message ?? 'erro desconhecido'}` }))
 }
 
 /** Each variable is named in full, so `claude plugin validate` can list every one the mod reads. */
@@ -525,7 +525,7 @@ async function housekeeping($: Api): Promise<void> {
       if (typeof at !== 'number' || now - at > LAST_ACTIVE_KEEP_MS) await $.store.delete(key)
     }
   } catch (error) {
-    $.ui.log(`agent-usage-guard housekeeping failed: ${String(error)}`, { to: 'debug' })
+    $.ui.log(`a manutenção do agent-usage-guard falhou: ${String(error)}`, { to: 'debug' })
   }
 }
 
@@ -566,7 +566,7 @@ async function publish($: Api, now: number): Promise<void> {
   try {
     await save($, PEER_PREFIX + session.id, peerRecord(session, now, config.windowMs))
   } catch (error) {
-    $.ui.log(`agent-usage-guard could not publish its counts: ${String(error)}`, { to: 'debug' })
+    $.ui.log(`agent-usage-guard não pôde publicar suas contagens: ${String(error)}`, { to: 'debug' })
   }
   await keepLastActive($)
   await refreshStatus($)
@@ -585,7 +585,7 @@ async function keepLastActive($: Api): Promise<void> {
     await save($, LAST_ACTIVE_PREFIX + session.id, last)
     lastActiveKept = last
   } catch (error) {
-    $.ui.log(`agent-usage-guard could not store when the session was last active: ${String(error)}`, { to: 'debug' })
+    $.ui.log(`agent-usage-guard não pôde registrar quando a sessão esteve ativa pela última vez: ${String(error)}`, { to: 'debug' })
   }
 }
 
@@ -614,7 +614,7 @@ async function loadPeers($: Api, now: number): Promise<void> {
     const records = await Promise.all(keys.map((k) => $.store.get(k)))
     peers = livePeers(records, now, config.peerTtlMs)
   } catch (error) {
-    $.ui.log(`agent-usage-guard could not read other sessions: ${String(error)}`, { to: 'debug' })
+    $.ui.log(`agent-usage-guard não pôde ler outras sessões: ${String(error)}`, { to: 'debug' })
   }
 }
 
@@ -655,13 +655,13 @@ async function refreshStatus($: Api): Promise<void> {
     const expiries = [statusLineExpiry(session, peers, config, now), bandExpiry(session, peers, config, now)].filter((t) => t !== undefined)
     redrawAt($, expiries.length > 0 ? Math.min(...expiries) : undefined, now)
     await drawBand($, now)
-    const parts = [statusLine(session, peers, config, now), storeFailure === undefined || !config.enabled ? undefined : "store not saving: other sessions can't count this one"]
+    const parts = [statusLine(session, peers, config, now), storeFailure === undefined || !config.enabled ? undefined : 'armazenamento não salva: outras sessões não podem contar esta']
     const text = parts.filter((p) => p !== undefined).join(' · ') || undefined
     if (text === lastStatus) return
     lastStatus = text
     $.ui.status(text)
   } catch (error) {
-    $.ui.log(`agent-usage-guard could not update its status line: ${String(error)}`, { to: 'debug' })
+    $.ui.log(`agent-usage-guard não pôde atualizar sua linha de status: ${String(error)}`, { to: 'debug' })
   }
 }
 
@@ -715,7 +715,7 @@ async function askUser($: Api, ask: Ask, ctx?: string): Promise<Asked> {
       session.canAsk = false
       unavailable = true
     } else if (!/\$\.ui\.ask: no answer\b/.test(text)) {
-      $.ui.log(`agent-usage-guard: the question ended without an answer (${text}), so it counts as dismissed.`, { to: 'debug' })
+      $.ui.log(`agent-usage-guard: a pergunta terminou sem resposta (${text}), então conta como dispensada.`, { to: 'debug' })
     }
   }
   return { answer, unavailable, at: await $.clock.now() }
@@ -754,22 +754,22 @@ async function oneAtATime<T>($: Api, key: string, held: () => T, run: () => Prom
  */
 async function simulation($: Api, rule: SimulatedRule, now: number): Promise<string> {
   const verdict = simulate(rule, config, now, canAsk())
-  const opening = `Simulation of ${rule}`
-  const aside = `${opening}: nothing was held, and none of this applies to the current work.`
+  const opening = `Simulação de ${rule}`
+  const aside = `${opening}: nada foi retido, e nada disso se aplica ao trabalho atual.`
   if (verdict.kind === 'ask') {
     if (canAsk()) {
       try {
-        const answer = await $.ui.ask(`Simulation, nothing changes: ${verdict.question}`, { options: verdict.options, header: HEADER })
-        return `${opening}: you answered "${answer}". Nothing was held, nothing changed and no usage was spent.`
+        const answer = await $.ui.ask(`Simulação, nada muda: ${verdict.question}`, { options: verdict.options, header: HEADER })
+        return `${opening}: você respondeu "${answer}". Nada foi retido, nada mudou e nenhum uso foi gasto.`
       } catch {
         // Dismissed, or the dialog could not open: show the question instead.
       }
     }
-    return `${aside} The guard would ask:\n\n${verdict.question}\nOptions: ${verdict.options.join(' · ')}`
+    return `${aside} A proteção perguntaria:\n\n${verdict.question}\nOptions: ${verdict.options.join(' · ')}`
   }
-  if (verdict.kind === 'deny') return `${aside} Claude would read this refusal:\n\n${verdict.message}`
-  if (verdict.kind === 'drop') return `${aside} A prompt you send would be held:\n\n${verdict.message}`
-  return `${opening}: with your settings, this rule would not trip.`
+  if (verdict.kind === 'deny') return `${aside} O Claude leria esta recusa:\n\n${verdict.message}`
+  if (verdict.kind === 'drop') return `${aside} Um prompt seu seria retido:\n\n${verdict.message}`
+  return `${opening}: com suas configurações, esta regra não seria acionada.`
 }
 
 /** Compacts the conversation. Returns why it did not, or undefined once it has. */
@@ -801,7 +801,7 @@ async function compactThenSend($: Api, text: string, resend: boolean): Promise<v
   const failed = await compact($)
   if (failed !== undefined) {
     if (resend) await putBack($, text)
-    $.ui.log(`could not compact (${failed}), so your prompt is back in the input box.`)
+    $.ui.log(`não foi possível compactar (${failed}), então seu prompt voltou para a caixa de entrada.`)
     return
   }
   if (!resend) return
@@ -810,7 +810,7 @@ async function compactThenSend($: Api, text: string, resend: boolean): Promise<v
     await $.prompt.submit({ text, asUser: true })
   } catch (error) {
     await putBack($, text)
-    $.ui.log(`could not send your prompt (${String(error)}), so it is back in the input box.`)
+    $.ui.log(`não foi possível enviar seu prompt (${String(error)}), então ele voltou para a caixa de entrada.`)
   }
 }
 
@@ -874,7 +874,7 @@ function resumeTarget(to: unknown, message: unknown): string | undefined {
  */
 function agentLabel(id: string): string {
   const name = session.agents[id]?.name
-  return name !== undefined && PLAIN_NAME.test(name) ? `agent "${name}"` : `agent ${id.slice(0, 8)}`
+  return name !== undefined && PLAIN_NAME.test(name) ? `agente "${name}"` : `agente ${id.slice(0, 8)}`
 }
 
 /** The tool's own arguments, for its fingerprint. */
@@ -960,12 +960,12 @@ async function report($: Api, now: number, days: number): Promise<string> {
     const rows = (await Promise.all(recent.map((k) => $.store.get(k)))).flatMap((v) => (Array.isArray(v) ? v.filter(isJournalRow) : []))
     return formatReport(rows, now, days)
   } catch (error) {
-    return `Could not read the journal (${String(error)}).`
+    return `Não foi possível ler o diário (${String(error)}).`
   }
 }
 
 /** A hook that throws or overruns lets the event go ahead: a broken guard must not break the session. */
 function failOpen<T>($: Api, event: string, error: { kind?: string; message?: string } | undefined, proceed: () => T): T {
-  $.ui.log(`agent-usage-guard: the ${event} hook failed, so the event went ahead (${error?.kind ?? 'error'}: ${error?.message ?? 'unknown'})`, { to: 'debug' })
+  $.ui.log(`agent-usage-guard: o hook ${event} falhou, então o evento prosseguiu (${error?.kind ?? 'erro'}: ${error?.message ?? 'desconhecido'})`, { to: 'debug' })
   return proceed()
 }

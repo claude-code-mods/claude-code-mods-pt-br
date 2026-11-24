@@ -20,9 +20,9 @@ export type PromptRequest = {
   idleMs?: number
 }
 
-const PROMPT_COMPACT = 'Compact, then send'
-const PROMPT_SEND = 'Send anyway'
-const PROMPT_CANCEL = 'Cancel'
+const PROMPT_COMPACT = 'Compactar e enviar'
+const PROMPT_SEND = 'Enviar mesmo assim'
+const PROMPT_CANCEL = 'Cancelar'
 
 const MARKERS: Readonly<Record<string, Scope>> = {
   '[allow-usage-guard]': 'all',
@@ -51,24 +51,24 @@ export function promptGate(
 
   const hardLeased = state.leases['prompt-context'] !== undefined
   if (context >= config.contextHard && !hardLeased) {
-    const detail = `this session holds ${tokens(context)} context tokens (limit ${tokens(config.contextHard)}), and sending re-reads all of them`
+    const detail = `esta sessão tem ${tokens(context)} tokens de contexto (limite ${tokens(config.contextHard)}) e o envio os relê todos`
     if (state.canAsk && request.source === 'user') {
-      return promptAsk('prompt-context', `This session holds ${tokens(context)} context tokens, and sending re-reads all of them; compacting first shrinks this request and every later one. Send this prompt?`, detail)
+      return promptAsk('prompt-context', `Esta sessão tem ${tokens(context)} tokens de contexto e o envio os relê todos; compactar primeiro reduz esta requisição e todas as seguintes. Enviar este prompt?`, detail)
     }
-    return drop('prompt-context', `${detail}. Compact the session first, or raise AGENT_GUARD_CONTEXT_HARD.`)
+    return drop('prompt-context', `${detail}. Compacte a sessão primeiro ou aumente AGENT_GUARD_CONTEXT_HARD.`)
   }
 
   const idle = request.idleMs
   if (idle !== undefined && idle >= config.dormantMs && context >= config.dormantContext) {
-    const detail = `this session was idle for ${duration(idle)}, so its prompt cache has likely expired and this request re-writes about ${tokens(context)} tokens`
+    const detail = `esta sessão ficou ociosa por ${duration(idle)}, então o cache de prompt provavelmente expirou e esta requisição reescreve cerca de ${tokens(context)} tokens`
     if (state.canAsk && request.source === 'user') {
-      return promptAsk('dormant', `${sentence(detail)}. Send this prompt?`, detail)
+      return promptAsk('dormant', `${sentence(detail)}. Enviar este prompt?`, detail)
     }
     const recent = countOnMachine(state, peers, 'dormantResumes', now, config.windowMs)
     if (recent >= config.dormantMax) {
       return drop(
         'dormant',
-        `${detail}, and ${count(recent, 'heavy idle session')} already resumed on this machine in the last ${duration(config.windowMs)} (limit ${config.dormantMax}). Try again later, or compact the session first.`,
+        `${detail}, e ${count(recent, 'sessão ociosa pesada', 'sessões ociosas pesadas')} já retomadas nesta máquina nos últimos ${duration(config.windowMs)} (limite ${config.dormantMax}). Tente novamente depois ou compacte a sessão primeiro.`,
       )
     }
     state.dormantResumes.push(now)
@@ -89,15 +89,15 @@ export function resolvePromptAsk(state: SessionState, ask: Ask, answer: string |
   const trip = ask.trips[0]!
   if (answer === PROMPT_COMPACT) {
     const then = resendable
-      ? 'your prompt is sent once that finishes'
-      : 'your prompt is back in the input box, to send once that finishes, as sending it for you would drop its images and @ mentions'
-    return { kind: 'compact-then-send', rule: trip.rule, message: `${SIGNATURE}: compacting first, because ${trip.detail}; ${then}.`, resend: resendable }
+      ? 'seu prompt é enviado quando terminar'
+      : 'seu prompt volta para a caixa de entrada, para ser enviado quando terminar, pois enviá-lo por você removeria imagens e @ menções'
+    return { kind: 'compact-then-send', rule: trip.rule, message: `${SIGNATURE}: compactando primeiro, porque ${trip.detail}; ${then}.`, resend: resendable }
   }
   if (answer === PROMPT_SEND) {
     if (trip.rule === 'prompt-context') state.leases['prompt-context'] = Number.MAX_SAFE_INTEGER
     return ALLOW
   }
-  return drop(trip.rule, 'cancelled; your prompt is back in the input box.')
+  return drop(trip.rule, 'cancelado; seu prompt voltou para a caixa de entrada.')
 }
 
 function promptAsk(rule: 'prompt-context' | 'dormant', question: string, detail: string): Ask {
@@ -130,7 +130,7 @@ function withNotes(state: SessionState, peers: readonly PeerRecord[], config: Co
 function contextWarning(state: SessionState, config: Config, context: number | undefined): string | undefined {
   if (context === undefined || context < config.contextWarn || state.warned) return undefined
   state.warned = true
-  return `${SIGNATURE}: this session's context is ${tokens(context)} tokens. Keep this turn bounded, and recommend /compact to the user at the next natural break.`
+  return `${SIGNATURE}: o contexto desta sessão é de ${tokens(context)} tokens. Mantenha esta rodada limitada e recomende /compact ao usuário na próxima pausa natural.`
 }
 
 /**
@@ -147,5 +147,5 @@ function windDown(state: SessionState, peers: readonly PeerRecord[], config: Con
   }
   if (state.windDown) return undefined
   state.windDown = true
-  return `${SIGNATURE}: ${limitDetail(limit)}. Finish the step in progress, start nothing large, and end this turn with a short summary of what is done and what is left, so the work can resume after the reset.`
+  return `${SIGNATURE}: ${limitDetail(limit)}. Conclua a etapa em andamento, nao comece nada grande e termine esta rodada com um breve resumo do que foi feito e do que falta, para que o trabalho continue apos a redefinicao.`
 }

@@ -14,7 +14,7 @@ const BIG_TOKENS = 50000
 /** A warm ping reads the prefix and writes only its own message: a write of this share of the read or more means the prefix broke. */
 const WARM_WRITE_SHARE = 0.1
 const DEFAULT_PING_FLOOR = 2
-const PING_PROMPT = 'Reply with the single word: warm'
+const PING_PROMPT = 'Responda com a única palavra: warm'
 const KEY_DEADLINE = 'deadline'
 const KEY_EVERY = 'every'
 const KEY_GUARD = 'guard'
@@ -23,9 +23,9 @@ const KEY_ACKED = 'acked'
 // stamps at turn.complete: the same moment, matched within this. Request times differ by the response's own length.
 const ACK_SLACK_MS = 60 * 1000
 const KEY_ALWAYS = 'always'
-const KEEP_LABEL = "Don't send"
-const MOVED_TEXT = 'cache-tax: the conversation changed while the question was open, so this was not sent. Send it again.'
-const SEND_LABEL = 'Send anyway'
+const KEEP_LABEL = 'Não enviar'
+const MOVED_TEXT = 'cache-tax: a conversa mudou enquanto a pergunta estava aberta, então isso não foi enviado. Envie novamente.'
+const SEND_LABEL = 'Enviar mesmo assim'
 
 // Prompts no person sent, so nobody could send them again after a refusal. Every
 // other origin, including sdk, unclassified and the owner's own Slack or channel
@@ -196,7 +196,7 @@ function fmtTok(n: number): string {
 function tellUnpriced($: EngineInterface, s: State) {
   if (!s.lastModel || s.unpricedTold === s.lastModel || priceOf(s.lastModel, s.ctx)) return
   s.unpricedTold = s.lastModel
-  $.ui.log(`cache-tax: no price row for ${s.lastModel} yet, so dollar figures show n/a. Token counts are unaffected.`)
+  $.ui.log(`cache-tax: ainda não há linha de preço para ${s.lastModel}, então os valores em dólares aparecem como n/a. As contagens de tokens não são afetadas.`)
 }
 
 function coldUsd(s: State): number | null {
@@ -231,26 +231,26 @@ function isCold(s: State, now: number): boolean {
 
 function costText(s: State): string {
   const price = priceOf(s.lastModel, s.ctx)
-  const rate = price ? `$${price[1]}/MTok` : 'the cache-write rate'
+  const rate = price ? `$${price[1]}/MTok` : 'a taxa de gravação do cache'
   const warm = warmUsd(s)
-  return `Sending this re-writes up to ${s.ctx.toLocaleString('en-US')} tokens at ${rate} = ${fmtUsd(coldUsd(s))}` +
-    (warm == null ? '' : ` (a warm turn would have cost ${fmtUsd(warm)})`) + '.'
+  return `Enviar isto reescreve até ${s.ctx.toLocaleString('en-US')} tokens a ${rate} = ${fmtUsd(coldUsd(s))}` +
+    (warm == null ? '' : ` (uma rodada aquecida teria custado ${fmtUsd(warm)})`) + '.'
 }
 
 function guardText(s: State, now: number): string {
-  return `the prompt cache went cold ${fmtDuration(now - s.lastRequestAt - TTL_MS)} ago. ${costText(s)}`
+  return `o cache de prompt esfriou há ${fmtDuration(now - s.lastRequestAt - TTL_MS)}. ${costText(s)}`
 }
 
 /** What each answer saves. The dialog's options are bare labels, so the question carries it. */
 function saveText(s: State, now: number): string {
   const cold = coldUsd(s)
   const warm = warmUsd(s)
-  if (!holds(s, now)) return `${KEEP_LABEL} ${cold == null ? 'pays nothing' : `saves ${fmtUsd(cold)}`}; after ${SEND_LABEL}, keepwarm stays off (/keepwarm to arm it).`
-  if (pingFloor > 0) return `${KEEP_LABEL} ${cold == null ? 'pays nothing' : `saves ${fmtUsd(cold)}`}; after ${SEND_LABEL}, keepwarm is armed for up to ${fmtDuration(holdMs(s, now))}.` +
-    (warm == null ? '' : ` The cache read alone is about ${fmtUsd(warm)} per ping.`) + (cold == null ? '' : ' Pings may stop sooner at the idle spending limit, leaving the cache to go cold.')
-  if (cold == null || warm == null) return `${KEEP_LABEL} pays nothing; after ${SEND_LABEL}, keepwarm holds the cache for ${fmtDuration(holdMs(s, now))}.`
-  return `${KEEP_LABEL} saves ${fmtUsd(cold)}; after ${SEND_LABEL}, keepwarm holds the cache for ${fmtDuration(holdMs(s, now))} ` +
-    `at about ${fmtUsd(warm)} a ping, so the next break does not cost ${fmtUsd(cold)} again.`
+  if (!holds(s, now)) return `${KEEP_LABEL} ${cold == null ? 'não custa nada' : `economiza ${fmtUsd(cold)}`}; after ${SEND_LABEL}, keepwarm continua desligado (/keepwarm para ativar).`
+  if (pingFloor > 0) return `${KEEP_LABEL} ${cold == null ? 'não custa nada' : `economiza ${fmtUsd(cold)}`}; after ${SEND_LABEL}, keepwarm será ativado por até ${fmtDuration(holdMs(s, now))}.` +
+    (warm == null ? '' : ` A leitura do cache sozinha custa cerca de ${fmtUsd(warm)} por ping.`) + (cold == null ? '' : ' Os pings podem parar antes no limite de gasto ocioso, deixando o cache esfriar.')
+  if (cold == null || warm == null) return `${KEEP_LABEL} pays nothing; after ${SEND_LABEL}, keepwarm mantém o cache por ${fmtDuration(holdMs(s, now))}.`
+  return `${KEEP_LABEL} economiza ${fmtUsd(cold)}; after ${SEND_LABEL}, keepwarm mantém o cache por ${fmtDuration(holdMs(s, now))} ` +
+    `a cerca de ${fmtUsd(warm)} por ping, para que a próxima pausa não custe ${fmtUsd(cold)} novamente.`
 }
 
 function sendLabel(s: State): string {
@@ -261,7 +261,7 @@ function sendLabel(s: State): string {
 /** Asks in the engine's own dialog, Send anyway first; null when it is dismissed or no one can be asked. */
 async function ask($: EngineInterface, question: string, send: string): Promise<string | null> {
   try {
-    return await $.ui.ask(question, { header: 'Cache Tax', options: [send, KEEP_LABEL] })
+    return await $.ui.ask(question, { header: 'Custo do cache', options: [send, KEEP_LABEL] })
   } catch {
     return null
   }
@@ -318,7 +318,7 @@ export function seedFromResume(s: State, e: ResumeFields, now: number): string |
   s.preCompactCtx = 0
   if (e.prompt_cache_likely_expired !== true || s.ctx < BIG_TOKENS) return null
   const usd = typeof e.estimated_cache_write_usd === 'number' ? fmtUsd(e.estimated_cache_write_usd) : fmtUsd(coldUsd(s))
-  return `resuming cold. The first message re-writes ${s.ctx.toLocaleString('en-US')} tokens, about ${usd}. /clear and paste a summary if you only need the conclusions.`
+  return `retomando com cache frio. A primeira mensagem reescreve ${s.ctx.toLocaleString('en-US')} tokens, cerca de ${usd}. Use /clear e cole um resumo se precisar apenas das conclusões.`
 }
 
 /** A transcript resumed without the time of its last response: that response came after its first launch, so an hour after that launch the cache may be cold. */
@@ -329,9 +329,9 @@ function mayBeCold(s: State, now: number): boolean {
 /** The line for a resumed session whose last response time never arrived: the cache may be cold, and this is what that would cost. */
 function unknownText(s: State): string {
   const price = priceOf(s.lastModel, s.ctx)
-  const rate = price ? `$${price[1]}/MTok` : 'the cache-write rate'
-  return `resumed with up to ${s.ctx.toLocaleString('en-US')} tokens of context and no time of its last response, so the cache may be cold. ` +
-    `If it is, this message re-writes them at ${rate} = ${fmtUsd(coldUsd(s))}.`
+  const rate = price ? `$${price[1]}/MTok` : 'a taxa de gravação do cache'
+  return `retomada com até ${s.ctx.toLocaleString('en-US')} tokens de contexto e sem a hora da última resposta, então o cache pode estar frio. ` +
+    `Se estiver, esta mensagem os reescreve a ${rate} = ${fmtUsd(coldUsd(s))}.`
 }
 
 /** The conversation was summarized: the next request is the first over the new prefix, and a ping out for the old one is dropped. */
@@ -345,17 +345,17 @@ function markCompacted(s: State) {
 }
 
 function statusText(s: State, now: number): string | undefined {
-  if (s.stopped) return `keepwarm stopped: ${s.stopped}`
+  if (s.stopped) return `keepwarm parado: ${s.stopped}`
   if (!s.deadline) return undefined
-  const pingText = s.last ? ` · last ping read ${fmtTok(s.last.read)} ${fmtUsd(s.last.usd)}` : ''
-  const nextText = !s.lastRequestAt ? ' · waiting for the first turn'
-    : awaitingPrefix(s) ? ' · waiting for the first turn after compaction'
-    : isCold(s, now) ? ` · cold now, first ping ${fmtDuration(s.every)} after the next turn`
-    : s.waitForTurn ? ' · nothing to fork yet, first ping after the next turn'
-    : s.skipping ? ` · ping skipped, idle budget ${fmtUsd(coldUsd(s) == null ? null : coldUsd(s)! / pingFloor)} reached`
-    : s.retries ? ` · API busy, ping retry ${s.retries} of ${MAX_RETRIES}`
-    : ` · ping in ${fmtDuration(s.lastRequestAt + s.every - now)}`
-  return `keepwarm ${fmtDuration(s.deadline - now)} left${nextText}${pingText}`
+  const pingText = s.last ? ` · último ping leu ${fmtTok(s.last.read)} ${fmtUsd(s.last.usd)}` : ''
+  const nextText = !s.lastRequestAt ? ' · aguardando a primeira rodada'
+    : awaitingPrefix(s) ? ' · aguardando a primeira rodada após a compactação'
+    : isCold(s, now) ? ` · frio agora, primeiro ping ${fmtDuration(s.every)} após a próxima rodada`
+    : s.waitForTurn ? ' · nada para bifurcar ainda, primeiro ping após a próxima rodada'
+    : s.skipping ? ` · ping ignorado, orçamento ocioso de ${fmtUsd(coldUsd(s) == null ? null : coldUsd(s)! / pingFloor)} atingido`
+    : s.retries ? ` · API ocupada, nova tentativa de ping ${s.retries} de ${MAX_RETRIES}`
+    : ` · ping em ${fmtDuration(s.lastRequestAt + s.every - now)}`
+  return `keepwarm restam ${fmtDuration(s.deadline - now)}${nextText}${pingText}`
 }
 
 /** The read-only view `$.cacheTax.status()` gives other mods. */
@@ -587,18 +587,18 @@ async function ping($: EngineInterface, s: State) {
   if (gen !== s.gen || s.lastRequestAt !== sentAt) return s.pending ? undefined : arm($, s)
   if ('err' in sent) return stop($, s, `the ping failed, ${sent.err instanceof Error ? sent.err.message : String(sent.err)}`)
   const reply = sent.reply
-  if (reply === null) return stop($, s, 'the engine did not send the ping, either the snapshot was cold or the API call failed')
+  if (reply === null) return stop($, s, 'o motor não enviou o ping, seja porque o snapshot estava frio ou porque a chamada à API falhou')
   if (reply.isAnswered === false) {
     // A restarted process has no conversation to fork until its first turn; the window waits for one instead of ending.
     if (reply.reason === 'nothing-to-fork') {
       // Said once per wait: /keepwarm already answered "on", and the status row alone does not tell anyone to act.
-      if (!s.waitForTurn) $.ui.log('keepwarm is on, but there is nothing to fork yet, so no ping goes out until your next message. Send one more message and the pings start.')
+      if (!s.waitForTurn) $.ui.log('keepwarm está ligado, mas ainda há nada para bifurcar, então nenhum ping sai até sua próxima mensagem. Envie mais uma mensagem e os pings começam.')
       s.waitForTurn = true
       return arm($, s)
     }
     const reason = reply.reason === 'api-error' ? `the API call failed${reply.status === null ? '' : ` (${reply.status})`}`
-      : reply.reason === 'aborted' ? 'the ping was interrupted'
-      : 'the ping returned no text'
+      : reply.reason === 'aborted' ? 'o ping foi interrompido'
+      : 'o ping não retornou texto'
     // A busy or failing API is usually brief; retry while a ping can still land a minute before the cache goes cold.
     if (reply.reason === 'api-error' && (reply.status === null || reply.status === 429 || reply.status >= 500)) {
       const wait = MIN_PING_MS * 2 ** s.retries
@@ -619,7 +619,7 @@ async function ping($: EngineInterface, s: State) {
   const warm = u.cache_read_input_tokens > 0 && u.cache_creation_input_tokens < WARM_WRITE_SHARE * u.cache_read_input_tokens
   const usd = price ? pingUsd(u, price) : null
   s.last = { at: now, read: u.cache_read_input_tokens, write: u.cache_creation_input_tokens, input: u.input_tokens, output: u.output_tokens, usd, warm }
-  if (!warm) return stop($, s, `the ping read ${fmtTok(u.cache_read_input_tokens)} and wrote ${fmtTok(u.cache_creation_input_tokens)} tokens (${fmtUsd(usd)}), the cache was already gone`)
+  if (!warm) return stop($, s, `o ping leu ${fmtTok(u.cache_read_input_tokens)} e gravou ${fmtTok(u.cache_creation_input_tokens)} tokens (${fmtUsd(usd)}), o cache já tinha sumido`)
   s.skipSaid = false
   s.lastRequestAt = now
   await arm($, s)
@@ -642,12 +642,12 @@ function underFloor(s: State): boolean {
 }
 
 function skipText(s: State): string {
-  return `keepwarm skipped a ping: this break spent ${fmtUsd(s.idleSpentUsd)}; the next ping is estimated at ${fmtUsd(nextPingUsd(s))}, reaching the rewrite (${fmtUsd(coldUsd(s))}) divided by ${pingFloor}. ` +
-    'The cache is left to go cold; your next turn starts a new budget. Ping floor 0 disables this limit.'
+  return `keepwarm ignorou um ping: esta pausa gastou ${fmtUsd(s.idleSpentUsd)}; o próximo ping é estimado em ${fmtUsd(nextPingUsd(s))}, atingindo a reescrita (${fmtUsd(coldUsd(s))}) dividida por ${pingFloor}. ` +
+    'O cache fica esfriando; sua próxima rodada começa um novo orçamento. Ping floor 0 desativa este limite.'
 }
 
 function afterRetries(n: number): string {
-  return n ? ` after ${n} ${n === 1 ? 'retry' : 'retries'}` : ''
+  return n ? ` após ${n} ${n === 1 ? 'tentativa' : 'tentativas'}` : ''
 }
 
 /** The reply to an arming command; on a cold cache it says when the first ping can come. */
@@ -680,27 +680,27 @@ function holds(s: State, now: number): boolean {
 
 /** What the guard says about keepwarm after a paid cold write; `then` is the wording of the refusal. */
 function holdNote(s: State, now: number, then: boolean): string {
-  if (!holds(s, now)) return 'keepwarm stays off (/keepwarm to arm it)'
-  if (pingFloor > 0) return `keepwarm will be armed for up to ${fmtDuration(holdMs(s, now))}` + (coldUsd(s) == null ? '' : ', but may stop sooner at the idle spending limit')
-  return then ? `keepwarm will then hold the cache for ${fmtDuration(holdMs(s, now))}` : `keepwarm will hold the cache for ${fmtDuration(holdMs(s, now))} once it lands`
+  if (!holds(s, now)) return 'keepwarm continua desligado (/keepwarm para ativar)'
+  if (pingFloor > 0) return `keepwarm será ativado por até ${fmtDuration(holdMs(s, now))}` + (coldUsd(s) == null ? '' : ', mas podem parar antes no limite de gasto ocioso')
+  return then ? `keepwarm então manterá o cache por ${fmtDuration(holdMs(s, now))}` : `keepwarm manterá o cache por ${fmtDuration(holdMs(s, now))} assim que for cobrado`
 }
 
 function noRewriteText(s: State, now: number): string {
   const outcome = s.deadline > now && !s.stopped
-    ? s.always ? `Always keeps keepwarm armed for up to ${fmtDuration(s.deadline - now)}.`
-      : `The existing keepwarm window remains armed for up to ${fmtDuration(s.deadline - now)}; it was not extended for a cold write.`
-    : s.stopped ? `Keepwarm remains stopped: ${s.stopped}. No automatic warming window was opened.`
-      : !autoWarm ? 'Auto keepwarm is off; keepwarm stays off.'
-        : 'No automatic warming window was opened; /keepwarm to arm one.'
-  return `No cold rewrite was detected in the reported usage. ${outcome}`
+    ? s.always ? `Always mantém keepwarm ativado por até ${fmtDuration(s.deadline - now)}.`
+      : `A janela keepwarm existente permanece ativada por até ${fmtDuration(s.deadline - now)}; não foi estendida por uma gravação fria.`
+    : s.stopped ? `Keepwarm permanece parado: ${s.stopped}. Nenhuma janela automática de aquecimento foi aberta.`
+      : !autoWarm ? 'Keepwarm automático está desligado; keepwarm continua desligado.'
+        : 'Nenhuma janela automática de aquecimento foi aberta; use /keepwarm para ativar uma.'
+  return `Nenhuma reescrita fria foi detectada no uso informado. ${outcome}`
 }
 
 function armedText(s: State, now: number, windowMs: number): string {
   const delay = s.lastRequestAt && !awaitingPrefix(s) && !isCold(s, now) ? Math.max(1000, s.lastRequestAt + s.every - now) : s.every
-  if (windowMs <= delay) return `keepwarm on for ${fmtDuration(windowMs)}. At the current timing, the window ends before a ping is due; use a longer window or a shorter every period`
-  if (isCold(s, now)) return `keepwarm on for ${fmtDuration(windowMs)}. The cache is cold now, so the first ping comes ${fmtDuration(s.every)} after the next turn` + (pingFloor > 0 && coldUsd(s) != null ? '; pings may stop sooner at the idle spending limit' : '')
-  return `keepwarm on for ${fmtDuration(windowMs)}, a ping ${fmtDuration(s.every)} after each idle stretch keeps the cache read, not re-written` +
-    (pingFloor > 0 && coldUsd(s) != null ? '; pings may stop sooner at the idle spending limit' : '')
+  if (windowMs <= delay) return `keepwarm ligado por ${fmtDuration(windowMs)}. At the current timing, the window ends before a ping is due; use a longer window or a shorter every period`
+  if (isCold(s, now)) return `keepwarm ligado por ${fmtDuration(windowMs)}. The cache is cold now, so the first ping comes ${fmtDuration(s.every)} after the next turn` + (pingFloor > 0 && coldUsd(s) != null ? '; os pings podem parar antes no limite de gasto ocioso' : '')
+  return `keepwarm ligado por ${fmtDuration(windowMs)}, a ping ${fmtDuration(s.every)} after each idle stretch keeps the cache read, not re-written` +
+    (pingFloor > 0 && coldUsd(s) != null ? '; os pings podem parar antes no limite de gasto ocioso' : '')
 }
 
 // A /keepwarm off after `offs` was read wins: the window it cancelled is not written back. A caller that awaited
@@ -736,27 +736,27 @@ async function startWindow($: EngineInterface, s: State, windowMs: number, every
 
 function card(s: State, now: number): string {
   const lines: string[] = []
-  lines.push(`${s.lastModel ?? 'model not seen yet'}`)
-  if (awaitingPrefix(s)) lines.push('state       reset by compaction, waiting for the first turn')
-  else if (s.resumedAt) lines.push(mayBeCold(s, now) ? 'state       unknown, resumed without the time of its last response' : `state       resumed without the time of its last response, warm for up to ${fmtDuration(s.resumedAt + TTL_MS - now)} more`)
-  else if (!s.lastRequestAt) lines.push('state       no request yet this session')
-  else if (isCold(s, now)) lines.push(`state       COLD, last request ${fmtDuration(now - s.lastRequestAt)} ago`)
-  else lines.push(`state       warm, ${fmtDuration(s.lastRequestAt + TTL_MS - now)} left`)
-  lines.push(`context     ${s.ctx.toLocaleString('en-US')} tokens`)
-  lines.push(`cold cost   ${fmtUsd(coldUsd(s))} to re-write it (warm turn ${fmtUsd(warmUsd(s))})`)
+  lines.push(`${s.lastModel ?? 'modelo ainda não visto'}`)
+  if (awaitingPrefix(s)) lines.push('estado       reiniciado pela compactação, aguardando a primeira rodada')
+  else if (s.resumedAt) lines.push(mayBeCold(s, now) ? 'estado       desconhecido, retomado sem a hora da última resposta' : `estado       retomado sem a hora da última resposta, aquecido por mais ${fmtDuration(s.resumedAt + TTL_MS - now)}`)
+  else if (!s.lastRequestAt) lines.push('estado       nenhuma requisição nesta sessão')
+  else if (isCold(s, now)) lines.push(`estado       FRIO, última requisição há ${fmtDuration(now - s.lastRequestAt)}`)
+  else lines.push(`estado       aquecido, restam ${fmtDuration(s.lastRequestAt + TTL_MS - now)}`)
+  lines.push(`contexto     ${s.ctx.toLocaleString('en-US')} tokens`)
+  lines.push(`custo frio   ${fmtUsd(coldUsd(s))} para reescrever (rodada aquecida ${fmtUsd(warmUsd(s))})`)
   const always = s.always ? ' (always)' : ''
-  const idle = s.always ? `off until the next turn, which arms ${fmtDuration(s.alwaysMs)} (always)` : 'off (/keepwarm to arm it for 6h00m)'
-  lines.push(`keepwarm    ${s.deadline ? (statusText(s, now) ?? '').replace(/^keepwarm /, 'on, ') + always : s.stopped ? `stopped, ${s.stopped}${always}` : idle}`)
+  const idle = s.always ? `desligado até a próxima rodada, que ativa ${fmtDuration(s.alwaysMs)} (always)` : 'desligado (/keepwarm para ativar por 6h00m)'
+  lines.push(`keepwarm    ${s.deadline ? (statusText(s, now) ?? '').replace(/^keepwarm /, 'ligado, ') + always : s.stopped ? `parado, ${s.stopped}${always}` : idle}`)
   const pings = breakEvenPings(s)
-  if (pings != null) lines.push(`break-even  up to ${pings} pings at the read rate cost one cold write, about ${fmtDuration(pings * s.every)} of idle at one ping per ${fmtDuration(s.every)}`)
-  lines.push(`guard       ${s.guard === 'warn' ? 'warn only (/cache-tax guard refuse to be asked first)'
-    : s.guard ? `ask first at ${fmtUsd(s.guard)} or more, warn below (/cache-tax guard refuse to ask at any price)`
-    : 'ask first (/cache-tax guard warn to only show the price)'}`)
+  if (pings != null) lines.push(`equilíbrio   até ${pings} pings na taxa de leitura custam uma gravação fria, cerca de ${fmtDuration(pings * s.every)} de ocioso com um ping por ${fmtDuration(s.every)}`)
+  lines.push(`guard       ${s.guard === 'warn' ? 'apenas avisar (/cache-tax guard refuse para perguntar primeiro)'
+    : s.guard ? `perguntar primeiro a partir de ${fmtUsd(s.guard)}, avisar abaixo disso (/cache-tax guard refuse para perguntar a qualquer preço)`
+    : 'perguntar primeiro (/cache-tax guard warn para apenas mostrar o preço)'}`)
   const priced = s.misses.filter(m => m.usd != null)
   const unpriced = s.misses.length - priced.length
   const paid = priced.reduce((a, m) => a + (m.usd ?? 0), 0)
-  const total = !unpriced ? fmtUsd(paid) : priced.length ? `${fmtUsd(paid)} and ${unpriced} with no price row` : 'no price row'
-  lines.push(`session     ${s.misses.length} cold write${s.misses.length === 1 ? '' : 's'} paid, ${total}`)
+  const total = !unpriced ? fmtUsd(paid) : priced.length ? `${fmtUsd(paid)} and ${unpriced} with no price row` : 'sem linha de preço'
+  lines.push(`sessão      ${s.misses.length} gravação(ões) fria(s) paga(s), ${total}`)
   return lines.join('\n')
 }
 
@@ -864,7 +864,7 @@ export const register: Register = (on, options) => {
     // The hook form of cache-tax ships a /cache-tax:status skill; both installed means two guards.
     const commands = await $.command.list()
     if (commands.some(c => c.name === 'cache-tax:status')) {
-      $.ui.log('the hook form (cache-tax@claude-code-hooks) is also installed, so a cold send is warned about or refused twice. Uninstall it, or /cache-tax guard warn here.')
+      $.ui.log('a forma hook (cache-tax@claude-code-hooks) também está instalada, então um envio frio é avisado ou recusado duas vezes. Desinstale-a ou use /cache-tax guard warn aqui.')
     }
     updateStatus($, s, now)
     return r
@@ -904,17 +904,17 @@ export const register: Register = (on, options) => {
       ? words.length === 1 ? DEFAULT_WINDOW_MS : words.length === 2 ? parseDuration(words[1]!) : null
       : !words.length ? DEFAULT_WINDOW_MS : parseDuration(mode!)) ?? 0
     let every = PING_AFTER_MS
-    const usage = 'keepwarm takes a window from 1m to 168h, such as 6h or 90m, or always, off, or status; keepwarm is unchanged'
+    const usage = 'keepwarm aceita uma janela de 1m a 168h, como 6h ou 90m, ou always, off ou status; keepwarm não foi alterado'
     if (mode === 'off' || mode === 'status') {
-      if (words.length !== 1) return { text: `${mode} takes no other words; keepwarm is unchanged` }
+      if (words.length !== 1) return { text: `${mode} não aceita outras palavras; keepwarm não foi alterado` }
     } else if (mode === 'always') {
-      if (window < TTL_MS || window > MAX_WINDOW_MS) return { text: 'always takes one window from 1h to 168h, such as always 24h' }
+      if (window < TTL_MS || window > MAX_WINDOW_MS) return { text: 'always aceita uma janela de 1h a 168h, como always 24h' }
     } else {
       if (window < MIN_PING_MS || window > MAX_WINDOW_MS ||
         (words.length > 1 && (words.length !== 3 || words[1] !== 'every'))) return { text: usage }
       if (words[1] === 'every') {
         const period = parseDuration(words[2]!)
-        if (period == null || period < MIN_PING_MS || period >= TTL_MS) return { text: 'every takes a period from 1m to 59m' }
+        if (period == null || period < MIN_PING_MS || period >= TTL_MS) return { text: 'every aceita um período de 1m a 59m' }
         every = period
       }
     }
@@ -923,7 +923,7 @@ export const register: Register = (on, options) => {
     if (words[0] === 'off') {
       const wasAlways = s.always
       await stop($, s, null, true)
-      return { text: wasAlways ? 'keepwarm is off, and always is off for every session from its next turn' : 'keepwarm is off' }
+      return { text: wasAlways ? 'keepwarm está desligado, e always ficará desligado para todas as sessões a partir da próxima rodada' : 'keepwarm está desligado' }
     }
     if (words[0] === 'always') {
       const windowMs = window
@@ -934,8 +934,8 @@ export const register: Register = (on, options) => {
       // The default window is still stored as true, which every version reads.
       await $.store.set(KEY_ALWAYS, windowMs === DEFAULT_WINDOW_MS ? true : windowMs)
       await startWindow($, s, windowMs, PING_AFTER_MS)
-      const cold = isCold(s, now) ? `. The cache is cold now, so the first ping comes ${fmtDuration(s.every)} after the next turn` : ''
-      return { text: `keepwarm always on: every session is armed for up to ${fmtDuration(windowMs)} after its last turn; /keepwarm off turns it off for good${cold}` + (pingFloor > 0 && coldUsd(s) != null ? '; pings may stop sooner at the idle spending limit' : '') }
+      const cold = isCold(s, now) ? `. O cache está frio agora, então o primeiro ping vem ${fmtDuration(s.every)} após a próxima rodada` : ''
+      return { text: `keepwarm always on: every session is armed for up to ${fmtDuration(windowMs)} after its last turn; /keepwarm off turns it off for good${cold}` + (pingFloor > 0 && coldUsd(s) != null ? '; os pings podem parar antes no limite de gasto ocioso' : '') }
     }
     if (!words.length) {
       await startWindow($, s, DEFAULT_WINDOW_MS, PING_AFTER_MS)
@@ -946,7 +946,7 @@ export const register: Register = (on, options) => {
       const rolls = s.always && (window < s.alwaysMs || every !== PING_AFTER_MS)
       return { text: armedText(s, now, window) + (rolls ? `. Always is on, so your next turn makes it at least ${fmtDuration(s.alwaysMs)} at one ping per ${fmtDuration(PING_AFTER_MS)}` : '') }
     }
-    return { text: statusText(s, now) ?? 'keepwarm is off' }
+    return { text: statusText(s, now) ?? 'keepwarm está desligado' }
   })
 
   on('command.run', { command: 'cache-tax' }, async ($, e) => {
@@ -958,19 +958,19 @@ export const register: Register = (on, options) => {
         s.guard = 0
         explicitRefuse = false
         await $.store.delete(KEY_GUARD)
-        return { text: 'guard reset to default: ask before cold sends; Headless prompts controls non-interactive SDK sends' }
+        return { text: 'proteção restaurada ao padrão: perguntar antes de envios frios; Promotos sem interação controla envios SDK não interativos' }
       }
       if (words[1] === 'test' && !words[2]) {
         s.testOnce = true
-        return { text: 'the next prompt you send asks as if the cache were cold, priced at this session\'s context; the test scores nothing, though a send into a cache that really is cold is scored as usual' }
+        return { text: 'o próximo prompt que você enviar perguntará como se o cache estivesse frio, com preço baseado no contexto desta sessão; o teste não é contabilizado, embora um envio para um cache realmente frio seja contabilizado normalmente' }
       }
       const floor = words[1] === 'refuse' && words[2] ? Number(words[2].replace(/^\$/, '')) : 0
       const valid = words[1] === 'warn' ? !words[2] : words[1] === 'refuse' && words.length <= 3 && (!words[2] || (floor > 0 && Number.isFinite(floor)))
-      if (!valid) return { text: '/cache-tax guard takes default, warn, refuse, refuse with a dollar floor such as refuse 5, or test' }
+      if (!valid) return { text: '/cache-tax guard aceita default, warn, refuse, refuse com um piso em dólares como refuse 5, ou test' }
       s.guard = words[1] === 'warn' ? 'warn' : floor
       explicitRefuse = words[1] === 'refuse' && floor === 0
       await $.store.set(KEY_GUARD, s.guard || 'refuse')
-      return { text: s.guard === 'warn' ? 'guard set to warn: a cold send goes through with its price shown'
+      return { text: s.guard === 'warn' ? 'proteção definida como warn: um envio frio prossegue com seu preço exibido'
         : s.guard ? `guard set to ask at ${fmtUsd(s.guard)} or more: a cold send waits for ${SEND_LABEL} or ${KEEP_LABEL}, a cheaper one goes through with its price shown`
         : `guard set to ask: a cold send waits for ${SEND_LABEL} or ${KEEP_LABEL}` }
     }
@@ -991,12 +991,12 @@ export const register: Register = (on, options) => {
       tellUnpriced($, s)
       const sid = s.sid
       const send = sendLabel(s)
-      const answer = await ask($, `cache-tax test, as if the cache were cold: ${costText(s)} ${saveText(s, now)} Send it anyway?`, send)
+      const answer = await ask($, `teste cache-tax, como se o cache estivesse frio: ${costText(s)} ${saveText(s, now)} Enviar mesmo assim?`, send)
       // The answer can take minutes, and the cache may have gone cold while the question was open. The clock is read
       // before the conversation check, so nothing awaits between that check and the send.
       const answeredAt = await $.clock.now()
       if (s.sid !== sid) return { drop: MOVED_TEXT }
-      if (answer !== send) return { drop: 'cache-tax test: not sent.' }
+      if (answer !== send) return { drop: 'teste cache-tax: não enviado.' }
       // A test that lands on a cache that really is cold pays like any cold send, so it is scored like one.
       if (isCold(s, answeredAt) && s.ctx >= BIG_TOKENS) s.coldWritePending = true
       return next(e)
@@ -1020,8 +1020,8 @@ export const register: Register = (on, options) => {
     const optedIn = guardLoaded && headless && sendHeadless && !explicitRefuse && e.origin.kind === 'sdk' && guard === 0
     const under = guard !== 'warn' && usd != null && usd < guard
     if (guard === 'warn' || unattended || under || optedIn) {
-      const why = optedIn ? ', since Headless prompts is set to send' : unattended ? `, since this ${e.origin.kind} prompt cannot be sent again` : under ? `, since it is under your ${fmtUsd(guard)} floor` : ''
-      $.ui.log(`${guardText(s, now)} Sending anyway${why}; ${holdNote(s, now, false)}.`)
+      const why = optedIn ? ', pois Promotos sem interação está configurado para enviar' : unattended ? `, since this ${e.origin.kind} prompt cannot be sent again` : under ? `, since it is under your ${fmtUsd(guard)} floor` : ''
+      $.ui.log(`${guardText(s, now)} Enviando mesmo assim${why}; ${holdNote(s, now, false)}.`)
       s.coldWritePending = true
       return next(e)
     }
@@ -1036,7 +1036,7 @@ export const register: Register = (on, options) => {
     // Ask before the turn starts: the button lets this very prompt through, still the user's own.
     const sid = s.sid
     const send = sendLabel(s)
-    const answer = await ask($, `cache-tax: ${guardText(s, now)} ${saveText(s, now)} Send it anyway?`, send)
+    const answer = await ask($, `cache-tax: ${guardText(s, now)} ${saveText(s, now)} Enviar mesmo assim?`, send)
     // A person can take minutes to answer. If /clear or a resume moved the process to another conversation meanwhile, the
     // answer belongs to the old one: nothing is sent, scored or stored under the new id.
     if (s.sid !== sid) return { drop: MOVED_TEXT }
@@ -1044,12 +1044,12 @@ export const register: Register = (on, options) => {
       s.coldWritePending = true
       return next(e)
     }
-    if (answer !== null) return { drop: `cache-tax: not sent, nothing paid${usd == null ? '' : ` (${fmtUsd(usd)} saved)`}. Send it again to be asked again, or /clear and start from a note.` }
+    if (answer !== null) return { drop: `cache-tax: não enviado, nada pago${usd == null ? '' : ` (${fmtUsd(usd)} saved)`}. Envie novamente para ser perguntado outra vez, ou use /clear e comece a partir de uma anotação.` }
     // No dialog to answer (dismissed, or a run with no one to ask): refuse once, the resend pays.
     s.ackedAt = s.lastRequestAt
     if (s.lastResponseAt) await $.store.set(ackedKey(s), s.lastResponseAt)
-    const override = headless && sendHeadless && explicitRefuse && e.origin.kind === 'sdk' ? ' Headless prompts: send is overridden by guard refuse. Use /cache-tax guard default to restore the default.' : ''
-    const reason = `cache-tax: ${guardText(s, now)} Send it again to pay it, and ${holdNote(s, now, true)}. Or /clear and start from a note.${override}`
+    const override = headless && sendHeadless && explicitRefuse && e.origin.kind === 'sdk' ? ' Promotos sem interação: o envio é substituído por guard refuse. Use /cache-tax guard default para restaurar o padrão.' : ''
+    const reason = `cache-tax: ${guardText(s, now)} Envie novamente para pagá-lo, e ${holdNote(s, now, true)}. Ou use /clear e comece a partir de uma anotação.${override}`
     if (headless) $.ui.log(reason)
     return { drop: reason }
   })
@@ -1178,8 +1178,8 @@ export const register: Register = (on, options) => {
         const extend = autoWarm && !s.always && s.deadline < now + AUTO_WARM_MS && s.offs === offs
         if (extend) await startWindow($, s, AUTO_WARM_MS, s.every, offs, s.alwaysGen, sid)
         if (s.sid !== sid) return r
-        $.ui.log(`cold write of ${fmtTok(write)} tokens paid (${fmtUsd(usd)}).` +
-          (extend ? pingFloor > 0 ? ` Keepwarm armed for up to ${fmtDuration(AUTO_WARM_MS)}` + (coldUsd(s) == null ? '' : '; pings may stop sooner at the idle spending limit') + '. /keepwarm off to stop.' : ` Keeping the cache warm for ${fmtDuration(AUTO_WARM_MS)} so it is not paid again today; /keepwarm off to stop.` : ''))
+        $.ui.log(`gravação fria de ${fmtTok(write)} tokens paga (${fmtUsd(usd)}).` +
+          (extend ? pingFloor > 0 ? ` Keepwarm ativado por até ${fmtDuration(AUTO_WARM_MS)}` + (coldUsd(s) == null ? '' : '; os pings podem parar antes no limite de gasto ocioso') + '. /keepwarm off to stop.' : ` Mantendo o cache aquecido por ${fmtDuration(AUTO_WARM_MS)} para não pagar novamente hoje; /keepwarm off to stop.` : ''))
       } else if (s.coldWritePending && write === 0) $.ui.log(noRewriteText(s, now))
     }
     s.coldWritePending = false

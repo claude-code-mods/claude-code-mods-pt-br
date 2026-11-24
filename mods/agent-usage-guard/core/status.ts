@@ -12,15 +12,15 @@ export function statusLine(state: SessionState, peers: readonly PeerRecord[], co
   const parts = liftedOrPaused(state, now)
   const limit = highestLimit(state, peers, now)
   if (limit && limit.percent >= config.limitDenyPercent) {
-    parts.push(`${windowName(limit.kind)} window ${limit.percent}%: new agents refused`)
+    parts.push(`janela ${windowName(limit.kind)} ${limit.percent}%: novos agentes recusados`)
   } else if (limit && limit.percent >= config.limitAskPercent) {
-    parts.push(`${windowName(limit.kind)} window ${limit.percent}%: new agents need approval`)
+    parts.push(`janela ${windowName(limit.kind)} ${limit.percent}%: novos agentes precisam de aprovação`)
   }
   const context = state.loops[MAIN]?.context
   if (context !== undefined && context >= config.contextHard) {
-    parts.push(`context ${tokens(context)}: /compact recommended`)
+    parts.push(`contexto ${tokens(context)}: /compact recomendado`)
   } else if (context !== undefined && context >= config.contextWarn) {
-    parts.push(`context ${tokens(context)}`)
+    parts.push(`contexto ${tokens(context)}`)
   }
   return parts.length > 0 ? parts.join(' · ') : undefined
 }
@@ -49,18 +49,18 @@ export function bandLine(
   const refusal = state.denials.filter((d) => now - d.at < window).at(-1)
 
   const parts: string[] = []
-  if (running > 0 || starts > 0) parts.push(`${running} of ${config.agentMax} agents running`)
-  if (starts > 0) parts.push(`${starts} of ${config.rollingMax} started in the last ${duration(window)}`)
-  if (asking.agents) parts.push('asking you about starting agents')
-  if (asking.context) parts.push('asking you about the context size')
-  if (declined !== undefined) parts.push(`new agents declined until ${shortClock(declined)}`)
-  if (paused !== undefined) parts.push(`agent spawns paused until ${shortClock(paused)}`)
-  if (refusal) parts.push(`last refusal ${shortClock(refusal.at)}: ${refusal.rule}`)
+  if (running > 0 || starts > 0) parts.push(`${running} de ${config.agentMax} agentes em execução`)
+  if (starts > 0) parts.push(`${starts} de ${config.rollingMax} iniciados nos últimos ${duration(window)}`)
+  if (asking.agents) parts.push('perguntando sobre iniciar agentes')
+  if (asking.context) parts.push('perguntando sobre o tamanho do contexto')
+  if (declined !== undefined) parts.push(`novos agentes recusados até ${shortClock(declined)}`)
+  if (paused !== undefined) parts.push(`novos agentes pausados até ${shortClock(paused)}`)
+  if (refusal) parts.push(`última recusa ${shortClock(refusal.at)}: ${refusal.rule}`)
   if (parts.length === 0) return undefined
 
   const holding = asking.agents || asking.context || declined !== undefined || paused !== undefined || refusal !== undefined
   const full = running >= config.agentMax || starts >= config.rollingMax
-  return { text: `Usage guard · ${parts.join(' · ')}`, alert: holding || full }
+  return { text: `Proteção de uso · ${parts.join(' · ')}`, alert: holding || full }
 }
 
 /** When the band changes with no event to redraw it: a start, a refusal, a decline or the pause ages out. */
@@ -84,18 +84,18 @@ export function statusLineExpiry(state: SessionState, peers: readonly PeerRecord
 function liftedOrPaused(state: SessionState, now: number): string[] {
   const parts: string[] = []
   if (state.override && now < state.override.until) {
-    parts.push(`${scopeName(state.override.scope)} lifted until ${shortClock(state.override.until)}`)
+    parts.push(`${scopeName(state.override.scope)} liberado até ${shortClock(state.override.until)}`)
   }
   if (state.fuseUntil !== undefined && now < state.fuseUntil) {
-    parts.push(`agent spawns paused until ${shortClock(state.fuseUntil)}`)
+    parts.push(`novos agentes pausados até ${shortClock(state.fuseUntil)}`)
   }
   return parts
 }
 
 export function scopeName(scope: Scope): string {
-  if (scope === 'agents') return 'agent limits'
-  if (scope === 'context') return 'context limits'
-  return 'all limits'
+  if (scope === 'agents') return 'limites de agentes'
+  if (scope === 'context') return 'limites de contexto'
+  return 'todos os limites'
 }
 
 /** The text `/agent-guard` and `/agent-guard status` print. */
@@ -109,51 +109,51 @@ export function statusReport(
   storeFailure?: string,
 ): string {
   const running = version ? ` (${version})` : ''
-  if (!config.enabled) return `Off${running}: AGENT_GUARD is set to turn it off.`
+  if (!config.enabled) return `Desativado${running}: AGENT_GUARD está configurado para desativar.`
   const window = config.windowMs
-  const lines = [`On${running}.`]
+  const lines = [`Ativado${running}.`]
 
   const peerRunning = peers.reduce((sum, p) => sum + p.running, 0)
   const starts = countOnMachine(state, peers, 'starts', now, window)
   lines.push(
-    `Agents: ${runningAgents(state)} running here, ${peerRunning} in ${count(peers.length, 'other session')} (limit ${config.agentMax}); ${starts} started in the last ${duration(window)} (limit ${config.rollingMax}).`,
+    `Agents: ${runningAgents(state)} running aqui, ${peerRunning} em ${count(peers.length, 'outra sessão', 'outras sessões')} (limit ${config.agentMax}); ${starts} started in the last ${duration(window)} (limit ${config.rollingMax}).`,
   )
 
   const limits = Object.values(state.limits).filter((r) => r.resetsAt === undefined || r.resetsAt > now)
   if (limits.length > 0) {
     const text = limits
-      .map((r) => `${windowName(r.kind)} ${r.percent}%${r.resetsAt === undefined ? '' : ` (resets ${shortClock(r.resetsAt)})`}`)
+      .map((r) => `${windowName(r.kind)} ${r.percent}%${r.resetsAt === undefined ? '' : ` (renova ${shortClock(r.resetsAt)})`}`)
       .join(', ')
-    lines.push(`Plan windows: ${text}. New agents ask from ${config.limitAskPercent}% and are refused from ${config.limitDenyPercent}%.`)
+    lines.push(`Janelas do plano: ${text}. Novos agentes pedem aprovação a partir de ${config.limitAskPercent}% e são recusados a partir de ${config.limitDenyPercent}%.`)
   } else {
-    lines.push('Plan windows: no reading yet (one arrives with the next response on a subscription).')
+    lines.push('Janelas do plano: ainda sem leitura (chega com a próxima resposta em uma assinatura).')
   }
 
   const context = state.loops[MAIN]?.context
   lines.push(
-    `Context: ${context === undefined ? 'unknown until the next response' : `${tokens(context)} tokens`} (warn ${tokens(config.contextWarn)}, ask before a prompt from ${tokens(config.contextHard)}).`,
+    `Context: ${context === undefined ? 'desconhecido até a próxima resposta' : `${tokens(context)} tokens`} (warn ${tokens(config.contextWarn)}, ask before a prompt from ${tokens(config.contextHard)}).`,
   )
 
   const held = liftedOrPaused(state, now)
   for (const [key, until] of Object.entries(state.leases)) {
-    if (now < until) held.push(`${key} approved${until < Number.MAX_SAFE_INTEGER ? ` until ${shortClock(until)}` : ' until the context shrinks'}`)
+    if (now < until) held.push(`${key} aprovado${until < Number.MAX_SAFE_INTEGER ? ` até ${shortClock(until)}` : ' até o contexto diminuir'}`)
   }
-  for (const [key, until] of Object.entries(state.refusals)) if (now < until) held.push(`${key} declined until ${shortClock(until)}`)
-  if (held.length > 0) lines.push(`Now: ${held.join('; ')}.`)
+  for (const [key, until] of Object.entries(state.refusals)) if (now < until) held.push(`${key} recusado até ${shortClock(until)}`)
+  if (held.length > 0) lines.push(`Agora: ${held.join('; ')}.`)
   for (const problem of problems) lines.push(`Config: ${problem}.`)
   if (storeFailure !== undefined) {
-    lines.push(`Store: the guard could not save its counts (${storeFailure}), so other sessions on this machine don't count this session's agents. The journal may miss rows too.`)
+    lines.push(`Armazenamento: a proteção não pôde salvar suas contagens (${storeFailure}), então outras sessões nesta máquina não contam os agentes desta. O diário também pode perder linhas.`)
   }
   lines.push('', USAGE)
   return lines.join('\n')
 }
 
 export const USAGE = [
-  'Commands:',
-  '  /agent-guard allow [agents|context] [minutes]   lift the guard\'s limits for this session (default: all, 10 min)',
-  '  /agent-guard pause [minutes]                     same as allow, for every limit',
-  '  /agent-guard resume                              end an allow or pause early, and clear declined questions',
-  '  /agent-guard report [days]                       what the guard did on this machine (default 7 days)',
-  '  /agent-guard simulate <rule>                     show what a rule does, with nothing held or spent',
-  '  /agent-guard status                              this summary',
+  'Comandos:',
+  '  /agent-guard allow [agents|context] [minutes]   suspende os limites da proteção nesta sessão (padrão: todos, 10 min)',
+  '  /agent-guard pause [minutes]                     igual a allow, para todos os limites',
+  '  /agent-guard resume                              encerra uma liberação ou pausa antes do fim e limpa perguntas recusadas',
+  '  /agent-guard report [days]                       o que a proteção fez nesta máquina (padrão 7 dias)',
+  '  /agent-guard simulate <rule>                     mostra o que uma regra faz, sem reter nada nem gastar nada',
+  '  /agent-guard status                              este resumo',
 ].join('\n')

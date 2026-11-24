@@ -35,7 +35,7 @@ export function scheduleGate(state: SessionState, peers: readonly PeerRecord[], 
   if (!config.enabled || !isScheduling(request.tool) || overrideCovers(state, now, 'agents')) return ALLOW
   const limit = highestLimit(state, peers, now)
   if (!limit || limit.percent < config.limitDenyPercent) return ALLOW
-  const base = `This ${request.tool} call was refused: ${limitDetail(limit)}, and the turn it starts would run into the limit. Finish the step in progress instead; the user can lift this with /agent-guard allow.`
+  const base = `A chamada ${request.tool} foi recusada: ${limitDetail(limit)}, e a rodada que ela inicia chegaria ao limite. Conclua a etapa em andamento; o usuário pode liberar com /agent-guard allow.`
   return refuse(state, config, now, 'schedule', `schedule:${request.tool}`, base, false)
 }
 
@@ -50,10 +50,10 @@ export type ToolRequest = {
 /** How long "keep going" lasts if the loop never compacts. */
 const HEAVY_LEASE_MS = 60 * 60 * 1000
 
-const HEAVY_CONTINUE = 'Keep going'
-const HEAVY_COMPACT = 'Compact after this turn'
-const HEAVY_STOP = 'Stop this turn'
-const HEAVY_STOP_AGENT = 'Stop this agent'
+const HEAVY_CONTINUE = 'Continuar'
+const HEAVY_COMPACT = 'Compactar após esta rodada'
+const HEAVY_STOP = 'Parar esta rodada'
+const HEAVY_STOP_AGENT = 'Parar este agente'
 
 export function toolGate(state: SessionState, config: Config, now: number, request: ToolRequest): Verdict {
   if (!config.enabled || EXEMPT_TOOLS.has(request.tool)) return ALLOW
@@ -61,7 +61,7 @@ export function toolGate(state: SessionState, config: Config, now: number, reque
 
   const failure = state.failures[request.fingerprint]
   if (!lifted && failure && failure.count >= config.failureMax && now - failure.last < config.windowMs) {
-    const base = `This exact ${request.tool} call failed ${failure.count} times in a row, most recently at ${shortClock(failure.last)}. Change the input or the approach, or report the failure, instead of repeating it.`
+    const base = `Esta chamada exata ${request.tool} falhou ${failure.count} vezes seguidas, a última às ${shortClock(failure.last)}. Mude a entrada ou a abordagem, ou relate a falha, em vez de repeti-la.`
     return refuse(state, config, now, 'retry', `retry:${request.fingerprint}`, base, false)
   }
 
@@ -78,9 +78,9 @@ export function toolGate(state: SessionState, config: Config, now: number, reque
     return ALLOW
   }
 
-  const detail = `${request.label} made ${count(heavy.length, 'tool call')} in the last ${duration(config.windowMs)} above ${tokens(config.toolContext)} context tokens, and each one re-reads the ${tokens(context)}`
+  const detail = `${request.label} fez ${count(heavy.length, 'chamada de ferramenta', 'chamadas de ferramenta')} nos últimos ${duration(config.windowMs)} acima de ${tokens(config.toolContext)} tokens de contexto, e cada uma relê os ${tokens(context)}`
   if (!state.canAsk) {
-    const base = `${sentence(detail)}. Nobody can approve more in this session. ${request.loop === MAIN ? 'End the turn; the session needs /compact.' : 'Finish with what you have and report back.'}`
+    const base = `${sentence(detail)}. Ninguém pode aprovar mais nesta sessão. ${request.loop === MAIN ? 'Encerre a rodada; a sessão precisa de /compact.' : 'Termine com o que tem e relate.'}`
     return refuse(state, config, now, 'tool-budget', `tool-budget:${request.loop}`, base, false)
   }
   return {
@@ -88,7 +88,7 @@ export function toolGate(state: SessionState, config: Config, now: number, reque
     family: 'heavy',
     loop: request.loop,
     trips: [{ rule: 'tool-budget', detail, leaseKey: `heavy:${request.loop}`, leaseUntil: now + HEAVY_LEASE_MS }],
-    question: `${sentence(detail)}. Keep working at ${tokens(context)} context?`,
+    question: `${sentence(detail)}. Continuar trabalhando com ${tokens(context)} de contexto?`,
     options: request.loop === MAIN ? [HEAVY_CONTINUE, HEAVY_COMPACT, HEAVY_STOP] : [HEAVY_CONTINUE, HEAVY_STOP_AGENT],
   }
 }
@@ -117,8 +117,8 @@ export function resolveHeavyAsk(
 /** Refuses a call in a loop the user stopped; `typed` is what they wrote in place of choosing. */
 function refuseStopped(state: SessionState, config: Config, now: number, loop: LoopId, typed?: string): Deny {
   const isMain = loop === MAIN
-  const said = typed === undefined ? `The user stopped this ${isMain ? 'turn' : 'agent'}` : `The user answered "${typed}"`
-  const next = isMain ? 'End the turn now and recommend /compact before the next task.' : 'Stop working and report back what you have.'
+  const said = typed === undefined ? `O usuário parou esta ${isMain ? 'rodada' : 'agente'}` : `O usuário respondeu "${typed}"`
+  const next = isMain ? 'Encerre a rodada agora e recomende /compact antes da próxima tarefa.' : 'Pare de trabalhar e relate o que tem.'
   const base = `${said} at ${tokens(loopOf(state, loop).context ?? 0)} context tokens. ${next}`
   return refuse(state, config, now, 'stopped', `stopped:${loop}`, base, false)
 }

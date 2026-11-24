@@ -105,31 +105,31 @@ type RuleCount = { asks: number; allowed: number; compacted: number; declined: n
 /** The text `/agent-guard report` prints. */
 export function formatReport(rows: readonly JournalRow[], now: number, days: number): string {
   const recent = rows.filter((r) => now - r.t < days * DAY_MS).sort((a, b) => a.t - b.t)
-  const lines = [`Report for the last ${count(days, 'day')}`]
+  const lines = [`Relatório dos últimos ${count(days, 'dia', 'dias')}`]
   if (recent.length === 0) {
-    lines.push('', 'Nothing recorded yet. The journal fills as the guard asks, refuses, or sees a limit.')
+    lines.push('', 'Nada registrado ainda. O diário se preenche quando a proteção pergunta, recusa ou vê um limite.')
     return lines.join('\n')
   }
   const sessions = new Set(recent.map((r) => r.s)).size
-  lines.push(`${count(recent.length, 'event')} from ${count(sessions, 'session')}`)
+  lines.push(`${count(recent.length, 'evento', 'eventos')} de ${count(sessions, 'sessão', 'sessões')}`)
 
   const lockouts = lockedWindows(recent.filter((r) => r.ev === 'lockout' && r.kind !== 'model'))
   const modelScoped = recent.filter((r) => r.ev === 'lockout' && r.kind === 'model').length
   // Only a span of a week or more gives a weekly rate; a shorter one would extrapolate.
-  const rate = days >= 7 ? ` (${(lockouts.length / (days / 7)).toFixed(1)} per week)` : ''
-  lines.push('', `Usage-limit lockouts: ${lockouts.length}${rate}`)
+  const rate = days >= 7 ? ` (${(lockouts.length / (days / 7)).toFixed(1)} por semana)` : ''
+  lines.push('', `Bloqueios por limite de uso: ${lockouts.length}${rate}`)
   for (const row of lockouts.slice(-5)) {
-    lines.push(`  ${stamp(row.t)}${row.kind && row.kind !== 'unknown' ? ` · ${windowName(row.kind)} window` : ''}`)
+    lines.push(`  ${stamp(row.t)}${row.kind && row.kind !== 'unknown' ? ` · janela ${windowName(row.kind)}` : ''}`)
   }
-  if (modelScoped > 0) lines.push(`Limits on one model, where /model switched away: ${modelScoped}`)
+  if (modelScoped > 0) lines.push(`Limites em um modelo, quando /model mudou para outro: ${modelScoped}`)
 
   const crossings = recent.filter((r) => r.ev === 'limit')
   if (crossings.length > 0) {
     const byThreshold = countBy(crossings, (r) => `${windowName(r.kind ?? '?')} ${r.rule ?? ''}`.trim())
-    lines.push(`Limit crossings: ${[...byThreshold].map(([k, n]) => `${k} ×${n}`).join(', ')}`)
+    lines.push(`Cruzamentos de limite: ${[...byThreshold].map(([k, n]) => `${k} ×${n}`).join(', ')}`)
   }
   const windDowns = recent.filter((r) => r.ev === 'note' && r.rule === 'wind-down')
-  if (windDowns.length > 0) lines.push(`Wind-down notes: ${windDowns.length} in ${count(new Set(windDowns.map((r) => r.s)).size, 'session')}`)
+  if (windDowns.length > 0) lines.push(`Notas de encerramento: ${windDowns.length} em ${count(new Set(windDowns.map((r) => r.s)).size, 'sessão', 'sessões')}`)
 
   const perRule = new Map<string, RuleCount>()
   const bump = (rule: string | undefined, field: keyof RuleCount): void => {
@@ -148,31 +148,31 @@ export function formatReport(rows: readonly JournalRow[], now: number, days: num
     }
   }
   if (perRule.size > 0) {
-    lines.push('', 'By rule (asks: allowed / compacted / declined · refusals to the model · prompts held)')
+    lines.push('', 'Por regra (perguntas: permitidas / compactadas / recusadas · recusas ao modelo · prompts retidos)')
     const width = Math.max(...[...perRule.keys()].map((k) => k.length))
     for (const [rule, c] of [...perRule].sort((a, b) => total(b[1]) - total(a[1]))) {
-      lines.push(`  ${rule.padEnd(width)}  asks ${c.asks}: ${c.allowed} / ${c.compacted} / ${c.declined} · refusals ${c.denials} · held ${c.drops}`)
+      lines.push(`  ${rule.padEnd(width)}  perguntas ${c.asks}: ${c.allowed} / ${c.compacted} / ${c.declined} · recusas ${c.denials} · retidos ${c.drops}`)
     }
   }
 
   const denials = recent.filter((r) => r.ev === 'deny')
   const late = denials.filter((r) => (r.n ?? 1) >= 3).length
   const fuses = denials.filter((r) => r.rule === 'fuse').length
-  if (denials.length > 0) lines.push(`Refusals at rung 3 or later: ${late} · refused while the agent fuse was burning: ${fuses}`)
+  if (denials.length > 0) lines.push(`Recusas no degrau 3 ou posterior: ${late} · recusadas com o fusível de agentes ativo: ${fuses}`)
 
   const tools = countBy(denials.filter((r) => r.tool), (r) => r.tool ?? '')
-  if (tools.size > 0) lines.push(`Refusals by tool: ${[...tools].map(([k, n]) => `${k} ${n}`).join(', ')}`)
+  if (tools.size > 0) lines.push(`Recusas por ferramenta: ${[...tools].map(([k, n]) => `${k} ${n}`).join(', ')}`)
 
   const contexts = countBy(recent.filter((r) => r.ctx), (r) => r.ctx ?? '')
-  if (contexts.size > 0) lines.push(`Context when it acted: ${[...contexts].map(([k, n]) => `${k} ${n}`).join(', ')}`)
+  if (contexts.size > 0) lines.push(`Contexto quando agiu: ${[...contexts].map(([k, n]) => `${k} ${n}`).join(', ')}`)
 
   const agentTokens = countBy(recent.filter((r) => r.ev === 'ask' && r.tok), (r) => r.tok ?? '')
-  if (agentTokens.size > 0) lines.push(`Subagent tokens when it asked: ${[...agentTokens].map(([k, n]) => `${k} ${n}`).join(', ')}`)
+  if (agentTokens.size > 0) lines.push(`Tokens de subagentes quando perguntou: ${[...agentTokens].map(([k, n]) => `${k} ${n}`).join(', ')}`)
 
   const overrides = recent.filter((r) => r.ev === 'override')
-  if (overrides.length > 0) lines.push(`Overrides: ${overrides.length} (${[...countBy(overrides, (r) => r.rule ?? 'all')].map(([k, n]) => `${k} ${n}`).join(', ')})`)
+  if (overrides.length > 0) lines.push(`Liberações: ${overrides.length} (${[...countBy(overrides, (r) => r.rule ?? 'all')].map(([k, n]) => `${k} ${n}`).join(', ')})`)
 
-  lines.push('', `Span: ${stamp(recent[0]!.t)} to ${stamp(recent.at(-1)!.t)} (${duration(recent.at(-1)!.t - recent[0]!.t)})`)
+  lines.push('', `Período: ${stamp(recent[0]!.t)} a ${stamp(recent.at(-1)!.t)} (${duration(recent.at(-1)!.t - recent[0]!.t)})`)
   return lines.join('\n')
 }
 

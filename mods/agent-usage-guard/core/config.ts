@@ -114,14 +114,14 @@ export function parseConfig(vars: Readonly<Record<string, string | undefined>>):
     if (!raw) continue
     const value = Number(raw.replaceAll('_', ''))
     if (!Number.isFinite(value) || value < spec.min || value > spec.max) {
-      problems.push(`${spec.env}=${raw} is not a number from ${spec.min} to ${spec.max}; using ${spec.default}`)
+      problems.push(`${spec.env}=${raw} não é um número de ${spec.min} a ${spec.max}; usando ${spec.default}`)
       continue
     }
     config[spec.field] = Math.round(value * spec.scale)
   }
   if (config.limitDenyPercent < config.limitAskPercent) {
     problems.push(
-      `AGENT_GUARD_LIMIT_DENY_PERCENT is below AGENT_GUARD_LIMIT_ASK_PERCENT; new agents are refused from ${config.limitDenyPercent}%`,
+      `AGENT_GUARD_LIMIT_DENY_PERCENT is below AGENT_GUARD_LIMIT_ASK_PERCENT; novos agentes são recusados a partir de ${config.limitDenyPercent}%`,
     )
   }
   return { config, problems }
