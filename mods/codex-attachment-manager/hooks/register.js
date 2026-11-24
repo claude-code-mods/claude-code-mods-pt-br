@@ -89,6 +89,22 @@ const WORDS = {
       failed: '接続先の切り替えに失敗したため、直接接続しています。画像の選択は反映されません',
     },
   },
+  'pt-BR': {
+    title: 'Recursos de contexto',
+    open: 'Abrir o painel de recursos', copy: 'Copiar link', copied: 'Link copiado',
+    opened: 'O painel está aberto no navegador próprio do Claude.',
+    hint: 'O painel é uma página servida pelo mecanismo local, a mesma do Codex: marcações, visualizações, filtros e seleção automática ficam lá. Abra-o em um navegador com o link acima ou copie o link e cole-o no navegador.',
+    summary: (images, off) => `${images} imagens nesta sessão${off ? `, ${off} não enviadas` : ''}`,
+    routing: {
+      on: (port) => `As requisições desta sessão passam pelo mecanismo local (porta ${port})`,
+      waiting: 'Aguardando a inicialização do mecanismo local…',
+      'other-endpoint': 'Esta sessão usa outro endpoint e não foi alterada: as marcações não têm efeito',
+      provider: 'Esta sessão usa um serviço de modelos de terceiros e não foi alterada: as marcações não têm efeito',
+      'engine-old': 'O mecanismo em execução é muito antigo para usar rotas separadas: feche o Codex, execute cam install e inicie uma nova sessão',
+      'no-engine': 'O mecanismo local não está em execução; esta sessão se conecta diretamente: as marcações não têm efeito',
+      failed: 'A troca do endpoint falhou; esta sessão se conecta diretamente: as marcações não têm efeito',
+    },
+  },
 }
 
 // What the pane shows, kept between redraws: the routing state, whether /cam opened the page in Claude's browser, and
