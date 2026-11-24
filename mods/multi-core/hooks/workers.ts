@@ -59,13 +59,13 @@ const issues =
  * does not become an issue, and it never files anything on the user's behalf.
  */
 function reportable(reason: string) {
-  return `${reason}\n\nIf this reads like a defect in the multi-cli plugin rather than a permission the user chose, tell them so and offer to open an issue at ${issues}, quoting the reason above.`;
+  return `${reason}\n\nSe isso parecer um defeito do plugin multi-cli, e não uma permissão escolhida pelo usuário, diga isso a ele e ofereça abrir um problema em ${issues}, citando o motivo acima.`;
 }
 
 type SpawnEvent = AgentSpawnInput;
 
 const providerGuidance =
-  "\n\nFor a provider worker type (Cursor, OpenAI, ...), `model` names one of that provider's models from the type's description, not a Claude alias; omit it for the provider's default.";
+  "\n\nPara um tipo de worker de provedor (Cursor, OpenAI, ...), `model` indica um dos modelos desse provedor conforme a descrição do tipo, e não um alias do Claude; omita-o para usar o padrão do provedor.";
 
 export const register = (on: Parameters<Register>[0], _options: Parameters<Register>[1]) => {
   registerWorkerRows(on);
@@ -219,11 +219,11 @@ async function providerSpawn(
   }
   if (!selection) {
     return {
-      deny: reportable(`The Multi gateway did not resolve the ${event.subagentType} model.`),
+      deny: reportable(`O gateway do Multi não resolveu o modelo ${event.subagentType}.`),
     };
   }
   if (selection.refused || !selection.model) {
-    return { deny: selection.error ?? `The ${event.subagentType} model was not resolved.` };
+    return { deny: selection.error ?? `O modelo ${event.subagentType} não foi resolvido.` };
   }
   // The task keeps the model's own description: the agent list names the CLI itself.
   return { event: { ...event, model: selection.model }, selection };

@@ -1396,7 +1396,7 @@ const renderList = (el: ElementTable, style: Style, block: Extract<Block, { kind
         <Text>
           <Text color={t.accent}>{'━'.repeat(filled)}</Text>
           <Text color={t.bullet} dimColor>{'─'.repeat(20 - filled)}</Text>
-          <Text color={t.bullet}>{` ${done}/${tasks.length} done`}</Text>
+          <Text color={t.bullet}>{` ${done}/${tasks.length} concluídas`}</Text>
         </Text>
       )}
       {block.items.map((full, i) => {
@@ -1447,7 +1447,7 @@ const NUMBER_MAX = 400
 const FOLD_AT = 30
 const FOLD_SHOW = 20
 
-const codeRest = ({ Text }: ElementTable, total: number, shown: number, key: string): RenderElement[] => (shown === DIFF_MAX && total > shown ? [<Text key={`${key}.rest`} dimColor>{`… +${total - shown} lines`}</Text>] : [])
+const codeRest = ({ Text }: ElementTable, total: number, shown: number, key: string): RenderElement[] => (shown === DIFF_MAX && total > shown ? [<Text key={`${key}.rest`} dimColor>{`… +${total - shown} linhas`}</Text>] : [])
 
 const codeId = (lines: string[]): string => {
   let hash = 5381

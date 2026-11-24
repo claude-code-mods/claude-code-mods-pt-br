@@ -111,7 +111,7 @@ const labelOf = (g: Graph, row: Row, room: number): [string, number][] => {
   if (row.kind === 'fork') return [[fit(g.names[row.to]!, room), row.to]]
   const tag = row.tag ? fit(` [${row.tag}]`, Math.max(1, room - 2)) : ''
   const auto = row.kind === 'merge' && !row.label
-  const label = fit(auto ? `merge ${g.names[row.from]}` : row.label, Math.max(1, room - cellWidth(tag)))
+  const label = fit(auto ? `mesclar ${g.names[row.from]}` : row.label, Math.max(1, room - cellWidth(tag)))
   return [
     [label, auto ? LINE_HUE : -1],
     [tag, ARROW_HUE],

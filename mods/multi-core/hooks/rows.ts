@@ -104,7 +104,7 @@ export const register = (on: On) => {
     }
     const row = await issuedRow(rowGateway($), event.input, event.tool_use_id);
     return row
-      ? { decision: 'allow' as const, reason: 'A row the Multi gateway issued for this call.' }
+      ? { decision: 'allow' as const, reason: 'Uma linha emitida pelo gateway do Multi para esta chamada.' }
       : { decision: 'deny' as const, reason: refusal };
   });
   on('ui.render', { component: 'ToolUse' }, async ($, event, next) => {
@@ -138,7 +138,7 @@ export const register = (on: On) => {
     }
     // The built-in shows the output itself: the engine draws it, a few lines
     // and `… +N lines` in the compact view, all of it under ctrl+o.
-    const shown = [{ type: 'text', text: output || '(No output)' }];
+    const shown = [{ type: 'text', text: output || '(Sem saída)' }];
     return next({ ...event, props: { ...event.props, output: shown } });
   });
 };

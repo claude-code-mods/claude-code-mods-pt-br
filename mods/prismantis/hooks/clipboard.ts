@@ -9,20 +9,20 @@ export const MAC_TABLE_COPY = `
 ObjC.import('AppKit')
 var item = $.NSPasteboardItem.alloc.init
 if (!item.setStringForType(payload.html, $.NSPasteboardTypeHTML) ||
-    !item.setStringForType(payload.text, $.NSPasteboardTypeString)) throw new Error('Cannot encode table')
+    !item.setStringForType(payload.text, $.NSPasteboardTypeString)) throw new Error('Não é possível codificar a tabela')
 var pasteboard = $.NSPasteboard.generalPasteboard
-if (!pasteboard || !pasteboard.writeObjects) throw new Error('macOS clipboard is unavailable to this session')
+if (!pasteboard || !pasteboard.writeObjects) throw new Error('A área de transferência do macOS não está disponível nesta sessão')
 pasteboard.clearContents
-if (!pasteboard.writeObjects($.NSArray.arrayWithObject(item))) throw new Error('Cannot write clipboard')
+if (!pasteboard.writeObjects($.NSArray.arrayWithObject(item))) throw new Error('Não é possível gravar na área de transferência')
 if (ObjC.unwrap(pasteboard.stringForType($.NSPasteboardTypeHTML)) !== payload.html ||
-    ObjC.unwrap(pasteboard.stringForType($.NSPasteboardTypeString)) !== payload.text) throw new Error('Clipboard verification failed')
+    ObjC.unwrap(pasteboard.stringForType($.NSPasteboardTypeString)) !== payload.text) throw new Error('A verificação da área de transferência falhou')
 `
 
 export const LINUX_TABLE_COPY = `
 var table = JSON.parse(str(arguments[1]))
 copy('text/html', table.html, 'text/plain', table.text)
 if (str(clipboard('text/html')) !== table.html ||
-    str(clipboard('text/plain')) !== table.text) throw new Error('Clipboard verification failed')
+    str(clipboard('text/plain')) !== table.text) throw new Error('A verificação da área de transferência falhou')
 `
 
 export const WIN_TABLE_COPY = `
@@ -79,7 +79,7 @@ var block = $('█').boundingRectWithSizeOptionsAttributes($.NSMakeSize(1000, 10
 var width = 2 * pad + Math.ceil(cell * payload.columns)
 var height = 2 * pad + line * payload.lines.length
 var bitmap = $.NSBitmapImageRep.alloc.initWithBitmapDataPlanesPixelsWidePixelsHighBitsPerSampleSamplesPerPixelHasAlphaIsPlanarColorSpaceNameBytesPerRowBitsPerPixel(null, width * 2, height * 2, 8, 4, true, false, $.NSDeviceRGBColorSpace, 0, 0)
-if (!bitmap) throw new Error('Cannot draw image')
+if (!bitmap) throw new Error('Não é possível desenhar a imagem')
 bitmap.size = $.NSMakeSize(width, height)
 $.NSGraphicsContext.saveGraphicsState
 $.NSGraphicsContext.setCurrentContext($.NSGraphicsContext.graphicsContextWithBitmapImageRep(bitmap))
@@ -142,11 +142,11 @@ payload.lines.forEach(function (glyphs, i) {
 $.NSGraphicsContext.restoreGraphicsState
 var png = bitmap.representationUsingTypeProperties($.NSBitmapImageFileTypePNG, $.NSDictionary.dictionary)
 var pasteboard = $.NSPasteboard.generalPasteboard
-if (!png || !pasteboard) throw new Error('macOS clipboard is unavailable to this session')
+if (!png || !pasteboard) throw new Error('A área de transferência do macOS não está disponível nesta sessão')
 pasteboard.clearContents
-if (!pasteboard.setDataForType(png, $.NSPasteboardTypePNG)) throw new Error('Cannot write clipboard')
+if (!pasteboard.setDataForType(png, $.NSPasteboardTypePNG)) throw new Error('Não é possível gravar na área de transferência')
 var back = pasteboard.dataForType($.NSPasteboardTypePNG)
-if (!back || !back.isEqualToData(png)) throw new Error('Clipboard verification failed')
+if (!back || !back.isEqualToData(png)) throw new Error('A verificação da área de transferência falhou')
 `
 
 export const WIN_IMAGE_COPY = `
@@ -226,11 +226,11 @@ export const clipboardCommand = (backend: ClipboardBackend, html: string, text: 
   ? {
     stdin: ascii(JSON.stringify({ html, text: text.replace(/\r?\n/g, '\r\n') })),
     argv: powershell(systemRoot, WIN_TABLE_COPY),
-    failure: 'Windows clipboard helper failed',
+    failure: 'O auxiliar da área de transferência do Windows falhou',
   }
   : backend === 'macos'
-    ? { ...osascript(MAC_TABLE_COPY, JSON.stringify({ html, text })), failure: 'macOS clipboard helper failed' }
-    : { stdin: JSON.stringify({ html, text }), argv: ['copyq', 'eval', LINUX_TABLE_COPY, '-'], failure: 'CopyQ failed; install and start CopyQ in the graphical session' }
+    ? { ...osascript(MAC_TABLE_COPY, JSON.stringify({ html, text })), failure: 'O auxiliar da área de transferência do macOS falhou' }
+    : { stdin: JSON.stringify({ html, text }), argv: ['copyq', 'eval', LINUX_TABLE_COPY, '-'], failure: 'O CopyQ falhou; instale e inicie o CopyQ na sessão gráfica' }
 
 export const drawsImages = (backend: ClipboardBackend | null): boolean => backend === 'macos' || backend === 'windows'
 
@@ -299,6 +299,6 @@ export const artPicture = (text: string, colors: ArtColors, hues?: Ink[][]): Art
 export const imageCommand = (backend: ClipboardBackend, text: string, colors: ArtColors, systemRoot?: string, hues?: Ink[][]): HelperCommand => {
   const json = JSON.stringify(artPicture(text, colors, hues))
   return backend === 'windows'
-    ? { stdin: ascii(json), argv: powershell(systemRoot, WIN_IMAGE_COPY), failure: 'Windows image helper failed' }
-    : { ...osascript(MAC_IMAGE_COPY, json), failure: 'macOS image helper failed' }
+    ? { stdin: ascii(json), argv: powershell(systemRoot, WIN_IMAGE_COPY), failure: 'O auxiliar de imagem do Windows falhou' }
+    : { ...osascript(MAC_IMAGE_COPY, json), failure: 'O auxiliar de imagem do macOS falhou' }
 }

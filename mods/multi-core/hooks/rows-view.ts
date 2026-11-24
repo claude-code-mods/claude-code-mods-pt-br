@@ -43,7 +43,7 @@ function text(input: Input, key: string): string {
 }
 
 function count(value: number, unit: string): Part[] {
-  return [{ bold: String(value) }, ` ${unit}${value === 1 ? '' : 's'}`];
+  return [{ bold: String(value) }, ` ${value === 1 ? unit : `${unit}s`}`];
 }
 
 function oneLine(value: string) {
@@ -65,9 +65,9 @@ function readRange(input: Input) {
   const limit = typeof input.limit === 'number' ? input.limit : undefined;
   if (limit !== undefined) {
     const start = offset ?? 1;
-    return ` · lines ${start}-${start + limit - 1}`;
+    return ` · linhas ${start}-${start + limit - 1}`;
   }
-  return offset === undefined ? '' : ` · from line ${offset}`;
+  return offset === undefined ? '' : ` · da linha ${offset}`;
 }
 
 function quoted(input: Input, keys: readonly string[], cwd: string) {
@@ -154,7 +154,7 @@ function sentence({ Text }: Tags, parts: readonly Part[]): RenderElement {
 }
 
 function more({ Text }: Tags, hidden: number): RenderElement[] {
-  return hidden > 0 ? [Text({ dimColor: true, children: `… +${hidden} lines` })] : [];
+  return hidden > 0 ? [Text({ dimColor: true, children: `… +${hidden} ${hidden === 1 ? 'linha' : 'linhas'}` })] : [];
 }
 
 /** A text's lines, without the empty one after a final newline. */
@@ -196,9 +196,9 @@ function writeBody(tags: Tags, input: Input, cwd: string): RenderElement[] {
   const shown = lines.slice(0, previewLines);
   return [
     sentence(tags, [
-      'Wrote ',
-      ...count(lines.length, 'line'),
-      ' to ',
+      'Escreveu ',
+      ...count(lines.length, 'linha'),
+      ' em ',
       { bold: shownPath(text(input, 'file_path'), cwd) },
     ]),
     ...shown.map((line, index) => numbered(tags, String(index + 1).padStart(width), line)),
@@ -276,9 +276,9 @@ function diffRow(tags: Tags, line: DiffLine, width: number): RenderElement {
 }
 
 function editSummary(added: number, removed: number): Part[] {
-  const parts: Part[] = added ? ['Added ', ...count(added, 'line')] : [];
+  const parts: Part[] = added ? ['Adicionadas ', ...count(added, 'linha')] : [];
   if (removed) {
-    parts.push(added ? ', removed ' : 'Removed ', ...count(removed, 'line'));
+    parts.push(added ? ', removidas ' : 'Removidas ', ...count(removed, 'linha'));
   }
   return parts;
 }
@@ -315,7 +315,7 @@ function editBody(tags: Tags, input: Input, output: string): RenderElement[] | u
 }
 
 function searchUnit(output: string) {
-  return textLines(output).some((line) => /^[^:\n]+:\d+:/.test(line)) ? 'line' : 'file';
+  return textLines(output).some((line) => /^[^:\n]+:\d+:/.test(line)) ? 'linha' : 'arquivo';
 }
 
 /**
@@ -332,13 +332,13 @@ export function resultBody(
 ): RenderElement[] | undefined {
   switch (mirroredKind(input)) {
     case 'Read':
-      return [sentence(tags, ['Read ', ...count(readCount(output), 'line')])];
+      return [sentence(tags, ['Lidas ', ...count(readCount(output), 'linha')])];
     case 'Grep':
-      return [sentence(tags, ['Found ', ...count(foundCount(output), searchUnit(output))])];
+      return [sentence(tags, ['Encontradas ', ...count(foundCount(output), searchUnit(output))])];
     case 'Glob':
-      return [sentence(tags, ['Found ', ...count(foundCount(output), 'file')])];
+      return [sentence(tags, ['Encontrados ', ...count(foundCount(output), 'arquivo')])];
     case 'LS':
-      return [sentence(tags, ['Listed ', ...count(foundCount(output), 'path')])];
+      return [sentence(tags, ['Listados ', ...count(foundCount(output), 'caminho')])];
     case 'Write':
       return text(input, 'content') ? writeBody(tags, input, cwd) : undefined;
     case 'Edit':
@@ -350,7 +350,7 @@ export function resultBody(
 
 /** A failed action's result: `Error: ...` in the theme's error colour, as the built-ins. */
 export function errorBody(tags: Tags, output: string): RenderElement[] {
-  const lines = textLines(/^error\b/i.test(output) ? output : `Error: ${output}`);
+  const lines = textLines(/^error\b/i.test(output) ? output : `Erro: ${output}`);
   const shown = lines.slice(0, errorLines);
   return [
     ...shown.map((line) => tags.Text({ color: 'error', children: line })),
@@ -363,8 +363,8 @@ export function errorBody(tags: Tags, output: string): RenderElement[] {
  * it is drawn in the theme's `inactive` tone and says so.
  */
 export function unconfirmedBody(tags: Tags, output: string): RenderElement[] {
-  const detail = output.trim() || 'the native run reported no completion for this action.';
-  const lines = textLines(`Unconfirmed: ${detail.charAt(0).toLowerCase()}${detail.slice(1)}`);
+  const detail = output.trim() || 'a execução nativa não relatou a conclusão desta ação.';
+  const lines = textLines(`Não confirmado: ${detail.charAt(0).toLowerCase()}${detail.slice(1)}`);
   const shown = lines.slice(0, errorLines);
   return [
     ...shown.map((line) => tags.Text({ color: 'inactive', children: line })),

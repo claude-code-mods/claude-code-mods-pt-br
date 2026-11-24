@@ -37,7 +37,7 @@ export const register = (on: Parameters<Register>[0], _options: Parameters<Regis
     const sessionId = await $.session.id();
     const mode = accepted(await getJson(wire($), '/multi/mod/mode', { sessionId }));
     if (typeof mode?.generation !== 'number') {
-      return { skip: 'Multi compaction policy generation is unavailable.' };
+      return { skip: 'A geração da política de compactação do Multi está indisponível.' };
     }
     const payload = {
       sessionId,
@@ -49,7 +49,7 @@ export const register = (on: Parameters<Register>[0], _options: Parameters<Regis
     };
     if (event.trigger === 'precompute') {
       await precompute($, payload);
-      return { skip: 'Multi summary preparation runs outside the hook budget.' };
+      return { skip: 'A preparação do resumo do Multi é executada fora do orçamento do hook.' };
     }
     const result = accepted(await postJson(wire($), '/multi/mod/compact/authorize', payload));
     if (result?.messages) {
@@ -67,7 +67,7 @@ export const register = (on: Parameters<Register>[0], _options: Parameters<Regis
       }),
     );
     if (!fallback?.allow) {
-      return { skip: 'Multi tool-free compaction authorization was not acknowledged.' };
+      return { skip: 'A autorização de compactação sem ferramentas do Multi não foi confirmada.' };
     }
     return next(event);
   });

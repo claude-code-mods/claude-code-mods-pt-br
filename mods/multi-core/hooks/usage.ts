@@ -58,12 +58,12 @@ export const register = (on: Parameters<Register>[0], _options?: Parameters<Regi
   });
   on('command.run', { command: 'multi-usage' }, async ($, event) => {
     if (event.args.trim()) {
-      return { text: 'Use /multi-usage without arguments.' };
+      return { text: 'Use /multi-usage sem argumentos.' };
     }
     const session = await $.session.id();
     const response = dashboard(accepted(await fetchUsage($, session)));
     if (!response) {
-      return { text: 'Multi usage is unavailable. Launch this session with claude-multi.' };
+      return { text: 'O uso do Multi está indisponível. Inicie esta sessão com claude-multi.' };
     }
     const quotaAdviceEnabled = (await read($, advisorySessions)).includes(session);
     // The pane draws from this state: writing it redraws an open pane without an invalidate.
@@ -81,7 +81,7 @@ export const register = (on: Parameters<Register>[0], _options?: Parameters<Regi
     try {
       const opened = await $.ui.open({
         id: 'multi-usage',
-        title: 'Multi usage',
+        title: 'Uso do Multi',
         focus: true,
         closeOnEscape: true,
         rows: 20,
@@ -90,7 +90,7 @@ export const register = (on: Parameters<Register>[0], _options?: Parameters<Regi
         return {};
       }
       // The pane waits undrawn (a surface that places no panes): say so, and show the numbers.
-      $.ui.toast(`Multi usage: ${opened.reason}`);
+      $.ui.toast(`Uso do Multi: ${opened.reason}`);
       return { text: summary };
     } catch {
       return { text: summary };
@@ -192,10 +192,10 @@ function updatePane(previous: UsagePaneProps, action: string, response: unknown)
             ? {}
             : { quotaAdviceEnabled: previous.quotaAdviceEnabled }),
         }
-      : { ...previous, error: 'Refresh failed. Showing the previous values.' };
+      : { ...previous, error: 'Falha ao atualizar. Exibindo os valores anteriores.' };
   }
   if (!record(response) || !Array.isArray(response.receipts)) {
-    return { ...previous, error: 'Could not load receipts.' };
+    return { ...previous, error: 'Não foi possível carregar os recibos.' };
   }
   return {
     ...kept,
@@ -206,9 +206,9 @@ function receiptLines(value: unknown): string[] {
   if (!record(value) || !record(value.usage)) {
     return [];
   }
-  const owner = typeof value.agentId === 'string' ? value.agentId : 'Main turn';
+  const owner = typeof value.agentId === 'string' ? value.agentId : 'Turno principal';
   return [
-    `${owner} · ${String(value.outcome)}${value.incomplete ? ' (incomplete)' : ''} · ${String(value.time)}`,
+    `${owner} · ${String(value.outcome)}${value.incomplete ? ' (incompleto)' : ''} · ${String(value.time)}`,
     `  ${receiptUsage(value.usage, value.requests, value.context)}`,
     ...(Array.isArray(value.entries) ? value.entries.flatMap(receiptEntry) : []),
   ];
@@ -221,21 +221,21 @@ function receiptUsage(usage: Record<string, unknown>, requests: unknown, context
   const count = (value: unknown) =>
     typeof value === 'number' ? value.toLocaleString('en-US') : '0';
   const calls =
-    typeof usage.model_calls === 'number' ? ` · ${count(usage.model_calls)} model calls` : '';
+    typeof usage.model_calls === 'number' ? ` · ${count(usage.model_calls)} chamadas de modelo` : '';
   const window = record(context)
-    ? `context ${count(
+    ? `contexto ${count(
         [context.input_tokens, context.cache_read_input_tokens, context.cache_creation_input_tokens]
           .filter((item) => typeof item === 'number')
           .reduce((sum, item) => sum + item, 0),
       )} · `
     : '';
-  return `${String(requests)} requests${calls} · ${window}consumed ${count(usage.input_tokens)} input · cached ${count(usage.cache_read_input_tokens)} · ${count(usage.output_tokens)} output`;
+  return `${String(requests)} solicitações${calls} · ${window}consumido ${count(usage.input_tokens)} de entrada · em cache ${count(usage.cache_read_input_tokens)} · ${count(usage.output_tokens)} de saída`;
 }
 function receiptEntry(value: unknown): string[] {
   if (!record(value)) {
     return [];
   }
   return [
-    `  ${String(value.provider)} · ${String(value.model ?? 'model unreported')} · effort ${String(value.effort ?? 'unreported')} · ${String(value.endpoint ?? 'endpoint unreported')} · ${String(value.source)}`,
+    `  ${String(value.provider)} · ${String(value.model ?? 'modelo não informado')} · esforço ${String(value.effort ?? 'não informado')} · ${String(value.endpoint ?? 'endpoint não informado')} · ${String(value.source)}`,
   ];
 }

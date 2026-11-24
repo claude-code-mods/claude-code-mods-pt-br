@@ -76,9 +76,9 @@ const markupMessage = (marker: RegExpExecArray, drawn: ReadonlySet<number>, last
   const lower = name.toLowerCase()
   const role = FIGURE_ROLES.find(candidate => candidate === lower || swapsTwoLetters(lower, candidate))
   if (!role) return undefined
-  if (name !== role) return `"${written}" is not a role, roles are ${FIGURE_ROLES.join(', ')} in lower case`
-  if (lastClose < marker.index + written.length) return `"${written}" is not closed, end it with }`
-  return `"${written}" holds braces, markup does not nest`
+  if (name !== role) return `"${written}" não é uma função; as funções são ${FIGURE_ROLES.join(', ')} em minúsculas`
+  if (lastClose < marker.index + written.length) return `"${written}" não foi fechada; termine com }`
+  return `"${written}" contém chaves; a marcação não pode ser aninhada`
 }
 
 const markupMessages = (line: string): string[] => {
@@ -90,7 +90,7 @@ const markupMessages = (line: string): string[] => {
 const quoted = (glyphs: readonly string[]): string => {
   const distinct = [...new Set(glyphs)]
   const listed = distinct.slice(0, LISTED_GLYPHS).map(glyph => `"${glyph}"`).join(', ')
-  return distinct.length > LISTED_GLYPHS ? `${listed} and ${distinct.length - LISTED_GLYPHS} more` : listed
+  return distinct.length > LISTED_GLYPHS ? `${listed} e mais ${distinct.length - LISTED_GLYPHS}` : listed
 }
 
 const lineMessages = (line: string): string[] => {
@@ -99,12 +99,12 @@ const lineMessages = (line: string): string[] => {
   const emoji = glyphs.filter(glyph => EMOJI_CAPABLE.test(glyph))
   const columns = width(text)
   return [
-    ...(columns > FIGURE_MAX_COLUMNS ? [`${columns} columns wide, at most ${FIGURE_MAX_COLUMNS}`] : []),
-    ...(text.includes('\t') ? ['tab, use spaces'] : []),
-    ...(CONTROL.test(text) ? ['control character, use plain text'] : []),
-    ...(DIRECTION_MARK.test(text) ? ['direction mark, use plain text'] : []),
-    ...(INVISIBLE.test(text) ? ['invisible character, use plain text'] : []),
-    ...(emoji.length ? [`${quoted(emoji)} may draw as an emoji, use a text glyph`] : []),
+    ...(columns > FIGURE_MAX_COLUMNS ? [`${columns} colunas de largura, no máximo ${FIGURE_MAX_COLUMNS}`] : []),
+    ...(text.includes('\t') ? ['tabulação, use espaços'] : []),
+    ...(CONTROL.test(text) ? ['caractere de controle, use texto simples'] : []),
+    ...(DIRECTION_MARK.test(text) ? ['marca de direção, use texto simples'] : []),
+    ...(INVISIBLE.test(text) ? ['caractere invisível, use texto simples'] : []),
+    ...(emoji.length ? [`${quoted(emoji)} pode aparecer como emoji; use um glifo de texto`] : []),
     ...markupMessages(line),
   ]
 }
@@ -366,13 +366,13 @@ const drawable = (lines: readonly string[]): FigureDecision => {
 
 const decide = (raw: readonly string[]): FigureDecision => {
   const tooLong = raw.findIndex(line => line.length > RAW_MAX_LINE)
-  if (tooLong >= 0) return { note: `figure line ${tooLong + 1} is ${raw[tooLong]!.length} characters long` }
-  if (raw.length > FIGURE_MAX_LINES * 2) return { note: `figure has ${raw.length} lines, at most ${FIGURE_MAX_LINES}` }
+  if (tooLong >= 0) return { note: `a linha ${tooLong + 1} da figura tem ${raw[tooLong]!.length} caracteres` }
+  if (raw.length > FIGURE_MAX_LINES * 2) return { note: `a figura tem ${raw.length} linhas, no máximo ${FIGURE_MAX_LINES}` }
   const first = leadingBlanks(raw)
   const lines = withoutTrailingBlanks(raw.slice(first))
-  if (lines.length > FIGURE_MAX_LINES) return { note: `figure has ${lines.length} lines, at most ${FIGURE_MAX_LINES}` }
+  if (lines.length > FIGURE_MAX_LINES) return { note: `a figura tem ${lines.length} linhas, no máximo ${FIGURE_MAX_LINES}` }
   const [finding] = checkFigure(lines, first)
-  return finding ? { note: `figure line ${finding.line}: ${finding.message}` } : drawable(lines)
+  return finding ? { note: `linha ${finding.line} da figura: ${finding.message}` } : drawable(lines)
 }
 
 export const drawFigure = (el: ElementTable, style: Style, block: { lines: readonly string[]; isOpen?: true }, columns: number, key: string): { element?: RenderElement; art?: string; hues?: () => Ink[][]; note?: string } | null => {
@@ -380,7 +380,7 @@ export const drawFigure = (el: ElementTable, style: Style, block: { lines: reado
   const decision = remember(decisions, block.lines.join('\n'), () => decide(block.lines))
   if ('note' in decision) return decision
   if (decision.rows.length === 0) return null
-  if (decision.widest > columns - 2) return { note: `figure is ${decision.widest} cols, ${columns - 2} fit` }
+  if (decision.widest > columns - 2) return { note: `a figura tem ${decision.widest} colunas, cabem ${columns - 2}` }
   const hues = () => decision.rows.map(row => row.flatMap(run => cells(run.text).map(() => runInk(style, run.role))))
   return { element: figureElement(el, style, decision.rows, key), art: decision.texts.join('\n'), hues }
 }

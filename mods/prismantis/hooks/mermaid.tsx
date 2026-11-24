@@ -426,7 +426,7 @@ const chartElement = (el: ElementTable, style: Style, art: ChartArt, block: Extr
 
 const capNote = (source: string) => {
   const lines = source.split('\n').length
-  return lines > MAX_LINES ? `diagram too long to render (${lines} lines, max ${MAX_LINES})` : source.length > MAX_CHARS ? `diagram too long to render (${source.length} characters, max ${MAX_CHARS})` : 'diagram failed to render'
+  return lines > MAX_LINES ? `diagrama longo demais para renderizar (${lines} linhas, máximo ${MAX_LINES})` : source.length > MAX_CHARS ? `diagrama longo demais para renderizar (${source.length} caracteres, máximo ${MAX_CHARS})` : 'falha ao renderizar o diagrama'
 }
 
 const drawnArt = (el: ElementTable, style: Style, blocks: Block[], columns: number): Drawn => {
@@ -447,7 +447,7 @@ const drawnArt = (el: ElementTable, style: Style, blocks: Block[], columns: numb
       }
       if (!drawn.has(i) && !block.isOpen) {
         const kind = unsupportedKind(source)
-        drawn.set(i, { note: kind ? `${kind} diagrams draw as source for now` : narrowest === Infinity ? capNote(source) : `diagram too wide to render (${narrowest} cols, ${columns - 2} fit)` })
+        drawn.set(i, { note: kind ? `diagramas ${kind} são exibidos como fonte por enquanto` : narrowest === Infinity ? capNote(source) : `diagrama largo demais para renderizar (${narrowest} colunas, cabem ${columns - 2})` })
       }
     }
   }

@@ -488,15 +488,15 @@ const lastCopy = (run: () => Promise<string>): Promise<string | null> => {
 const copyNow = async ($: EngineInterface, style: Style, content: string, surface: RenderSurface, rich?: (() => string) | 'png', hues?: Hues): Promise<string> => {
   const backend = style.htmlCopy
   const failure = rich && backend ? await runHelper($, backend, richCommand(style, backend, content, rich, hues)) : undefined
-  if (failure === null) return rich === 'png' ? 'Copied as image' : 'Copied formatted table'
+  if (failure === null) return rich === 'png' ? 'Copiado como imagem' : 'Tabela formatada copiada'
   const result = await $.ui.copy({ text: content, surface })
-  if (!result.isCopied) return `Copy failed: ${result.reason}`
-  return failure ? `Copied as plain text (${failure})` : 'Copied'
+  if (!result.isCopied) return `Falha na cópia: ${result.reason}`
+  return failure ? `Copiado como texto simples (${failure})` : 'Copiado'
 }
 
 const drawMarkdown = ($: EngineInterface, el: ReturnType<EngineInterface['ui']['resolve']>, style: Style, blocks: ReturnType<typeof parse>, columns: number, math: Map<number, Typeset> = new Map(), pictures: Map<number, Picture> = new Map(), reply?: string, open?: string[], notes?: { id: string; press: boolean }): RenderElement[] => {
   const { Button } = el
-  const copy = (text: string | (() => string), key: string, label = '⧉ copy', rich?: (() => string) | 'png', hues?: () => Hues) => {
+  const copy = (text: string | (() => string), key: string, label = '⧉ copiar', rich?: (() => string) | 'png', hues?: () => Hues) => {
     const copied = (surface: RenderSurface) => lastCopy(() => copyNow($, style, typeof text === 'function' ? text() : text, surface, rich, hues?.()))
     return style.copyButtons && offers(style, rich) ? (
       <Button
@@ -504,7 +504,7 @@ const drawMarkdown = ($: EngineInterface, el: ReturnType<EngineInterface['ui']['
         {...(style.copyButtonStyle === 'dim' ? { plain: true as const, dimColor: true } : { variant: 'primary' as const })}
         label={label}
         onPress={async press => {
-          const said = await copied(press.surface).catch(() => 'Copy failed')
+          const said = await copied(press.surface).catch(() => 'Falha na cópia')
           if (said) $.ui.toast(said)
         }}
       />
@@ -571,9 +571,9 @@ const clearDesktop = async ($: EngineInterface): Promise<void> => {
 
 const setTheme = async ($: EngineInterface, picked: Picked, name: string): Promise<string> => {
   const deny = await saveOption($, 'theme', name)
-  if (deny) return `Could not switch theme: ${deny}`
+  if (deny) return `Não foi possível trocar o tema: ${deny}`
   if (name !== 'random') await paintDesktop($, picked.options, name)
-  if (name !== 'random' || picked.options.theme !== 'random') return `Theme set to ${name}.`
+  if (name !== 'random' || picked.options.theme !== 'random') return `Tema definido como ${name}.`
   const others = RANDOM_THEMES.filter(t => t !== picked.theme)
   picked.theme = others[Math.floor(Math.random() * others.length)]!
   const style = picked.latex.style
@@ -581,11 +581,11 @@ const setTheme = async ($: EngineInterface, picked: Picked, name: string): Promi
   picked.latex.color = ratexColor(style.theme.diagramText ?? style.theme.codeText ?? '#808080')
   $.ui.invalidate('ui.render')
   await paintDesktop($, picked.options, picked.theme)
-  return `Theme set to random: ${picked.theme} for now.\nkeep it: /prismantis theme ${picked.theme}`
+  return `Tema definido como aleatório: ${picked.theme} por enquanto.\npara manter: /prismantis theme ${picked.theme}`
 }
 
 const saveSetupPick = async ($: EngineInterface, picked: Picked, step: SetupStep, value: string): Promise<string> =>
-  step.key === 'theme' ? setTheme($, picked, value) : saveOption($, step.key, value).then(deny => (deny ? `Could not save ${step.key}: ${deny}` : `${step.title} set to ${value}.`))
+  step.key === 'theme' ? setTheme($, picked, value) : saveOption($, step.key, value).then(deny => (deny ? `Não foi possível salvar ${step.key}: ${deny}` : `${step.title} definido como ${value}.`))
 
 const SETUP_PANE = 'prismantis-setup'
 
@@ -593,7 +593,7 @@ const SETUP_PICK = 'pick:'
 const SETUP_LIST_COLUMNS = 30
 const SETUP_HEAD_ROWS = 5
 
-const openPane = ($: EngineInterface) => $.ui.open({ id: SETUP_PANE, title: 'prismantis setup', focus: true, closeOnEscape: true, rows: 40, columns: 90 })
+const openPane = ($: EngineInterface) => $.ui.open({ id: SETUP_PANE, title: 'configuração do prismantis', focus: true, closeOnEscape: true, rows: 40, columns: 90 })
 
 const openSetupPane = async ($: EngineInterface, at: number): Promise<string | undefined> => {
   await update($, setupAt, () => at)
@@ -620,11 +620,11 @@ const pickInPane = async ($: EngineInterface, picked: Picked, at: number, value:
   const done = `${step.title} set to ${value}.`
   if (nextStep) await showSetupStep($, at + 1, nextStep, currentOf(nextStep))
   else await $.ui.close({ id: SETUP_PANE })
-  $.ui.toast(nextStep ? done : `${done} ${at + 1 === ESSENTIAL_STEPS ? SETUP_ESSENTIALS_DONE : 'Setup done.'}`)
+  $.ui.toast(nextStep ? done : `${done} ${at + 1 === ESSENTIAL_STEPS ? SETUP_ESSENTIALS_DONE : 'Configuração concluída.'}`)
   const saved = await saveSetupPick($, picked, step, value)
   if (saved === done) return
   $.ui.toast(saved)
-  if (!saved.startsWith('Could not')) return
+  if (!saved.startsWith('Não foi possível')) return
   await showSetupStep($, at, step, value)
   if (!nextStep) await openPane($)
 }
@@ -650,13 +650,13 @@ const setup = async ($: EngineInterface, picked: Picked, origin: PromptOrigin, s
   const opened = paneable && (await $.session.surfaces()).includes('terminal') ? await openSetupPane($, at) : undefined
   if (opened) return opened
   const step = steps[at]
-  if (!step) return `Unknown setup step "${stepName}". Steps: ${steps.map(s => s.name).join(', ')}`
+  if (!step) return `Etapa de configuração desconhecida "${stepName}". Etapas: ${steps.map(s => s.name).join(', ')}`
   if (!pick) return setupText(setupParts(PRESET_NAMES, at))
   const choices = step.key === 'theme' ? THEME_ARGS : step.options
   const value = /^\d+$/.test(pick) ? step.options[Number(pick) - 1] : pick
-  if (!value || !choices.includes(value)) return `Unknown ${step.name} pick "${pick}". Pick 1-${step.options.length} or one of: ${choices.join(', ')}`
+  if (!value || !choices.includes(value)) return `Escolha desconhecida em ${step.name}: "${pick}". Escolha de 1 a ${step.options.length} ou uma destas: ${choices.join(', ')}`
   const saved = await saveSetupPick($, picked, step, value)
-  if (saved.startsWith('Could not')) return saved
+  if (saved.startsWith('Não foi possível')) return saved
   return `${saved}\n\n${afterSetupPick(steps, at)}`
 }
 
@@ -686,8 +686,8 @@ const SETUP_NPM_TEST = [
 const toolOutputSample = (el: ReturnType<EngineInterface['ui']['resolve']>, style: Style, value: string, id: string, columns: number): RenderElement[] => {
   const row = (key: string, input: Record<string, string>, isErrored: boolean) => <el.Box key={`${id}${key}`}>{renderToolRow(el, style, { tool: 'Bash', input, isRunning: false, isErrored, isInterrupted: false }, columns)}</el.Box>
   const statusRow = row('s', { command: 'git status' }, false)
-  const testRow = row('t', { command: 'npm test', description: 'Run the tests' }, false)
-  const buildRow = row('r', { command: 'npm run build', description: 'Build the app' }, true)
+  const testRow = row('t', { command: 'npm test', description: 'Executar os testes' }, false)
+  const buildRow = row('r', { command: 'npm run build', description: 'Compilar o aplicativo' }, true)
   const failure = renderFailure(el, style, SETUP_BUILD_ERROR.join('\n'), `${id}e`) ?? <el.Box key={`${id}e`} />
   if (value === 'rows') return [statusRow, testRow, buildRow, failure]
   if (value === 'quiet') return [statusRow, testRow, <el.Box key={`${id}to`}>{renderShellResult(el, style, { stdout: SETUP_NPM_TEST.join('\n'), stderr: '' })}</el.Box>, buildRow, failure]
@@ -708,28 +708,28 @@ const toolOutputSample = (el: ReturnType<EngineInterface['ui']['resolve']>, styl
   ]
 }
 
-const SETUP_TABLE = '| Item | Qty |\n|:-----|----:|\n| Apples | 3 |\n| Pears | 5 |'
+const SETUP_TABLE = '| Item | Qtd |\n|:-----|----:|\n| Maçãs | 3 |\n| Peras | 5 |'
 const SETUP_SENT = new Date(2026, 0, 15, 14, 32).getTime()
 
 const copySample = (el: ReturnType<EngineInterface['ui']['resolve']>, style: Style, value: string, id: string, columns: number): RenderElement[] => {
-  const label: CopyButton = (_text, key, name = '⧉ copy', rich) => (offers(style, rich) ? (style.copyButtonStyle === 'dim' ? <el.Text key={key} dimColor>{name}</el.Text> : <el.Text key={key} bold>{`[ ${name} ]`}</el.Text>) : null)
+  const label: CopyButton = (_text, key, name = '⧉ copiar', rich) => (offers(style, rich) ? (style.copyButtonStyle === 'dim' ? <el.Text key={key} dimColor>{name}</el.Text> : <el.Text key={key} bold>{`[ ${name} ]`}</el.Text>) : null)
   const table = renderBlocks(el, style, parse(SETUP_TABLE, { numbers: style.highlightNumbers, paths: style.highlightPaths }), columns, new Map(), label)
   return [
     <el.Box key={`${id}t`} flexDirection="column">{table}</el.Box>,
-    ...(value === 'hover' ? [<el.Text key={`${id}h`} dimColor>{'Its buttons show only while the pointer is on its ⧉.'}</el.Text>] : []),
+    ...(value === 'hover' ? [<el.Text key={`${id}h`} dimColor>{'Seus botões aparecem apenas enquanto o ponteiro está sobre o ⧉.'}</el.Text>] : []),
   ]
 }
 
 const clockSample = (el: ReturnType<EngineInterface['ui']['resolve']>, style: Style, value: string, id: string, columns: number): RenderElement[] => {
   const time = value === '24h' || value === '12h' ? clockText(SETUP_SENT, SETUP_SENT, value) : undefined
-  const prompt = style.promptStyle === 'off' ? <el.Text dimColor>{`> ${time === undefined ? '' : `[${time}] `}fix the failing test`}</el.Text> : renderUserPrompt(el, style, 'fix the failing test', columns, time)
-  return [<el.Box key={`${id}p`}>{prompt}</el.Box>, <el.Box key={`${id}d`}>{renderTurnDuration(el, style, 'Baked', 115000, time)}</el.Box>]
+  const prompt = style.promptStyle === 'off' ? <el.Text dimColor>{`> ${time === undefined ? '' : `[${time}] `}corrigir o teste que falha`}</el.Text> : renderUserPrompt(el, style, 'corrigir o teste que falha', columns, time)
+  return [<el.Box key={`${id}p`}>{prompt}</el.Box>, <el.Box key={`${id}d`}>{renderTurnDuration(el, style, 'Pronto', 115000, time)}</el.Box>]
 }
 
 const promptSample = (el: ReturnType<EngineInterface['ui']['resolve']>, style: Style, value: string, id: string, columns: number): RenderElement[] =>
-  [value === 'off' ? <el.Text key={id} dimColor>{'> fix the failing test'}</el.Text> : <el.Box key={id}>{renderUserPrompt(el, style, 'fix the failing test', columns)}</el.Box>]
+  [value === 'off' ? <el.Text key={id} dimColor>{'> corrigir o teste que falha'}</el.Text> : <el.Box key={id}>{renderUserPrompt(el, style, 'corrigir o teste que falha', columns)}</el.Box>]
 
-const SETUP_REPLY = 'The failing test passes now: `retries` was read before the config loaded.'
+const SETUP_REPLY = 'O teste que falhava passa agora: `retries` foi lido antes do carregamento da configuração.'
 
 const replySample = ($: EngineInterface, el: ReturnType<EngineInterface['ui']['resolve']>, style: Style, id: string, columns: number): RenderElement[] => {
   const framed = replyStyleFor(style, SETUP_REPLY)
@@ -936,25 +936,25 @@ export const register: Register = (on, options) => {
     if (sub === 'demo') return { text: showcaseText(PRESET_NAMES) + languageShowcase(await localeOf($, name)) }
     if (sub === 'setup') return { text: await setup($, picked, e.origin, name, third) }
     if (sub === 'copy') {
-      if (name && name !== 'code') return { text: `Unknown copy target "${name}". Use /prismantis copy, or /prismantis copy code for the last code block.` }
+      if (name && name !== 'code') return { text: `Destino de cópia desconhecido "${name}". Use /prismantis copy, ou /prismantis copy code para o último bloco de código.` }
       const reply = (await $.session.messages()).findLast(m => m.role === 'assistant' && m.text.trim())
-      if (!reply) return { text: 'Nothing to copy yet.' }
+      if (!reply) return { text: 'Nada para copiar ainda.' }
       const code = name === 'code' ? nestedBlocks(parseCached(reply.text)).findLast(b => b.kind === 'code' && !/^(mermaid|figure)$/i.test(b.lang)) : undefined
-      if (name === 'code' && code?.kind !== 'code') return { text: 'The last reply has no code block.' }
+      if (name === 'code' && code?.kind !== 'code') return { text: 'A última resposta não tem bloco de código.' }
       const text = code?.kind === 'code' ? code.lines.join('\n') : reply.text
       const said = await lastCopy(async () => {
         const result = await $.ui.copy({ text })
-        return result.isCopied ? `Copied the last ${code ? 'code block' : 'reply'}.` : `Copy failed: ${result.reason}`
+        return result.isCopied ? `Copiado o último ${code ? 'bloco de código' : 'resposta'}.` : `Falha na cópia: ${result.reason}`
       })
-      return { text: said ?? 'A newer copy replaced this one.' }
+      return { text: said ?? 'Uma cópia mais recente substituiu esta.' }
     }
     if (sub === 'demo-rtl') {
       await probe($, style, probes)
       return { text: rtlShowcaseText() }
     }
     if (sub !== 'theme') return { text: helpText(PRESET_NAMES) }
-    if (!name) return { text: options.theme === 'random' ? `current: ${picked.theme} (random)\nkeep it: /prismantis theme ${picked.theme}` : `current: ${picked.theme}` }
-    if (!THEME_ARGS.includes(name)) return { text: `Unknown theme "${name}". Themes: ${PRESET_NAMES.join(', ')}, random` }
+    if (!name) return { text: options.theme === 'random' ? `atual: ${picked.theme} (aleatório)\npara manter: /prismantis theme ${picked.theme}` : `atual: ${picked.theme}` }
+    if (!THEME_ARGS.includes(name)) return { text: `Tema desconhecido "${name}". Temas: ${PRESET_NAMES.join(', ')}, aleatório` }
     return { text: await setTheme($, picked, name) }
   })
 
