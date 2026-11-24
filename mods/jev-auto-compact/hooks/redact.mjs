@@ -110,7 +110,7 @@ const PROTECTED_PATH = new RegExp(
   'i'
 );
 
-export const WITHHELD_INPUT = '[input withheld: protected path]';
+export const WITHHELD_INPUT = '[entrada retida: caminho protegido]';
 
 /** True when a tool input string names a protected path. */
 export function namesProtectedPath(input) {

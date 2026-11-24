@@ -121,13 +121,13 @@ async function pollForDecision($: EngineInterface, p: Prompt, session: string | 
   if (q) {
     const e = q.entry
     const attempts = e.attempts ?? 0
-    const note = attempts > 0 ? `queued for retry: ${e.lastError ?? 'Jev did not answer'} (attempt ${attempts})${e.nextAttemptAt ? `; next try ${hhmm(e.nextAttemptAt)}` : ''}` : `queued (${q.before} older turn${q.before === 1 ? '' : 's'} before it)`
+    const note = attempts > 0 ? `na fila para retry: ${e.lastError ?? 'o Jev não respondeu'} (tentativa ${attempts})${e.nextAttemptAt ? `; próxima tentativa ${hhmm(e.nextAttemptAt)}` : ''}` : `na fila (${q.before} rodada${q.before === 1 ? '' : 's'} anterior${q.before === 1 ? '' : 'es'} antes dela)`
     await update($, S_SAVING, () => 'queued')
     await update($, S_SAVING_NOTE, () => note)
   } else {
     const failure = failureAfter(await readText($, LOG), p.at)
     await update($, S_SAVING, () => (failure ? 'failed' : 'unknown'))
-    await update($, S_SAVING_NOTE, () => (failure ? `failed: ${failure}` : 'not decided yet: nothing in the log for this turn (the daemon may still be working through older turns)'))
+    await update($, S_SAVING_NOTE, () => (failure ? `falhou: ${failure}` : 'ainda não decidido: nada no registro para esta rodada (o daemon pode ainda estar processando rodadas anteriores)'))
   }
   redraw($)
 }
@@ -137,23 +137,23 @@ async function note($: EngineInterface, where: Where, text: string): Promise<voi
   redraw($)
 }
 async function doWhy($: EngineInterface, idOrHash: string, where: Where): Promise<void> {
-  if (!isId(idOrHash) && !isHash(idOrHash)) return note($, where, 'not a memory id')
+  if (!isId(idOrHash) && !isHash(idOrHash)) return note($, where, 'não é um id de memória')
   const cli = await read($, S_CLI)
   if (!cli) return note($, where, NOT_FOUND)
   const r = await runCli($, cli, ['why', idOrHash])
-  await update($, S_PENDING, (): Pending => ({ kind: 'output', where, title: `jevmem why ${idOrHash}${r.ok ? '' : ' (failed)'}`, text: r.text }))
+  await update($, S_PENDING, (): Pending => ({ kind: 'output', where, title: `jevmem why ${idOrHash}${r.ok ? '' : ' (falhou)'}`, text: r.text }))
   redraw($)
 }
 async function doRetire($: EngineInterface, action: 'forget' | 'wrong', id: string, kind: string | null, where: Where): Promise<void> {
-  if (!isId(id)) return note($, where, 'not a memory id')
-  if (kind === 'constraint') return note($, where, action === 'forget' ? `a rule is retired in a terminal: jevmem forget ${id}` : `a rule is retired in a terminal: jevmem wrong ${id} --should-be none`)
+  if (!isId(id)) return note($, where, 'não é um id de memória')
+  if (kind === 'constraint') return note($, where, action === 'forget' ? `uma regra é retirada em um terminal: jevmem forget ${id}` : `uma regra é retirada em um terminal: jevmem wrong ${id} --should-be none`)
   await update($, S_PENDING, (): Pending => ({ kind: 'confirm', where, action, id }))
   redraw($)
 }
 /** 0.7.6: a skipped turn's `missed` button: a confirm, then `jevmem missed "<the prompt as typed>"`, which labels the turn and adds the line. */
 async function doMissed($: EngineInterface, where: Where): Promise<void> {
   const p = await read($, S_PROMPT)
-  if (!p || !p.text.trim()) return note($, where, 'no prompt text for this turn')
+  if (!p || !p.text.trim()) return note($, where, 'sem texto de prompt para esta rodada')
   await update($, S_PENDING, (): Pending => ({ kind: 'confirm', where, action: 'missed', id: '', text: p.text }))
   redraw($)
 }
@@ -169,14 +169,14 @@ async function doConfirm($: EngineInterface, yes: boolean): Promise<void> {
   if (!cli) return note($, p.where, NOT_FOUND)
   const args = p.action === 'forget' ? ['forget', p.id] : p.action === 'wrong' ? ['wrong', p.id, '--should-be', 'none'] : ['missed', p.text ?? '']
   const r = await runCli($, cli, args)
-  await update($, S_PENDING, (): Pending => ({ kind: 'output', where: p.where, title: `jevmem ${p.action === 'missed' ? 'missed "…"' : args.join(' ')}${r.ok ? '' : ' (failed)'}`, text: r.text }))
+  await update($, S_PENDING, (): Pending => ({ kind: 'output', where: p.where, title: `jevmem ${p.action === 'missed' ? 'missed "…"' : args.join(' ')}${r.ok ? '' : ' (falhou)'}`, text: r.text }))
   redraw($)
 }
 async function doGuardLog($: EngineInterface): Promise<void> {
   const cli = await read($, S_CLI)
   if (!cli) return note($, 'guard', NOT_FOUND)
   const r = await runCli($, cli, ['guard', 'log', '-n', '5'])
-  await update($, S_PENDING, (): Pending => ({ kind: 'output', where: 'guard', title: `jevmem guard log -n 5${r.ok ? '' : ' (failed)'}`, text: r.text }))
+  await update($, S_PENDING, (): Pending => ({ kind: 'output', where: 'guard', title: `jevmem guard log -n 5${r.ok ? '' : ' (falhou)'}`, text: r.text }))
   redraw($)
 }
 async function doClose($: EngineInterface): Promise<void> {
@@ -217,14 +217,14 @@ export const register: Register = (on) => {
   })
 
   on('command.run', { command: 'jevmem' }, async ($) => {
-    if (!(await read($, S_ON))) return { text: 'jevmem is not turned on in this project: run jevmem setup here, then start a new session.' }
+    if (!(await read($, S_ON))) return { text: 'o jevmem não está ativado neste projeto: execute jevmem setup aqui e inicie uma nova sessão.' }
     const placed = (await $.ui.panes()).some((p) => p.id === PANE && p.isPlaced)
     if (placed) {
       await $.ui.close({ id: PANE })
-      return { text: 'jevmem pane closed.' }
+      return { text: 'painel jevmem fechado.' }
     }
     const opened = await $.ui.open({ id: PANE, title: 'jevmem', focus: true, columns: 48, rows: 14 })
-    return { text: opened.isPlaced ? 'jevmem pane opened.' : `jevmem pane opened, waiting to be placed: ${opened.reason}` }
+    return { text: opened.isPlaced ? 'painel jevmem aberto.' : `painel jevmem aberto, aguardando posicionamento: ${opened.reason}` }
   })
 
   on('prompt.submit', async ($, e, next) => {

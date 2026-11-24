@@ -63,39 +63,39 @@ export function createHostAdapter(
   return {
     state: durableState,
     async list_sessions(cursor: string | null): Promise<Inventory> {
-      if (cursor !== null) throw new Error('ListAgents has no pagination cursor')
+      if (cursor !== null) throw new Error('ListAgents não tem cursor de paginação')
       const response = await $.tool.call({ tool: 'ListAgents' })
-      if (response.deny || response.isError || !response.result) throw new Error('ListAgents unavailable')
+      if (response.deny || response.isError || !response.result) throw new Error('ListAgents indisponível')
       const listing = response.result
       const self = await $.session.id()
       const manifest = await snapshotProvider.inventory(listing, self, response.ref)
       const gaps = [...manifest.gaps]
-      if (!listing.sections) gaps.push('ListAgents structured coverage missing')
+      if (!listing.sections) gaps.push('cobertura estruturada do ListAgents ausente')
       for (const section of listing.sections ?? []) {
-        if (section.total !== section.rows.length) gaps.push('ListAgents section coverage incomplete')
+        if (section.total !== section.rows.length) gaps.push('cobertura da seção do ListAgents incompleta')
       }
-      if (listing.notes?.length) gaps.push('ListAgents notes require source coverage reconciliation')
+      if (listing.notes?.length) gaps.push('as notas do ListAgents exigem conciliação da cobertura da fonte')
       if (!nonempty(manifest.enumerationId) || manifest.nextCursor !== null ||
           manifest.total !== manifest.sessions.length || new Set(manifest.sessions).size !== manifest.sessions.length ||
-          manifest.sessions.some(id => !nonempty(id) || id === self)) gaps.push('Invalid scoped inventory')
+          manifest.sessions.some(id => !nonempty(id) || id === self)) gaps.push('inventário escopo inválido')
       return { ...manifest, complete: manifest.complete === true && gaps.length === 0, gaps }
     },
     async read_snapshot(sessionId: string): Promise<JsonRecord> {
-      if (sessionId === await $.session.id()) throw new Error('Supervisor cannot target itself')
+      if (sessionId === await $.session.id()) throw new Error('o supervisor não pode mirar a si mesmo')
       return snapshotProvider.readSnapshot(sessionId)
     },
     async judge(snapshot: JsonRecord, instructions: string): Promise<JsonRecord> {
       const binding = await snapshotProvider.binding(snapshot)
       for (const key of ['sessionId', 'generation', 'contractHash', 'evidenceSetHash', 'transcriptIdentity']) {
-        if (binding[key] !== snapshot[key]) throw new Error('Coordinator binding mismatch')
+        if (binding[key] !== snapshot[key]) throw new Error('vinculação do coordenador não corresponde')
       }
-      if (!nonempty(binding.snapshotHash)) throw new Error('Coordinator content hash missing')
+      if (!nonempty(binding.snapshotHash)) throw new Error('hash de conteúdo do coordenador ausente')
       const model = await $.session.model()
       const result = await $.model.complete({ model, system: instructions,
         prompt: JSON.stringify({ snapshot, binding }), maxTokens, timeoutMs: 60000 })
-      if (!result.isAnswered) throw new Error(`Judge unanswered: ${result.reason}`)
+      if (!result.isAnswered) throw new Error(`Avaliador sem resposta: ${result.reason}`)
       const parsed: unknown = JSON.parse(result.text)
-      if (!object(parsed)) throw new Error('Judge returned no JSON object')
+      if (!object(parsed)) throw new Error('o avaliador não retornou um objeto JSON')
       // Runtime-reported usage/provenance supersede model-authored telemetry.
       return { ...parsed, usage: { ...result.usage },
         // Local native-call correlation is not a provider request ID.
@@ -105,13 +105,13 @@ export function createHostAdapter(
       if (sessionId === await $.session.id() || action.ownerSessionId !== sessionId ||
           action.kind !== 'continue' || !nonempty(action.text) || !nonempty(idempotencyKey) ||
           expected.sessionId !== sessionId || typeof expected.expiresAt !== 'number' ||
-          !Number.isFinite(expected.expiresAt) || expected.expiresAt <= Date.now() / 1000) throw new Error('Invalid nudge target, action or deadline')
+          !Number.isFinite(expected.expiresAt) || expected.expiresAt <= Date.now() / 1000) throw new Error('alvo, ação ou prazo de notificação inválido')
       let calls = 0
       let outcome: SessionSendResult | undefined
       const allowed = await snapshotProvider.checkAndEnqueue(
         { sessionId, action, expected, idempotencyKey }, async () => {
-          if (++calls !== 1) throw new Error('Duplicate enqueue callback refused')
-          if ((expected.expiresAt as number) <= Date.now() / 1000) throw new Error('Nudge expired before enqueue')
+          if (++calls !== 1) throw new Error('callback de enfileiramento duplicado recusado')
+          if ((expected.expiresAt as number) <= Date.now() / 1000) throw new Error('a notificação expirou antes do enfileiramento')
           outcome = await $.session.send({ to: { sessionId }, text: action.text as string })
           return outcome
         })

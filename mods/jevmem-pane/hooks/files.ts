@@ -55,14 +55,14 @@ export function findGuardEntry(entries: readonly GuardEntry[], toolUseId: string
 
 /** The route of a checked call, in plain words. */
 export const routeWords: Record<string, string> = {
-  'no-rules': 'no rule',
-  'no-candidate': 'no rule matched',
-  cache: 'cached',
+  'no-rules': 'sem regra',
+  'no-candidate': 'nenhuma regra correspondeu',
+  cache: 'em cache',
   jev: 'Jev',
-  'jev-failed': 'Jev did not answer',
-  'no-key': 'no key',
-  'no-time': 'no time',
-  error: 'error',
+  'jev-failed': 'o Jev não respondeu',
+  'no-key': 'sem chave',
+  'no-time': 'sem tempo',
+  error: 'erro',
 }
 
 export type QueueEntry = { hash?: string; enqueuedAt?: string; attempts?: number; nextAttemptAt?: string; lastError?: string }
@@ -84,7 +84,7 @@ export function failureAfter(text: string | null, sinceMs: number): string | nul
     const e = items[i]!
     if (!e.ts || Date.parse(e.ts) < sinceMs) continue
     if (e.label === 'hook' && e.ok === false && e.error) return e.error
-    if (e.label === 'queue' && e.event === 'dropped' && e.detail) return `the turn was dropped: ${e.detail}`
+    if (e.label === 'queue' && e.event === 'dropped' && e.detail) return `a rodada foi descartada: ${e.detail}`
   }
   return null
 }
@@ -136,20 +136,20 @@ export function plainDecision(d: Decision): string {
   const r = `${d.reason ?? ''} ${d.detail ?? ''}`
   if (d.action === 'deferred') {
     const n = /(\d+) background subagent/.exec(r)?.[1]
-    return n ? `Waiting: ${n} background subagent${n === '1' ? ' has' : 's have'} not reported back` : 'Waiting: the turn is still running'
+    return n ? `Aguardando: ${n} subagente${n === '1' ? '' : 's'} em segundo plano ainda não relatou${n === '1' ? '' : 's'}` : 'Aguardando: a rodada ainda está em execução'
   }
-  if (d.action === 'error') return `Failed: ${short(d.detail || d.reason || 'the decision ended in an error')}`
+  if (d.action === 'error') return `Falhou: ${short(d.detail || d.reason || 'a decisão terminou em erro')}`
   if (d.action !== 'skipped') return `${d.action}: ${short(d.reason ?? d.detail ?? '')}`
-  if (/^empty turn/.test(d.reason ?? d.detail ?? '')) return 'Not saved: an empty turn'
+  if (/^empty turn/.test(d.reason ?? d.detail ?? '')) return 'Não salvo: uma rodada vazia'
   const dup = d.duplicate_of ?? /duplicate of ([a-z0-9]{6})/.exec(r)?.[1]
-  if (dup) return `Not saved: already in memory as ${dup}`
-  if (/injection=|instructions aimed at an AI/.test(r)) return 'Not saved: it read as instructions aimed at an AI'
-  if (/chit_chat/.test(r)) return 'Not saved: small talk'
-  if (/source=assistant_reply|assistant_meta|may come from the assistant/.test(r)) return "Not saved: only a bug, an architecture note or a dead end is taken from Claude's reply"
-  if (/status \w+: nothing decided|turn was stopped/.test(r)) return 'Not saved: the turn was stopped'
-  if (/kind=none/.test(r)) return 'Not saved: nothing worth keeping'
-  if (/content=[\d.]+<[\d.]+/.test(r)) return 'Not saved: too little of a fact in it'
-  if (/importance=\w+<\w+/.test(r)) return 'Not saved: not important enough'
-  return 'Not saved'
+  if (dup) return `Não salvo: já está na memória como ${dup}`
+  if (/injection=|instructions aimed at an AI/.test(r)) return 'Não salvo: pareceu uma instrução dirigida a uma IA'
+  if (/chit_chat/.test(r)) return 'Não salvo: conversa fiada'
+  if (/source=assistant_reply|assistant_meta|may come from the assistant/.test(r)) return 'Não salvo: apenas um bug, uma nota de arquitetura ou um caminho sem saída é retirado da resposta do Claude'
+  if (/status \w+: nothing decided|turn was stopped/.test(r)) return 'Não salvo: a rodada foi interrompida'
+  if (/kind=none/.test(r)) return 'Não salvo: nada que valha manter'
+  if (/content=[\d.]+<[\d.]+/.test(r)) return 'Não salvo: há pouco conteúdo factual'
+  if (/importance=\w+<\w+/.test(r)) return 'Não salvo: não é importante o suficiente'
+  return 'Não salvo'
 }
 const short = (s: string) => (s.length > 120 ? `${s.slice(0, 119)}…` : s)

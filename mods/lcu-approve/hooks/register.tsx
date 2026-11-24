@@ -79,7 +79,7 @@ export const register: Register = on => {
     // (auto mode's classifier refuses it). Waiting on `$` does not spend the hook's budget.
     if (surfaces.includes('desktop') || (inApp && !surfaces.includes('terminal'))) {
       await askAndRecord($, approval)
-      return { block: 'Answered by the lcu-approve mod' }
+      return { block: 'Respondido pelo mod lcu-approve' }
     }
 
     // The icon is made here, in an event hook: a render closure cannot run a process.
@@ -93,7 +93,7 @@ export const register: Register = on => {
       // A narrow terminal seats no pane: the question dialog asks, within this hook as on the desktop.
       await askAndRecord($, approval)
     }
-    return { block: 'Answered by the lcu-approve mod' }
+    return { block: 'Respondido pelo mod lcu-approve' }
   })
 
   on('ui.render', { component: 'Pane' }, async ($, e, next) => {
@@ -133,7 +133,7 @@ export const register: Register = on => {
     const name = e.value.trim()
     if (e.kind === 'submit' && name) {
       await update($, apps, state => ({ ...state, nonce: state.nonce + 1 }))
-      await runLcu($, ['allow', name], `Allowing ${name}. Confirm with Touch ID or your password...`)
+      await runLcu($, ['allow', name], `Permitindo ${name}. Confirme com Touch ID ou sua senha...`)
     }
     return { element: e.element, value: e.value }
   })
@@ -144,7 +144,7 @@ export const register: Register = on => {
     if (entry && e.origin.kind === 'person') {
       shown.delete(e.id)
       await record($, entry.approval.id, 'cancel')
-      $.ui.toast(`Approval for ${entry.approval.label} dismissed`)
+      $.ui.toast(`Aprovação de ${entry.approval.label} dispensada`)
     }
     return next(e)
   })
@@ -198,7 +198,7 @@ export const register: Register = on => {
   on('command.run', { command: APPS_COMMAND }, async $ => {
     await refresh($)
     await openApps($)
-    return { text: 'Approved apps panel opened.' }
+    return { text: 'Painel de aplicativos aprovados aberto.' }
   })
 
   // The approval tools are for this mod alone: the model gets a refusal,
@@ -207,13 +207,13 @@ export const register: Register = on => {
     const tool = `mcp__${SERVER}__${name}`
     on('tool.call', { tool }, async ($, e, next) => {
       if (next.origin.plugin !== $.plugin.name) {
-        return { deny: `${name} is a host-only LCU tool.` }
+        return { deny: `${name} é uma ferramenta LCU exclusiva do host.` }
       }
       return next(e)
     })
     on('tool.check', { tool }, async ($, e, next) => {
       if (next.origin.plugin !== $.plugin.name) return next(e)
-      return { decision: 'allow', reason: 'LCU approval mod' }
+      return { decision: 'allow', reason: 'mod de aprovação LCU' }
     })
   }
 }
@@ -315,7 +315,7 @@ async function sessionGrants($: any): Promise<SessionRow[]> {
 
 export async function loadApps($: any, lcu: string): Promise<AppsData> {
   const run = await $.process.run([lcu, 'apps', '--json'], { timeoutMs: 20000 })
-  if (!ok(run)) throw new Error(firstLine(run.stderr) || `lcu apps exited ${run.exitCode}`)
+  if (!ok(run)) throw new Error(firstLine(run.stderr) || `lcu apps terminou com ${run.exitCode}`)
   let always: AppRow[]
   try {
     always = JSON.parse(run.stdout).apps
@@ -381,7 +381,7 @@ async function openApps($: any): Promise<void> {
   const state = await read($, apps)
   await $.ui.open({
     id: APPS_PANE,
-    title: 'Approved apps',
+    title: 'Aplicativos aprovados',
     focus: true,
     closeOnEscape: true,
     rows: appsRows(state),
@@ -395,7 +395,7 @@ async function refresh($: any): Promise<void> {
     const where = tried.length ? tried.join(' or ') : '~/.local/share/lcu/current/bin/lcu'
     await update($, apps, state => ({
       ...state, isLoaded: true, always: [], session: [],
-      unavailable: `The lcu command was not found at ${where}. Run lcu setup --agent claude-code again.`,
+      unavailable: `O comando lcu não foi encontrado em ${where}. Execute lcu setup --agent claude-code novamente.`,
     }))
     return
   }
@@ -403,7 +403,7 @@ async function refresh($: any): Promise<void> {
     const data = await loadApps($, path)
     await update($, apps, state => ({ ...state, ...data, isLoaded: true, unavailable: undefined }))
   } catch (error) {
-    const text = `Could not list the apps: ${(error as Error).message}`
+    const text = `Não foi possível listar os aplicativos: ${(error as Error).message}`
     await update($, apps, state => ({
       ...state, isLoaded: true, unavailable: state.always.length || state.session.length ? undefined : text,
       notice: { tone: 'error', text },
@@ -419,7 +419,7 @@ async function pressApps($: any, action: string): Promise<void> {
   }
   if (action.startsWith('revoke:')) {
     const bundleId = action.slice('revoke:'.length)
-    await runLcu($, ['revoke', bundleId], `Revoking ${bundleId}. Confirm with Touch ID or your password...`)
+    await runLcu($, ['revoke', bundleId], `Revogando ${bundleId}. Confirme com Touch ID ou sua senha...`)
   }
 }
 
@@ -436,10 +436,10 @@ async function runLcu($: any, args: string[], working: string): Promise<void> {
   try {
     const run = await $.process.run([path, 'apps', ...args], { timeoutMs: 180000 })
     notice = run.exitCode === 0
-      ? { tone: 'ok', text: firstLine(run.stdout) || 'Done.' }
-      : { tone: 'error', text: firstLine(run.stderr).replace(/^lcu apps: /, '') || `lcu apps exited ${run.exitCode}` }
+      ? { tone: 'ok', text: firstLine(run.stdout) || 'Concluído.' }
+      : { tone: 'error', text: firstLine(run.stderr).replace(/^lcu apps: /, '') || `lcu apps terminou com ${run.exitCode}` }
   } catch (error) {
-    notice = { tone: 'error', text: `Could not run lcu: ${(error as Error).message}` }
+    notice = { tone: 'error', text: `Não foi possível executar o lcu: ${(error as Error).message}` }
   }
   $.ui.toast(notice.text)
   await update($, apps, (state: AppsState) => ({ ...state, busy: undefined, notice }))
@@ -452,9 +452,9 @@ async function record($: any, id: string, choice: Choice): Promise<boolean> {
   try {
     const reply = (await $.mcp.call(SERVER, CHOICE_TOOL, { id, choice })) as McpResult
     if (!reply.isError) return true
-    report($, `LCU refused the choice: ${textOf(reply)}`)
+    report($, `O LCU recusou a escolha: ${textOf(reply)}`)
   } catch (error) {
-    report($, `could not send the choice to LCU: ${String(error)}`)
+    report($, `não foi possível enviar a escolha ao LCU: ${String(error)}`)
   }
   return false
 }
@@ -462,14 +462,14 @@ async function record($: any, id: string, choice: Choice): Promise<boolean> {
 // A failure the person should see, and the debug log keeps.
 function report($: any, text: string): void {
   $.ui.log(`lcu-approve: ${text}`, { to: 'debug' })
-  $.ui.toast(`Computer use approval: ${text}`)
+  $.ui.toast(`Aprovação de uso do computador: ${text}`)
 }
 
 const CONFIRMATION: Record<Choice, (name: string) => string> = {
-  session: name => `${name} allowed for this conversation`,
-  always: name => `${name} always allowed`,
-  deny: name => `${name} denied`,
-  cancel: name => `Approval for ${name} dismissed`,
+  session: name => `${name} permitido nesta conversa`,
+  always: name => `${name} permitido sempre`,
+  deny: name => `${name} negado`,
+  cancel: name => `Aprovação de ${name} dispensada`,
 }
 
 // Record the person's choice, confirm it, then take the pane down. A refused record means the request ended.
@@ -523,10 +523,10 @@ const DISMISSED = '[User dismissed'
 
 // The question: the app, the risk when high. The desktop app draws only this text and the option labels.
 function askQuestion(approval: Approval): string {
-  const sentence = `Computer use will be able to see and control ${approval.label} (${approval.app}).`
-  if (approval.riskLevel !== 'high') return `${sentence} Allow it?`
+  const sentence = `O uso do computador poderá ver e controlar ${approval.label} (${approval.app}).`
+  if (approval.riskLevel !== 'high') return `${sentence} Permitir?`
   const warning = approval.warning ? ` ${plainWarning(approval.warning)}` : ''
-  return `\u26a0\ufe0f High risk \u2014 ${sentence}${warning} Allow it?`
+  return `\u26a0\ufe0f Alto risco \u2014 ${sentence}${warning} Permitir?`
 }
 
 // The engine's question dialog: the desktop app's card, and a terminal where no pane is seated.

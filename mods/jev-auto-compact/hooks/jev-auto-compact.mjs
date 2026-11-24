@@ -207,7 +207,7 @@ function buildHistoryEntry(msg, idx, callsByMsg, inputLimit, abridge, collapse, 
   // Collapse non-pinned messages without tool calls
   if (collapse && !pinnedIndices.has(idx) && !callsByMsg.has(idx)) {
     if (!text.trim()) return null;
-    return { i: idx, role, text: `[... ${text.length} chars omitted ...]` };
+    return { i: idx, role, text: `[... ${text.length} caracteres omitidos ...]` };
   }
 
   // Abridge long non-pinned text
@@ -215,7 +215,7 @@ function buildHistoryEntry(msg, idx, callsByMsg, inputLimit, abridge, collapse, 
   if (abridge && !pinnedIndices.has(idx) && text.length > ABRIDGE_TEXT_THRESHOLD) {
     displayText =
       text.substring(0, ABRIDGE_HEAD) +
-      `\n[... ${text.length - ABRIDGE_HEAD - ABRIDGE_TAIL} chars omitted ...]\n` +
+      `\n[... ${text.length - ABRIDGE_HEAD - ABRIDGE_TAIL} caracteres omitidos ...]\n` +
       text.substring(text.length - ABRIDGE_TAIL);
   }
 
@@ -227,7 +227,7 @@ function buildHistoryEntry(msg, idx, callsByMsg, inputLimit, abridge, collapse, 
       id: c.seqId,
       tool: c.tool,
       input: c.input.substring(0, inputLimit),
-      result: `${c.isError ? 'error' : 'ok'}, ${c.resultChars} chars (omitted)`,
+      result: `${c.isError ? 'erro' : 'ok'}, ${c.resultChars} caracteres (omitidos)`,
     }));
   }
 
@@ -272,10 +272,10 @@ function fitState(rawMessages, rawCalls, goal) {
   pinnedIndices.add(0);
 
   const contextText =
-    'A coding assistant conversation is being compacted to free context. ' +
-    '`history` is the whole conversation; tool outputs are replaced by notes. ' +
-    'Each question asks whether one tool call or result still needs to stay verbatim. ' +
-    'Whatever is not kept is deleted permanently, but the assistant can re-run any tool.';
+    'Uma conversa com um assistente de programação está sendo compactada para liberar contexto. ' +
+    '`history` é a conversa inteira; as saídas das ferramentas foram substituídas por notas. ' +
+    'Cada pergunta verifica se uma chamada de ferramenta ou seu resultado ainda precisa permanecer literal. ' +
+    'O que não for mantido será excluído permanentemente, mas o assistente pode executar qualquer ferramenta novamente.';
 
   // Progressive stages: [inputLimit, abridge, collapse, dropTextOnly]
   const stages = [
@@ -317,27 +317,27 @@ function questionsFor(call) {
     [`call_${seqId}`]: {
       type: 'noul',
       instructions: {
-        question: `Tool call ${seqId} (${tool}) should stay in the history: knowing this call was made, with its input, still matters for what the assistant does next.`,
+        question: `A chamada de ferramenta ${seqId} (${tool}) deve permanecer no histórico: saber que ela foi feita, com sua entrada, ainda importa para o próximo passo do assistente.`,
         criteria: {
-          true: 'The call\'s input or the fact it was made is referenced, constrains, or informs later actions.',
-          false: 'The call was exploratory, superseded by a later call to the same tool on the same target, or its input is fully captured in later context.',
+          true: 'A entrada da chamada ou o fato de ela ter sido feita é citado, restringe ou informa ações posteriores.',
+          false: 'A chamada foi exploratória, substituída por uma chamada posterior à mesma ferramenta no mesmo alvo, ou sua entrada está totalmente registrada em contexto posterior.',
         },
       },
     },
     [`result_${seqId}`]: {
       type: 'noul',
       instructions: {
-        question: `The full output of tool call ${seqId} (${tool}, ${resultChars} chars) should stay verbatim: the assistant still needs its contents and re-running the tool would not reproduce it.`,
+        question: `A saída completa da chamada de ferramenta ${seqId} (${tool}, ${resultChars} caracteres) deve permanecer literal: o assistente ainda precisa de seu conteúdo e executar a ferramenta novamente não o reproduziria.`,
         criteria: {
-          true: 'The result contains information not available elsewhere: error details, file contents being modified, test output. Re-running would not reproduce it.',
-          false: 'The result is a simple acknowledgment, a file listing available from later reads, or output reproducible by re-running.',
+          true: 'O resultado contém informações indisponíveis em outro lugar: detalhes de erro, conteúdo de arquivos em alteração, saída de testes. Executar novamente não as reproduziria.',
+          false: 'O resultado é apenas uma confirmação, uma listagem de arquivos disponível em leituras posteriores ou uma saída reproduzível ao executar novamente.',
         },
       },
     },
     [`referenced_${seqId}`]: {
       type: 'noul',
       instructions: {
-        question: `The result of tool call ${seqId} (${tool}) was referenced or used in a later assistant message or tool call input.`,
+        question: `O resultado da chamada de ferramenta ${seqId} (${tool}) foi citado ou usado em uma mensagem posterior do assistente ou na entrada de outra chamada de ferramenta.`,
       },
     },
   };
@@ -382,7 +382,7 @@ async function callJev(fetchFn, apiKey, state, questions, timeoutMs = JEV_TIMEOU
   const payload = { model: JEV_MODEL, state, questions };
   let timer;
   const timeout = new Promise((_, reject) => {
-    timer = setTimeout(() => reject(new Error('Jev request timed out')), timeoutMs);
+    timer = setTimeout(() => reject(new Error('a solicitação ao Jev expirou')), timeoutMs);
   });
   let response;
   try {
@@ -408,7 +408,7 @@ async function callJev(fetchFn, apiKey, state, questions, timeoutMs = JEV_TIMEOU
   }
 
   const data = JSON.parse(response.text);
-  if (!data.answers) throw new Error('Jev response missing answers');
+  if (!data.answers) throw new Error('a resposta do Jev não contém answers');
   return data;
 }
 
@@ -483,7 +483,7 @@ function applyDecisions(messages, decisions, calls) {
             filtered.push({
               ...tr,
               text: text.substring(0, TRUNCATE_HEAD_CHARS) +
-                `\n[jev-compact truncated ${truncated} chars; re-run the tool if needed]`,
+                `\n[jev-compact truncou ${truncated} caracteres; execute a ferramenta novamente se necessário]`,
             });
             changed = true;
           } else {
@@ -552,7 +552,7 @@ export async function compact(fetchFn, apiKey, messages, log = () => {}, { timeo
   // Batch questions to fit Jev limits
   const batches = batchCalls(candidates, stateTokens);
   if (batches === null) {
-    log(`[jev-auto-compact] ${candidates.length} tool calls with a ${stateTokens}-token state do not fit in ${MAX_REQUESTS_PER_COMPACTION} Jev requests`);
+    log(`[jev-auto-compact] ${candidates.length} chamadas de ferramenta com um estado de ${stateTokens} tokens não cabem em ${MAX_REQUESTS_PER_COMPACTION} solicitações ao Jev`);
     return {
       messages,
       decisions,
@@ -599,14 +599,14 @@ export async function compact(fetchFn, apiKey, messages, log = () => {}, { timeo
         ...callEntry,
         ok: false,
         latency_ms: Date.now() - callStart,
-        error: typeof err?.status === 'number' ? `HTTP ${err.status}` : err?.name || 'error',
+        error: typeof err?.status === 'number' ? `HTTP ${err.status}` : err?.name || 'erro',
       });
       // On batch failure, keep all calls in this batch (fail-safe). Say so
       // once per compaction, status only: never the request or response body.
       errorBatches++;
       if (errorBatches === 1) {
-        const status = typeof err?.status === 'number' ? `HTTP ${err.status}` : (err?.name || 'error');
-        log(`[jev-auto-compact] Jev batch failed (${status}); keeping its ${batch.length} calls`);
+        const status = typeof err?.status === 'number' ? `HTTP ${err.status}` : (err?.name || 'erro');
+        log(`[jev-auto-compact] lote do Jev falhou (${status}); mantendo suas ${batch.length} chamadas`);
       }
       for (const c of batch) {
         decisions[c.seqId] = { action: 'keep', reason: 'jev_error' };
@@ -687,7 +687,7 @@ async function appendEvidence($, record) {
     await $.store.set(EVIDENCE_KEY, events);
   } catch (error) {
     // Evidence is best-effort; never let it break compaction. Say why once.
-    $.ui.log(`[jev-auto-compact] evidence not recorded (${error instanceof Error ? error.message : String(error)})`);
+    $.ui.log(`[jev-auto-compact] evidência não registrada (${error instanceof Error ? error.message : String(error)})`);
   }
 }
 
@@ -755,8 +755,8 @@ export const register = (on, options) => {
         ((await $.settings.read())?.env || {})['TYPESAFE_API_KEY'];
 
       if (!apiKey) {
-        $.ui.log('[jev-auto-compact] no TYPESAFE_API_KEY, falling back to built-in');
-        await appendEvidence($, { ...base, engine: 'builtin', note: 'no api key' });
+        $.ui.log('[jev-auto-compact] sem TYPESAFE_API_KEY, usando o compactador interno');
+        await appendEvidence($, { ...base, engine: 'builtin', note: 'sem chave de API' });
         return next(event);
       }
 
@@ -794,9 +794,9 @@ export const register = (on, options) => {
           // Leave the conversation as it is: never hand a self-triggered
           // compaction to the built-in summarizer (minutes of LLM time).
           const reason = stats.overBudget
-            ? 'too large for one Jev pass'
+            ? 'grande demais para uma única passagem do Jev'
             : `nothing to prune (${pct(stats.ratio)} < ${pct(MIN_REDUCTION_RATIO)} min)`;
-          $.ui.log(`[jev-auto-compact] skipped: ${reason}`);
+          $.ui.log(`[jev-auto-compact] ignorado: ${reason}`);
           await appendEvidence($, { ...base, ...statsRecord, engine: 'skipped', note: reason });
           skippedAt = { messages: event.messages.length, percent: usage.percent };
           return { skip: `jev-auto-compact: ${reason}` };
@@ -804,22 +804,22 @@ export const register = (on, options) => {
         // The engine or the user needs this compaction; Jev alone is not
         // enough, so the built-in summarizer runs.
         const reason = stats.overBudget
-          ? 'too large for one Jev pass'
+          ? 'grande demais para uma única passagem do Jev'
           : `${pct(stats.ratio)} < ${pct(MIN_REDUCTION_RATIO)} min`;
-        $.ui.log(`[jev-auto-compact] fallback to built-in (${reason})`);
+        $.ui.log(`[jev-auto-compact] usando o compactador interno (${reason})`);
         await appendEvidence($, { ...base, ...statsRecord, engine: 'builtin', note: reason });
         return next(event);
       }
 
       $.ui.log(
         `[jev-auto-compact] ${result.messages.length}/${event.messages.length} msgs, ` +
-        `${pct(stats.ratio)} reduction, ` +
-        `${stats.droppedCall} dropped, ${stats.droppedResult} truncated, ` +
-        `${stats.pinned} pinned, ${stats.prefiltered} prefiltered ` +
-        `(${stats.latencyMs}ms, ${stats.jevJudged} Jev-judged, ${stats.jevCalls} API calls` +
-        (stats.errorBatches ? `, ${stats.errorBatches} failed` : '') +
-        `, redactions: ${stats.redactions ?? 0}` +
-        (usage.tokens ? `, ctx ${usage.tokens} tokens before)` : ')')
+        `redução de ${pct(stats.ratio)}, ` +
+        `${stats.droppedCall} removidas, ${stats.droppedResult} truncadas, ` +
+        `${stats.pinned} fixadas, ${stats.prefiltered} pré-filtradas ` +
+        `(${stats.latencyMs}ms, ${stats.jevJudged} avaliadas pelo Jev, ${stats.jevCalls} chamadas à API` +
+        (stats.errorBatches ? `, ${stats.errorBatches} falharam` : '') +
+        `, redações: ${stats.redactions ?? 0}` +
+        (usage.tokens ? `, ctx com ${usage.tokens} tokens antes)` : ')')
       );
       await appendEvidence($, { ...base, ...statsRecord, engine: 'jev' });
       skippedAt = null;
@@ -829,7 +829,7 @@ export const register = (on, options) => {
       return compacted;
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
-      $.ui.log(`[jev-auto-compact] fallback to built-in (${message})`);
+      $.ui.log(`[jev-auto-compact] usando o compactador interno (${message})`);
       await appendEvidence($, { ...base, engine: 'error', note: message.substring(0, 200) });
       return next(event);
     }
@@ -867,11 +867,11 @@ export const register = (on, options) => {
         const roseBy = typeof skippedAt.percent === 'number' ? usage.percent - skippedAt.percent : Infinity;
         if (grewBy < SKIP_RETRY_MIN_NEW_MESSAGES && roseBy < SKIP_RETRY_MIN_PERCENT) return next(event);
       }
-      $.ui.log(`[jev-auto-compact] context at ${usage.percent.toFixed(0)}% >= ${COMPACT_AT_PERCENT}%, compacting`);
+      $.ui.log(`[jev-auto-compact] contexto em ${usage.percent.toFixed(0)}% >= ${COMPACT_AT_PERCENT}%, compactando`);
       await $.session.compact();
     } catch (error) {
       $.ui.log(
-        `[jev-auto-compact] auto-compact skipped (${error instanceof Error ? error.message : String(error)})`
+        `[jev-auto-compact] compactação automática ignorada (${error instanceof Error ? error.message : String(error)})`
       );
     } finally {
       compacting = false;
