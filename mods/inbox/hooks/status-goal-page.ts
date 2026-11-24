@@ -73,11 +73,11 @@ export type GoalParts = {
   suggestedGoal: string | null
 }
 
-const AWAITING_TEXT = 'Milestones after the next reply'
+const AWAITING_TEXT = 'Marcos após a próxima resposta'
 /** The heading of the goal's section while no goal is met: the same with a goal or without one. */
 export const GOAL_HEADING = 'Goal'
 /** The dim line under the goal's heading while no goal is set. */
-export const NO_GOAL_TEXT = "No goal yet. The inbox sets one when the work shows where it's headed."
+export const NO_GOAL_TEXT = 'Ainda não há meta. A caixa de entrada define uma quando o trabalho mostra seu rumo.'
 /** The suggested goal as an offer in the goal text's style, in the line where "No goal yet" would draw, with its buttons after it. */
 export const suggestedGoalOffer = (text: string): string => `Next goal: “${text}”?`
 /** What starts the id of the fold a met goal's milestones start in, apart from row and milestone ids. */

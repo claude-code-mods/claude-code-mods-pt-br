@@ -2691,10 +2691,10 @@ export const register: Register = on => {
 
     return {
       text: !isDemo
-        ? (note ?? 'Opened the inbox.')
+        ? (note ?? 'Caixa de entrada aberta.')
         : isDemoRecording
-          ? 'Showing sample entries without their notices, for a recording. Run /inbox demo to go back.'
-          : 'Showing sample entries in the inbox. Run /inbox demo again to go back.',
+          ? 'Mostrando entradas de exemplo sem avisos, para uma gravação. Execute /inbox demo para voltar.'
+          : 'Mostrando entradas de exemplo na caixa de entrada. Execute /inbox demo novamente para voltar.',
     }
   })
 
@@ -2837,8 +2837,8 @@ export const register: Register = on => {
             )}
           </Text>
         </Box>
-        {showsDemoNotices ? <Button key="hide-demo" label="Hide demo" onPress={() => void setDemo($, false)} /> : null}
-        <Button key="open-inbox" label="Open inbox" onPress={() => void openInbox($, isDemo)} />
+        {showsDemoNotices ? <Button key="hide-demo" label="Ocultar demo" onPress={() => void setDemo($, false)} /> : null}
+        <Button key="open-inbox" label="Abrir caixa de entrada" onPress={() => void openInbox($, isDemo)} />
       </Box>
     )
     if (!stop)
@@ -2852,7 +2852,7 @@ export const register: Register = on => {
     // An API error resumes from
     // [Resume], which keeps its key while it sends, so the desktop app keeps the band's focus.
     const canResume = isResumable(stop)
-    const notSent = canResume && sessionState.resuming?.is === 'refused' ? `Not sent: ${sessionState.resuming.why}` : ''
+    const notSent = canResume && sessionState.resuming?.is === 'refused' ? `Não enviado: ${sessionState.resuming.why}` : ''
     const isNotSentOwnRow = notSent !== '' && e.surface === 'desktop' && e.props.maxRows > 2
     const fix = canResume ? '' : stopFix(stop)
     const inlineNotSent = isNotSentOwnRow ? '' : notSent
@@ -2860,7 +2860,7 @@ export const register: Register = on => {
       <Box flexDirection="row" alignItems="flex-start" gap={1}>
         <Box flexShrink={1} minWidth={0}>
           <Text wrap="truncate-end">
-            <Text color="error">Stopped {ago(now - stop.at)}: </Text>
+            <Text color="error">Parou {ago(now - stop.at)}: </Text>
             {stopText(stop)}.{fix ? <Text dimColor> {fix}</Text> : null}
             {inlineNotSent ? <Text color="error"> {inlineNotSent}</Text> : null}
           </Text>
@@ -3426,18 +3426,18 @@ export const register: Register = on => {
     // Claude Code sends a key no Button binds to the prompt and gives it the keyboard, so the keys
     // stay bound when there is nothing to move to or close.
     const moveKeys: KeyAction[] = [
-      { key: 'next', label: 'Next', hotkey: 'j', kind: 'view', onPress: () => moveBy(1) },
-      { key: 'previous', label: 'Previous', hotkey: 'k', kind: 'view', onPress: () => moveBy(-1) },
+      { key: 'next', label: 'Próxima', hotkey: 'j', kind: 'view', onPress: () => moveBy(1) },
+      { key: 'previous', label: 'Anterior', hotkey: 'k', kind: 'view', onPress: () => moveBy(-1) },
       {
         key: 'collapse',
-        label: 'Collapse',
+        label: 'Recolher',
         hotkey: COLLAPSE_KEY,
         kind: 'view',
         onPress: () => (isListShown && !isHelpShown ? toggleRow($, null) : undefined),
       },
       {
         key: 'fold-all',
-        label: 'Fold all',
+        label: 'Dobrar tudo',
         hotkey: FOLD_ALL_KEY,
         kind: 'view',
         onPress: () => !isHelpShown && foldAll($, null),
@@ -3506,7 +3506,7 @@ export const register: Register = on => {
         {showsDemoNotices ? (
           <Box flexDirection="column" paddingX={isInline ? 2 : 1} marginBottom={blankLine}>
             {banner(bannerOf('demo', DEMO_NOTICE), {
-              action: <Button key="hide-demo" label="Hide demo" onPress={() => void setDemo($, false)} />,
+              action: <Button key="hide-demo" label="Ocultar demo" onPress={() => void setDemo($, false)} />,
             })}
           </Box>
         ) : null}

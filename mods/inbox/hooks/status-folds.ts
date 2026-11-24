@@ -34,7 +34,7 @@ export function waitingUnderParents(ledger: Pick<Ledger, 'overview' | 'items'>):
 }
 
 /** What the closed counts fold says before its counts. */
-export const COUNTS_LABEL = 'Also open: '
+export const COUNTS_LABEL = 'Também aberto: '
 
 /** The closed counts fold's line as one string, as "Also open: ● 3 working · ◌ 3 waiting", for a look that draws a fold as plain text. */
 export const countsText = (counts: StatusCount[]) =>

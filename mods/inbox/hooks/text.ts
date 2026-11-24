@@ -151,7 +151,7 @@ export function duration(ms: number): string {
 }
 
 export function ago(ms: number): string {
-  return Math.round(ms / 60000) < 1 ? 'just now' : `${duration(ms)} ago`
+  return Math.round(ms / 60000) < 1 ? 'agora mesmo' : `há ${duration(ms)}`
 }
 
 /** A time of day in the person's locale, as "4:46 PM". */

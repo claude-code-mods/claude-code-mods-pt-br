@@ -225,7 +225,7 @@ export function statusSelected(
 }
 
 /** The goal's text field's placeholder. */
-export const GOAL_FIELD = { placeholder: 'An outcome to work toward' } as const
+export const GOAL_FIELD = { placeholder: 'Um resultado a alcançar' } as const
 
 /** The label of the goal field's submit button: Set for a new goal, while none runs, and Save for an edit of the goal. */
-export const goalSubmitLabel = (page: StatusPage): string => (page.goal === null || page.goal.isMet ? 'Set' : 'Save')
+export const goalSubmitLabel = (page: StatusPage): string => (page.goal === null || page.goal.isMet ? 'Definir' : 'Salvar')

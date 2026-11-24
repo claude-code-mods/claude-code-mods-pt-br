@@ -102,7 +102,7 @@ export function replayOutcomeNotes(
   if (lines.length <= BRANCH_NOTES_REPLAY_LIMIT) return lines;
   const omitted = lines.length - BRANCH_NOTES_REPLAY_LIMIT;
   return [
-    `${BRANCH_NOTE_BOAT} ${omitted} earlier supervision ${omitted === 1 ? "note" : "notes"} not replayed; bin/fm-branch-outcome.sh list shows them`,
+    `${BRANCH_NOTE_BOAT} ${omitted} ${omitted === 1 ? "nota" : "notas"} anteriores de supervisão não reproduzidas; bin/fm-branch-outcome.sh list as mostra`,
     ...lines.slice(-BRANCH_NOTES_REPLAY_LIMIT),
   ];
 }
@@ -121,7 +121,7 @@ export function newOutcomeNotes(rows: readonly OutcomeRow[], lastSeen: number): 
   const missed = (fresh[0]?.seq ?? lastSeen + 1) - lastSeen - 1;
   if (missed > 0) {
     lines.unshift(
-      `${BRANCH_NOTE_BOAT} ${missed} earlier supervision ${missed === 1 ? "outcome" : "outcomes"} not shown; bin/fm-branch-outcome.sh list shows them`,
+      `${BRANCH_NOTE_BOAT} ${missed} ${missed === 1 ? "resultado" : "resultados"} anteriores de supervisão não mostrados; bin/fm-branch-outcome.sh list os mostra`,
     );
   }
   return { lines, lastSeen: last };
@@ -159,8 +159,8 @@ export function hostHealthNote(previous: HostHealth | undefined, next: HostHealt
   if (next === undefined) return undefined;
   const wasCooling = previous !== undefined && previous.key === next.key && previous.cooling;
   if (next.cooling && !wasCooling) {
-    return `${BRANCH_NOTE_BOAT} Supervision session paused after repeated engine errors; main will handle wakes while it cools down.`;
+    return `${BRANCH_NOTE_BOAT} Sessão de supervisão pausada após erros repetidos do motor; a sessão principal tratará dos avisos enquanto ela esfria.`;
   }
-  if (!next.cooling && wasCooling) return `${BRANCH_NOTE_BOAT} Supervision session recovered after a successful cooldown probe.`;
+  if (!next.cooling && wasCooling) return `${BRANCH_NOTE_BOAT} Sessão de supervisão recuperada após uma verificação de resfriamento bem-sucedida.`;
   return undefined;
 }

@@ -10,7 +10,7 @@ export function pressText(p: RowPress): string {
     case 'answer':
       return p.option
     case 'type':
-      return 'Reply'
+      return 'Responder'
     case 'issue':
       return ISSUE_LABEL
     case 'show-explanation':
@@ -18,11 +18,11 @@ export function pressText(p: RowPress): string {
     case 'step':
       return p.label
     case 'remove-goal':
-      return 'Remove'
+      return 'Remover'
     case 'restore-goal':
       return 'Undo'
     case 'take-goal':
-      return 'Set goal'
+      return 'Definir meta'
     default:
       return capitalized(p.action)
   }
@@ -32,5 +32,5 @@ export function capitalized(text: string): string {
   return text.charAt(0).toUpperCase() + text.slice(1)
 }
 
-export const ISSUE_LABEL = 'File issue'
-export const SHOW_EXPLANATION_LABEL = 'Show explanation'
+export const ISSUE_LABEL = 'Registrar issue'
+export const SHOW_EXPLANATION_LABEL = 'Mostrar explicação'

@@ -6,8 +6,8 @@ import { versionLabel } from './banners'
 import { shownTabs } from './tabs'
 
 export const FINDING_GROUPS: Record<Finding['kind'], { title: string; mark: string; tone: 'issue' | 'opportunity' }> = {
-  issue: { title: 'Issues', mark: '▲', tone: 'issue' },
-  opportunity: { title: 'Opportunities', mark: '✦', tone: 'opportunity' },
+  issue: { title: 'Problemas', mark: '▲', tone: 'issue' },
+  opportunity: { title: 'Oportunidades', mark: '✦', tone: 'opportunity' },
 }
 
 /** The mark a group title on the Asks tab leads with, as a Finds group title leads with its kind's mark. */
@@ -59,7 +59,7 @@ export type LegendEntry = { mark: string; tone: ToneName | null; isRunning: bool
  * The words of the two marks that mean a thing stopped before it finished. The terminal and omp draw both as ⊘, so
  * their Help lines start alike.
  */
-const stoppedWords = (what: string) => `Stopped before it finished: ${what}`
+const stoppedWords = (what: string) => `Parou antes de terminar: ${what}`
 
 /** Every mark a look draws on a row or a group title, once each, with what it means wherever it appears. */
 export const MARK_LEGEND: readonly LegendEntry[] = [
@@ -67,49 +67,49 @@ export const MARK_LEGEND: readonly LegendEntry[] = [
     mark: RUNNING_MARK,
     tone: 'working',
     isRunning: true,
-    words: 'Working. It moves while the work runs or your message is on its way.',
+    words: 'Trabalhando. O marcador se move enquanto o trabalho é executado ou sua mensagem está a caminho.',
   },
-  { mark: IDLE_MARK.mark, tone: IDLE_MARK.tone, isRunning: false, words: 'Working, with nothing running right now' },
-  { mark: SUBJECT_MARKS.queued.mark, tone: null, isRunning: false, words: 'Queued: not started yet' },
+  { mark: IDLE_MARK.mark, tone: IDLE_MARK.tone, isRunning: false, words: 'Trabalhando, com nada em execução no momento' },
+  { mark: SUBJECT_MARKS.queued.mark, tone: null, isRunning: false, words: 'Na fila: ainda não começou' },
   {
     mark: SUBJECT_MARKS['waits-on-other'].mark,
     tone: null,
     isRunning: false,
-    words: 'Waits on something other than you, such as a build or a review',
+    words: 'Espera algo que não depende de você, como um build ou uma revisão',
   },
-  { mark: HELD_MARK.mark, tone: HELD_MARK.tone, isRunning: false, words: 'Waits on you' },
+  { mark: HELD_MARK.mark, tone: HELD_MARK.tone, isRunning: false, words: 'Espera por você' },
   {
     mark: NEEDS_YOU_MARKS.question.mark,
     tone: NEEDS_YOU_MARKS.question.tone,
     isRunning: false,
-    words: 'A question the agent asked you',
+    words: 'Uma pergunta que o agente fez a você',
   },
   {
     mark: NEEDS_YOU_MARKS.task.mark,
     tone: NEEDS_YOU_MARKS.task.tone,
     isRunning: false,
-    words: 'A step only you can do',
+    words: 'Uma etapa que só você pode fazer',
   },
-  { mark: SUBJECT_MARKS.done.mark, tone: 'done', isRunning: false, words: 'Done, or handed to the agent' },
-  { mark: SUBJECT_MARKS.dropped.mark, tone: null, isRunning: false, words: stoppedWords('dropped work') },
-  { mark: CLOSED_MARKS.dismissed, tone: null, isRunning: false, words: 'Dismissed by you' },
+  { mark: SUBJECT_MARKS.done.mark, tone: 'done', isRunning: false, words: 'Concluído, ou repassado ao agente' },
+  { mark: SUBJECT_MARKS.dropped.mark, tone: null, isRunning: false, words: stoppedWords('trabalho abandonado') },
+  { mark: CLOSED_MARKS.dismissed, tone: null, isRunning: false, words: 'Dispensado por você' },
   {
     mark: FINDING_GROUPS.issue.mark,
     tone: FINDING_GROUPS.issue.tone,
     isRunning: false,
-    words: 'Something is wrong: an issue or a failing check',
+    words: 'Algo está errado: um problema ou uma verificação falha',
   },
   {
     mark: PR_MARKS.cancelled.text,
     tone: PR_MARKS.cancelled.tone,
     isRunning: false,
-    words: stoppedWords('a cancelled check, which needs another run'),
+    words: stoppedWords('uma verificação cancelada, que precisa de outra execução'),
   },
   {
     mark: FINDING_GROUPS.opportunity.mark,
     tone: FINDING_GROUPS.opportunity.tone,
     isRunning: false,
-    words: 'Opportunity: something that could be better',
+    words: 'Oportunidade: algo que poderia ser melhor',
   },
 ]
 
@@ -143,8 +143,8 @@ export const FOLD_ALL_KEY = 'w'
 
 /** The PRs tab's own keys, which `hooks/pr-order.ts:prOrderActions` and `hooks/pr-tab.ts:prClearActions` bind from any row of the tab. */
 const PR_TAB_HELP_KEYS: HelpKey[] = [
-  { keys: 'g', does: 'On PRs, rank the PRs again, once a ranked PR changed' },
-  { keys: 'm', does: 'On PRs, clear the merged and closed PRs' },
+  { keys: 'g', does: 'Nos PRs, classifique os PRs novamente quando um PR classificado mudar' },
+  { keys: 'm', does: 'Nos PRs, limpe os PRs mesclados e fechados' },
 ]
 
 /**
@@ -155,57 +155,57 @@ export function helpKeys(look: Look): HelpKey[] {
   const tabKeys = shownTabs()
     .map(t => t.hotkey)
     .join(' ')
-  const switchTabs = { keys: tabKeys, does: 'Switch tabs' }
-  const undoKey = { keys: UNDO_KEY, does: 'Undo the last close' }
-  const collapseKey = { keys: COLLAPSE_KEY, does: 'Collapse or expand the selected row' }
-  const foldAllKey = { keys: FOLD_ALL_KEY, does: 'Fold every fold on the tab, or open them all' }
+  const switchTabs = { keys: tabKeys, does: 'Alternar abas' }
+  const undoKey = { keys: UNDO_KEY, does: 'Desfazer o último fechamento' }
+  const collapseKey = { keys: COLLAPSE_KEY, does: 'Recolher ou expandir a linha selecionada' }
+  const foldAllKey = { keys: FOLD_ALL_KEY, does: 'Dobrar todas as seções da aba, ou abri-las todas' }
   switch (look) {
     case 'desktop':
       return []
     case 'terminal':
       return [
         switchTabs,
-        { keys: 'j k', does: 'Select the next or previous row' },
+        { keys: 'j k', does: 'Selecionar a linha seguinte ou anterior' },
         collapseKey,
         foldAllKey,
         undoKey,
         ...PR_TAB_HELP_KEYS,
-        { keys: 'ctrl+x tab', does: 'Move focus to the line above the prompt, then the pane, then the prompt' },
+        { keys: 'ctrl+x tab', does: 'Mover o foco para a linha acima do prompt, depois para o painel e depois para o prompt' },
       ]
     case 'codex':
       return [
         switchTabs,
-        { keys: 'j k ↑ ↓', does: 'Select the next or previous row' },
+        { keys: 'j k ↑ ↓', does: 'Selecionar a linha seguinte ou anterior' },
         collapseKey,
         foldAllKey,
         undoKey,
         ...PR_TAB_HELP_KEYS,
-        { keys: '?', does: 'Open or close help' },
-        { keys: 'esc', does: 'Close help, or leave a reply field' },
+        { keys: '?', does: 'Abrir ou fechar a ajuda' },
+        { keys: 'esc', does: 'Fechar a ajuda ou sair de um campo de resposta' },
       ]
     case 'omp':
       return [
-        { keys: `tab ${tabKeys}`, does: 'Switch tabs' },
-        { keys: '↑ ↓ j k', does: 'Move between rows, or scroll a page' },
-        { keys: '← →', does: 'Pick a button' },
-        { keys: '↵', does: 'Press the picked button' },
-        { keys: 't', does: 'Reply to the selected row' },
+        { keys: `tab ${tabKeys}`, does: 'Alternar abas' },
+        { keys: '↑ ↓ j k', does: 'Mover entre linhas ou rolar uma página' },
+        { keys: '← →', does: 'Escolher um botão' },
+        { keys: '↵', does: 'Pressionar o botão escolhido' },
+        { keys: 't', does: 'Responder à linha selecionada' },
         collapseKey,
         foldAllKey,
         undoKey,
         ...PR_TAB_HELP_KEYS,
-        { keys: '?', does: 'Open or close help' },
-        { keys: 'esc', does: 'Close help, then the panel' },
+        { keys: '?', does: 'Abrir ou fechar a ajuda' },
+        { keys: 'esc', does: 'Fechar a ajuda e depois o painel' },
       ]
     case 'herdr':
       return [
         { keys: '← →', does: 'Switch tabs' },
-        { keys: 'j k', does: 'Select the next or previous row' },
+        { keys: 'j k', does: 'Selecionar a linha seguinte ou anterior' },
         collapseKey,
         foldAllKey,
         undoKey,
         ...PR_TAB_HELP_KEYS,
-        { keys: 'esc', does: "Move focus back to the agent's terminal" },
+        { keys: 'esc', does: 'Devolver o foco ao terminal do agente' },
       ]
   }
 }

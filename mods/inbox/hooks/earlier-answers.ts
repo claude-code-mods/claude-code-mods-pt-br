@@ -108,12 +108,12 @@ const DAY_MS = 24 * 60 * 60_000
 
 function agoText(ms: number): string {
   const minutes = Math.max(1, Math.round(ms / 60_000))
-  if (minutes < 60) return minutes === 1 ? 'a minute ago' : `${minutes} minutes ago`
+  if (minutes < 60) return minutes === 1 ? 'há um minuto' : `há ${minutes} minutos`
   const hours = Math.round(minutes / 60)
-  if (hours < 24) return hours === 1 ? 'an hour ago' : `${hours} hours ago`
+  if (hours < 24) return hours === 1 ? 'há uma hora' : `há ${hours} horas`
   const days = Math.round(ms / DAY_MS)
 
-  return days === 1 ? 'yesterday' : `${days} days ago`
+  return days === 1 ? 'ontem' : `há ${days} dias`
 }
 
 /**
@@ -124,10 +124,10 @@ export type EarlierLine = { lead: string; answer: string; rest: string }
 
 export function earlierLineOf(earlier: Earlier | undefined, now: number): EarlierLine | null {
   if (!earlier?.isShown) return null
-  const where = earlier.repo ? `, in ${earlier.repo},` : ''
+  const where = earlier.repo ? `, em ${earlier.repo},` : ''
 
   return {
-    lead: 'You answered ',
+    lead: 'Você respondeu ',
     answer: earlier.answer,
     rest: ` ${agoText(now - earlier.at)}${where} to “${earlier.ask}”`,
   }

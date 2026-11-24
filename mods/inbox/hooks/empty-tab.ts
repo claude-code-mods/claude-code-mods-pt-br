@@ -10,9 +10,9 @@ import { screenTabOf } from './tabs'
 /** Each empty tab's title. The Status tab's is its own name. */
 const EMPTY_TITLES = {
   needsYou: NOTHING_NEEDED_TEXT,
-  findings: 'No findings yet',
-  prs: 'No PRs',
-  prsFetching: 'Checking for PRs…',
+  findings: 'Nenhum achado ainda',
+  prs: 'Nenhum PR',
+  prsFetching: 'Verificando PRs…',
 } as const
 
 export type EmptyText = { title: string; hint: string | null }
@@ -56,12 +56,12 @@ type EmptyTabLook =
 /** The empty Status tab's text. Its title is the tab's name. */
 export const EMPTY_STATUS_TEXT: { title: string; hint: string } = {
   title: screenTabOf('overview').label,
-  hint: "What this session's work is for, where each part stands, and what changed. It fills in once the work starts.",
+  hint: 'Para que serve o trabalho desta sessão, o andamento de cada parte e o que mudou. É preenchido quando o trabalho começa.',
 }
 
 /** The hint under an empty PRs tab. */
 export function prsEmptyHint(place: string): string {
-  return `Your PRs show here when this ${place} opens or links one, or when your branch has one.`
+  return `Seus PRs aparecem aqui quando ${place} abre ou vincula um, ou quando seu branch tem um.`
 }
 
 /**
@@ -99,8 +99,8 @@ export function emptyTab(view: SessionView, look: EmptyTabLook): EmptyTab | null
   if (look.tab === 'needsYou' && look.hostText) return { ...look.hostText, under: null }
   const hint =
     look.tab === 'needsYou'
-      ? `${look.agent}'s questions and the tasks only you can do show up here.`
-      : `${look.agent} flags issues and opportunities it spots beyond your task.`
+      ? `As perguntas de ${look.agent} e as tarefas que só você pode fazer aparecem aqui.`
+      : `${look.agent} aponta problemas e oportunidades que encontra fora da sua tarefa.`
   const title = isMaybeStale(view, look.isReadFailed) ? MAYBE_STALE_TEXT : EMPTY_TITLES[look.tab]
 
   return { title, hint, under: null }
