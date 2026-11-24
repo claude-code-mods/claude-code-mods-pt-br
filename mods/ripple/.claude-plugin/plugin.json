@@ -1,0 +1,11 @@
+{
+  "name": "ripple",
+  "displayName": "ClaudeRipple",
+  "version": "0.7.0",
+  "description": "Escolhe o esforço de raciocínio para cada prompt e o worker para cada tarefa delegada, pode manter o cache de prompt aquecido e mostra para onde o ClaudeRipple enviou cada requisição.",
+  "author": {
+    "name": "ClaudeRipple"
+  },
+  "license": "GPL-3.0-only",
+  "types": "./types/index.d.ts"
+}

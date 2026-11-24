@@ -1,0 +1,18 @@
+{
+  "name": "agent-standup-band",
+  "version": "1.47.1",
+  "description": "Uma linha acima do campo de entrada do Claude Code quando outra sessão neste computador precisa de você (uma aprovação ou uma resposta) e um aviso quando uma termina seu turno. Lê apenas os arquivos de status que o Claude Code mantém para suas sessões; não envia nada.",
+  "author": {
+    "name": "Double Geste",
+    "url": "https://github.com/Atoll92"
+  },
+  "homepage": "https://agent-standup.com",
+  "repository": "https://github.com/Atoll92/agent-standup",
+  "license": "MIT",
+  "keywords": [
+    "agents",
+    "sessions",
+    "notifications",
+    "standup"
+  ]
+}

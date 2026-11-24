@@ -1,0 +1,42 @@
+{
+  "name": "engineer",
+  "version": "0.40.2",
+  "description": "Kit de metodologia Disciplined Agentic Engineering (DAE) para o Claude Code. Skills que implementam o pipeline DAE: entrada de funcionalidades, descoberta de critérios de aceite, escrita de especificações, planejamento, implementação, verificação e endurecimento.",
+  "author": {
+    "name": "Miklos"
+  },
+  "repository": "https://github.com/swingerman/engineer",
+  "license": "MIT",
+  "keywords": [
+    "dae",
+    "disciplined-agentic-engineering",
+    "methodology",
+    "ai-development",
+    "tdd",
+    "atdd",
+    "engineering"
+  ],
+  "decarchy": {
+    "lifecycles": {
+      "command": "python3",
+      "args": [
+        "${CLAUDE_PLUGIN_ROOT}/scripts/dae_lifecycle.py"
+      ]
+    }
+  },
+  "types": "./types/index.d.ts",
+  "userConfig": {
+    "economyModel": {
+      "type": "string",
+      "title": "Economy model alias",
+      "description": "The model alias the economy class resolves to for the mod's own dispatches (model-classes.md). Change it when the lineup changes.",
+      "default": "sonnet"
+    },
+    "frontierModels": {
+      "type": "string",
+      "title": "Frontier model aliases",
+      "description": "Comma-separated aliases (or id fragments) that count as the frontier class for the loop guard.",
+      "default": "fable"
+    }
+  }
+}

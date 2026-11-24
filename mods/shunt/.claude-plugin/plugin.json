@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "shunt",
+  "displayName": "shunt · gateway",
+  "version": "0.1.0",
+  "description": "Um mod para o gateway shunt: uma faixa acima do campo de entrada mostra quanto de cada janela foi usado e quando reinicia — seja do pool compartilhado da conta, lido de GET /usage do shunt, seja dos limites próprios da sessão pelo shunt — e /shunt:usage imprime o detalhamento completo do pool.",
+  "author": {
+    "name": "Minsu Lee",
+    "email": "minsu.lee@pleaseai.dev",
+    "url": "https://github.com/amondnet"
+  },
+  "homepage": "https://github.com/pleaseai/shunt",
+  "repository": "https://github.com/pleaseai/shunt",
+  "license": "MIT OR Apache-2.0",
+  "keywords": [
+    "shunt",
+    "llm-gateway",
+    "usage",
+    "quota",
+    "usage-band",
+    "mod",
+    "function-hooks"
+  ],
+  "types": "./types/index.d.ts",
+  "userConfig": {
+    "usageBand": {
+      "type": "boolean",
+      "title": "Usage band",
+      "description": "Show usage above the prompt: the shunt pool's, refreshed every minute and after each turn, or the session's own rate limits off shunt. Off, the mod polls nothing and /shunt:usage still answers.",
+      "default": true
+    }
+  }
+}

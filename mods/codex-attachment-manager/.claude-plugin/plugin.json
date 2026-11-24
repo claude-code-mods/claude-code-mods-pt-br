@@ -1,0 +1,34 @@
+{
+  "name": "codex-attachment-manager",
+  "displayName": "Context Attachment Manager",
+  "version": "0.11.5",
+  "description": "Para sessões do Claude Code com muitas imagens: imagens antigas são enviadas como marcadores curtos em vez de reenviadas a cada mensagem, o modelo busca a original pelo ID (mesmo após compactação) e o cache de prompt continua funcionando.",
+  "author": {
+    "name": "chipfighter"
+  },
+  "homepage": "https://github.com/chipfighter/context-attachment-manager",
+  "repository": "https://github.com/chipfighter/context-attachment-manager",
+  "license": "MIT",
+  "keywords": [
+    "claude-code",
+    "images",
+    "multimodal",
+    "context",
+    "context-management",
+    "attachments",
+    "prompt-caching",
+    "proxy"
+  ],
+  "mcpServers": {
+    "codex_attachment_manager": {
+      "command": "${CLAUDE_PLUGIN_ROOT}/plugin/scripts/launch",
+      "args": [
+        "${CLAUDE_PLUGIN_ROOT}/plugin/src/plugin-server.ts"
+      ],
+      "env": {
+        "CAM_HOST": "claude"
+      }
+    }
+  },
+  "types": "./hooks/types.d.ts"
+}

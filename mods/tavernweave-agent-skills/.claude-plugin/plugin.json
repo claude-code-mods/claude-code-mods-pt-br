@@ -1,0 +1,19 @@
+{
+  "name": "tavernweave-agent-skills",
+  "version": "2.4.0",
+  "description": "TavernWeaveX Sistema Infinito 2.4.0: 23 skills compartilhadas para papéis, trabalho de software e tarefas em nuvem limitadas, com verificações de capacidade e entregas retomáveis; no Claude Code, injeta o Host Front Door, adiciona o agent tavernweave e um interruptor de modo Soul acima do campo de entrada. A execução real depende das ferramentas e permissões do host.",
+  "author": {
+    "name": "LiarMTTT"
+  },
+  "homepage": "https://github.com/LiarMTTT/TavernWeave",
+  "repository": "https://github.com/LiarMTTT/TavernWeave",
+  "license": "PolyForm-Noncommercial-1.0.0",
+  "types": "./hooks/soul-switch-types.d.ts",
+  "keywords": [
+    "agent-skills",
+    "sillytavern",
+    "rolecard",
+    "mvu",
+    "code-quality"
+  ]
+}

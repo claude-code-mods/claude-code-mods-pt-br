@@ -1,0 +1,25 @@
+{
+  "name": "agent-usage-guard",
+  "description": "Um mod do Claude Code que contém a dispersão de subagents, prompts com contexto pesado e loops de repetição antes que consumam sua janela de uso. Lê o uso do seu plano, conta os agents em todas as sessões e pergunta na própria caixa de diálogo do Claude Code.",
+  "version": "1.2.1",
+  "author": {
+    "name": "Riccardo Bartoli"
+  },
+  "homepage": "https://github.com/rbartoli/agent-usage-guard",
+  "repository": "https://github.com/rbartoli/agent-usage-guard",
+  "license": "MIT",
+  "icon": "./.claude-plugin/icon.png",
+  "types": "./types/index.d.ts",
+  "documentationUrl": "https://github.com/rbartoli/agent-usage-guard#readme",
+  "supportUrl": "https://github.com/rbartoli/agent-usage-guard/issues",
+  "privacyPolicyUrl": "https://github.com/rbartoli/agent-usage-guard#security-and-privacy",
+  "keywords": [
+    "mod",
+    "usage",
+    "rate-limit",
+    "subagents",
+    "context",
+    "guardrails",
+    "cost"
+  ]
+}

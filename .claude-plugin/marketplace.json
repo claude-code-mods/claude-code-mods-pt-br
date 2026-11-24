@@ -1,0 +1,489 @@
+{
+  "name": "claude-code-mods-pt-br",
+  "owner": {
+    "name": "claude-code-mods"
+  },
+  "description": "Mods Claude Code selecionados, validados e com versão fixada (plugins de hooks de função). Adicione uma vez e instale tudo.",
+  "plugins": [
+    {
+      "name": "fm",
+      "source": "./mods/fm",
+      "description": "Animação de trabalho do veleiro e transcrição restrita à conversa, com preferência de modo calmo compartilhada entre sessões.",
+      "version": "1.0.0",
+      "author": {
+        "name": "kunchenguid"
+      },
+      "homepage": "https://github.com/kunchenguid/firstmate",
+      "license": "MIT",
+      "category": "git"
+    },
+    {
+      "name": "terminal-browser",
+      "source": "./mods/terminal-browser",
+      "description": "Um navegador dentro do Claude Code: visualize sites e HTML e deixe o agente controlar o navegador integrado.",
+      "version": "0.0.2",
+      "author": {
+        "name": "zenbu-labs"
+      },
+      "homepage": "https://github.com/zenbu-labs/terminal-browser",
+      "license": "MIT",
+      "category": "rendering"
+    },
+    {
+      "name": "pebrel-prompt-suggestions",
+      "source": "./mods/pebrel-prompt-suggestions",
+      "description": "Previsões nativas de prompt no campo vazio por meio da ponte de sessão Pebrel.",
+      "version": "0.1.0",
+      "author": {
+        "name": "Kuddev"
+      },
+      "homepage": "https://github.com/Kuddev/pebrel",
+      "license": "GPL-3.0",
+      "category": "productivity"
+    },
+    {
+      "name": "token-optimizer",
+      "source": "./mods/token-optimizer",
+      "description": "Uma barra de status de otimização de tokens que mostra para onde os tokens vão e como gastar menos.",
+      "version": "0.0.0",
+      "author": {
+        "name": "alexgreensh"
+      },
+      "homepage": "https://github.com/alexgreensh/token-optimizer",
+      "license": "NOASSERTION",
+      "category": "dashboards"
+    },
+    {
+      "name": "lcu-approve",
+      "source": "./mods/lcu-approve",
+      "description": "Aprovação por aplicativo para uso do computador: permitir nesta conversa, sempre permitir ou negar, além de um painel de aplicativos aprovados.",
+      "version": "0.6.0",
+      "author": {
+        "name": "amontlabs"
+      },
+      "homepage": "https://github.com/amontlabs/lcu",
+      "license": "MIT",
+      "category": "safety"
+    },
+    {
+      "name": "fast-jev-compaction",
+      "source": "./mods/fast-jev-compaction",
+      "description": "Compactação literal guiada por Jev para sessões do Claude Code.",
+      "version": "0.3.0",
+      "author": {
+        "name": "tamaratran"
+      },
+      "homepage": "https://github.com/tamaratran/fast-jev-compaction",
+      "license": "MIT",
+      "category": "productivity"
+    },
+    {
+      "name": "lot-map",
+      "source": "./mods/lot-map",
+      "description": "Um mapa ao vivo ao lado do chat: memória, arquivos, shell, web, modelo, agents, skills e hooks se acendem conforme são usados.",
+      "version": "0.12.1",
+      "author": {
+        "name": "alexeyw"
+      },
+      "homepage": "https://github.com/alexeyw/lot-map",
+      "license": "MIT",
+      "category": "productivity"
+    },
+    {
+      "name": "council",
+      "source": "./mods/council",
+      "description": "Consulte vários agents de IA ao mesmo tempo para obter perspectivas diferentes, com um painel em fluxo contínuo e uma verificação lateral opcional.",
+      "version": "2026.11.2",
+      "author": {
+        "name": "hex"
+      },
+      "homepage": "https://github.com/hex/claude-council",
+      "license": "MIT",
+      "category": "dashboards"
+    },
+    {
+      "name": "codex-attachment-manager",
+      "source": "./mods/codex-attachment-manager",
+      "description": "Imagens antigas são enviadas como marcadores curtos e as originais são buscadas por ID, para que sessões longas com imagens mantenham o cache de prompt.",
+      "version": "0.11.5",
+      "author": {
+        "name": "chipfighter"
+      },
+      "homepage": "https://github.com/chipfighter/context-attachment-manager",
+      "license": "MIT",
+      "category": "dashboards"
+    },
+    {
+      "name": "storybloq",
+      "source": "./mods/storybloq",
+      "description": "Memória de projeto: tickets, issues, entregas e lições guardados em uma pasta .story no seu repositório.",
+      "version": "1.16.0",
+      "author": {
+        "name": "Storybloq"
+      },
+      "homepage": "https://github.com/Storybloq/storybloq",
+      "license": "NOASSERTION",
+      "category": "productivity"
+    },
+    {
+      "name": "shared-session",
+      "source": "./mods/shared-session",
+      "description": "Compartilhe uma sessão por link ou com sua equipe; colegas entram com seu próprio Claude Code e acompanham cada turno ao vivo.",
+      "version": "0.11.53",
+      "author": {
+        "name": "Paradigm-Study"
+      },
+      "homepage": "https://github.com/Paradigm-Study/claude-share",
+      "license": "MIT",
+      "category": "agents"
+    },
+    {
+      "name": "just-do-it",
+      "source": "./mods/just-do-it",
+      "description": "Leva o trabalho autorizado até a verificação e a entrega, e mostra problemas de configuração que precisam ser corrigidos.",
+      "version": "0.1.0",
+      "author": {
+        "name": "Lifecycle-Innovations-Limited"
+      },
+      "homepage": "https://github.com/Lifecycle-Innovations-Limited/claude-ops",
+      "license": "MIT",
+      "category": "productivity"
+    },
+    {
+      "name": "prismantis",
+      "source": "./mods/prismantis",
+      "description": "Renderização colorida e personalizável para respostas: tabelas, títulos, código, números, caminhos e links.",
+      "version": "0.49.3",
+      "author": {
+        "name": "NahumLitvin"
+      },
+      "homepage": "https://github.com/NahumLitvin/prismantis",
+      "license": "MIT",
+      "category": "rendering"
+    },
+    {
+      "name": "filetree",
+      "source": "./mods/filetree",
+      "description": "Uma árvore de arquivos estilo IDE que mostra o que o Claude está fazendo e em qual arquivo.",
+      "version": "0.8.5",
+      "author": {
+        "name": "data-goblin"
+      },
+      "homepage": "https://github.com/data-goblin/claude-code-filetree",
+      "license": "MIT",
+      "category": "productivity"
+    },
+    {
+      "name": "jev-auto-compact",
+      "source": "./mods/jev-auto-compact",
+      "description": "Com 60% de contexto, remove chamadas de ferramenta obsoletas sem gerar nada; pula em vez de recorrer a um resumo de LLM.",
+      "version": "1.6.1",
+      "author": {
+        "name": "notque"
+      },
+      "homepage": "https://github.com/notque/vexjoy-agent",
+      "license": "MIT",
+      "category": "productivity"
+    },
+    {
+      "name": "cache-tax",
+      "source": "./mods/cache-tax",
+      "description": "Mantém o cache de prompt de uma hora aquecido durante pausas, pergunta antes de um envio frio e mostra o custo da reescrita.",
+      "version": "2.4.2",
+      "author": {
+        "name": "karanb192"
+      },
+      "homepage": "https://github.com/karanb192/cache-tax",
+      "license": "MIT",
+      "category": "dashboards"
+    },
+    {
+      "name": "turbo",
+      "source": "./mods/turbo",
+      "description": "Uma fábrica de software agêntica com controle humano: você decide o que construir e avalia o resultado, enquanto as skills constroem e entregam.",
+      "version": "0.0.0",
+      "author": {
+        "name": "tobihagemann"
+      },
+      "homepage": "https://github.com/tobihagemann/turbo",
+      "license": "MIT",
+      "category": "git"
+    },
+    {
+      "name": "agent-standup-band",
+      "source": "./mods/agent-standup-band",
+      "description": "Uma linha acima do campo de entrada quando outra sessão local precisa de você e um aviso quando uma termina.",
+      "version": "1.47.1",
+      "author": {
+        "name": "Atoll92"
+      },
+      "homepage": "https://github.com/Atoll92/agent-standup",
+      "license": "MIT",
+      "category": "dashboards"
+    },
+    {
+      "name": "flightdeck",
+      "source": "./mods/flightdeck",
+      "description": "Painel ao vivo de agents: sinais vitais do modelo, arquiteto de plantão, verificações de permissão, cartões de subagentes e registro da sessão.",
+      "version": "0.6.2",
+      "author": {
+        "name": "scasella"
+      },
+      "homepage": "https://github.com/scasella/claude-flightdeck",
+      "license": "MIT",
+      "category": "agents"
+    },
+    {
+      "name": "caliber-jev-compaction",
+      "source": "./mods/caliber-jev-compaction",
+      "description": "Compactação literal guiada por Jev para sessões do Claude Code.",
+      "version": "0.3.0",
+      "author": {
+        "name": "caliber-ai-org"
+      },
+      "homepage": "https://github.com/caliber-ai-org/ai-setup",
+      "license": "MIT",
+      "category": "productivity"
+    },
+    {
+      "name": "mazyos",
+      "source": "./mods/mazyos",
+      "description": "Um sistema operacional de negócios em português para o Claude Code: a memória da sua empresa em toda sessão, identidade visual nas saídas e 17 skills de marketing e SEO.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Mazzeo-Marketing"
+      },
+      "homepage": "https://github.com/Mazzeo-Marketing/MazyOS",
+      "license": "NOASSERTION",
+      "category": "git"
+    },
+    {
+      "name": "start",
+      "source": "./mods/start",
+      "description": "Comandos de orquestração de fluxos de trabalho para desenvolvimento de software agêntico.",
+      "version": "4.0.0",
+      "author": {
+        "name": "rsmdt"
+      },
+      "homepage": "https://github.com/rsmdt/the-startup",
+      "license": "MIT",
+      "category": "agents"
+    },
+    {
+      "name": "shunt",
+      "source": "./mods/shunt",
+      "description": "Uma faixa de uso para o gateway shunt: gasto e reinício de cada janela, além do detalhamento completo de /shunt:usage.",
+      "version": "0.1.0",
+      "author": {
+        "name": "pleaseai"
+      },
+      "homepage": "https://github.com/pleaseai/shunt",
+      "license": "Apache-2.0",
+      "category": "dashboards"
+    },
+    {
+      "name": "operator",
+      "source": "./mods/operator",
+      "description": "Memória durável de projeto e usuário para desenvolvimento conduzido por agents.",
+      "version": "0.2.0",
+      "author": {
+        "name": "aerovato"
+      },
+      "homepage": "https://github.com/aerovato/operator-memory",
+      "license": "BSD-3-Clause",
+      "category": "productivity"
+    },
+    {
+      "name": "carbon",
+      "source": "./mods/carbon",
+      "description": "Acompanha a pegada de carbono das suas sessões do Claude Code no terminal e no aplicativo desktop.",
+      "version": "1.20.1",
+      "author": {
+        "name": "gwittebolle"
+      },
+      "homepage": "https://github.com/gwittebolle/claude-carbon",
+      "license": "MIT",
+      "category": "productivity"
+    },
+    {
+      "name": "agentctl",
+      "source": "./mods/agentctl",
+      "description": "Um painel de controle de agent para uma sessão: escopo da tarefa, evidências e passagem de bastão.",
+      "version": "0.3.1",
+      "author": {
+        "name": "sd0xdev"
+      },
+      "homepage": "https://github.com/sd0xdev/sd0x-harness",
+      "license": "MIT",
+      "category": "safety"
+    },
+    {
+      "name": "multi-core",
+      "source": "./mods/multi-core",
+      "description": "Use modelos do ChatGPT, Cursor, OpenCode e Antigravity em uma única sessão, alternando com /model.",
+      "version": "0.0.0",
+      "author": {
+        "name": "greenpolo"
+      },
+      "homepage": "https://github.com/greenpolo/cc-multi-cli-plugin",
+      "license": "Apache-2.0",
+      "category": "safety"
+    },
+    {
+      "name": "work-mode",
+      "source": "./mods/work-mode",
+      "description": "Modos de sessão: auto (sem perguntas no meio da tarefa), out (delegar trabalho em lote) e wrap (convergir e finalizar).",
+      "version": "0.8.0",
+      "author": {
+        "name": "danyuchn"
+      },
+      "homepage": "https://github.com/danyuchn/claude-work-mode",
+      "license": "MIT",
+      "category": "productivity"
+    },
+    {
+      "name": "tokendoctor",
+      "source": "./mods/tokendoctor",
+      "description": "Reproduz suas sessões passadas para mostrar o que cada mudança teria economizado e aplica apenas o que você escolhe.",
+      "version": "0.6.1",
+      "author": {
+        "name": "localixai"
+      },
+      "homepage": "https://github.com/localixai/tokendoctor",
+      "license": "MIT",
+      "category": "dashboards"
+    },
+    {
+      "name": "engineer",
+      "source": "./mods/engineer",
+      "description": "Um kit de metodologia de engenharia agêntica disciplinada: entrada, descoberta de critérios de aceite, especificação, planejamento, implementação, verificação e endurecimento.",
+      "version": "0.40.2",
+      "author": {
+        "name": "swingerman"
+      },
+      "homepage": "https://github.com/swingerman/engineer",
+      "license": "MIT",
+      "category": "git"
+    },
+    {
+      "name": "skins",
+      "source": "./mods/skins",
+      "description": "Skins e quinze temas para a transcrição, com cartões ricos e uma faixa de uso; /skin troca tudo ao vivo.",
+      "version": "0.5.16",
+      "author": {
+        "name": "hellosverre"
+      },
+      "homepage": "https://github.com/hellosverre/claude-skins",
+      "license": "MIT",
+      "category": "dashboards"
+    },
+    {
+      "name": "show-your-work",
+      "source": "./mods/show-your-work",
+      "description": "Mostra o trabalho concluído no terminal: capturas de tela, vídeos de cliques no aplicativo e verificações antes/depois sincronizadas.",
+      "version": "1.1.0",
+      "author": {
+        "name": "iamumeransari"
+      },
+      "homepage": "https://github.com/iamumeransari/claude-show-your-work",
+      "license": "MIT",
+      "category": "productivity"
+    },
+    {
+      "name": "jevmem-pane",
+      "source": "./mods/jevmem-pane",
+      "description": "Um painel lateral que mostra o que o jevmem recuperou, o que seu guardião decidiu e o que o último turno salvou.",
+      "version": "0.7.8",
+      "author": {
+        "name": "Avinash-jetwani"
+      },
+      "homepage": "https://github.com/Avinash-jetwani/jevmem",
+      "license": "MIT",
+      "category": "safety"
+    },
+    {
+      "name": "ctx-handoff",
+      "source": "./mods/ctx-handoff",
+      "description": "Transforma o que você ensina ao Claude em notas de projeto, detecta erros comuns, mantém o cache aquecido e retoma sessões longas.",
+      "version": "0.8.2",
+      "author": {
+        "name": "cablate"
+      },
+      "homepage": "https://github.com/cablate/ctx-handoff-mod",
+      "license": "MIT",
+      "category": "dashboards"
+    },
+    {
+      "name": "inbox",
+      "source": "./mods/inbox",
+      "description": "Reúne as perguntas, tarefas, descobertas e PRs que esperam por você em uma sessão.",
+      "version": "0.6.0",
+      "author": {
+        "name": "petekp"
+      },
+      "homepage": "https://github.com/petekp/inbox",
+      "license": "MIT",
+      "category": "productivity"
+    },
+    {
+      "name": "lane-stack",
+      "source": "./mods/lane-stack",
+      "description": "Esteira de gerente de produto individual: agents orquestradores, cartilhas de faixa e comandos de entrada e retomada.",
+      "version": "1.67.4",
+      "author": {
+        "name": "VKirill"
+      },
+      "homepage": "https://github.com/VKirill/claude-lane-stack",
+      "license": "MIT",
+      "category": "agents"
+    },
+    {
+      "name": "compact-adviser",
+      "source": "./mods/compact-adviser",
+      "description": "Sugere ou executa /compact em um ponto de checagem concluído, avaliado pelo TypeSafe Jev.",
+      "version": "0.1.14",
+      "author": {
+        "name": "kunchenguid"
+      },
+      "homepage": "https://github.com/kunchenguid/compact-adviser",
+      "license": "MIT",
+      "category": "productivity"
+    },
+    {
+      "name": "ripple",
+      "source": "./mods/ripple",
+      "description": "Escolhe o esforço de raciocínio para cada prompt e um worker para cada tarefa delegada, mantém o cache aquecido e mostra para onde foi cada requisição.",
+      "version": "0.7.0",
+      "author": {
+        "name": "PBJ-2"
+      },
+      "homepage": "https://github.com/PBJ-2/clauderipple",
+      "license": "GPL-3.0",
+      "category": "dashboards"
+    },
+    {
+      "name": "tavernweave-agent-skills",
+      "source": "./mods/tavernweave-agent-skills",
+      "description": "23 skills compartilhadas para papéis, trabalho de software e tarefas em nuvem limitadas, além de um interruptor de modo Soul acima do campo de entrada.",
+      "version": "2.4.0",
+      "author": {
+        "name": "LiarMTTT"
+      },
+      "homepage": "https://github.com/LiarMTTT/TavernWeave",
+      "license": "NOASSERTION",
+      "category": "dashboards"
+    },
+    {
+      "name": "agent-usage-guard",
+      "source": "./mods/agent-usage-guard",
+      "description": "Contém a dispersão de subagents, prompts com contexto pesado e loops de repetição antes que consumam sua janela de uso.",
+      "version": "1.2.1",
+      "author": {
+        "name": "rbartoli"
+      },
+      "homepage": "https://github.com/rbartoli/agent-usage-guard",
+      "license": "MIT",
+      "category": "dashboards"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "name": "operator",
+  "displayName": "Operator Memory",
+  "version": "0.2.0",
+  "description": "Memória durável de projeto e usuário para desenvolvimento conduzido por agents no Claude Code.",
+  "author": {
+    "name": "Aerovato Research"
+  },
+  "repository": "https://github.com/aerovato/operator-memory",
+  "license": "BSD-3-Clause"
+}

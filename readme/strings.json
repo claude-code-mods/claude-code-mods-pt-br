@@ -1,0 +1,28 @@
+{
+  "pt-BR": {
+    "label": "Português (Brasil)",
+    "file": "README.md",
+    "categories": {
+      "dashboards": "Painéis e uso",
+      "agents": "Agents e subagents",
+      "productivity": "Produtividade e contexto",
+      "rendering": "Renderização e pré-visualização",
+      "safety": "Segurança e proteção",
+      "git": "Git, PRs e deploy",
+      "fun": "Diversão enquanto espera"
+    },
+    "columns": [
+      "Mod",
+      "Função",
+      "Permissões"
+    ],
+    "reach": {
+      "http": "Rede",
+      "process": "Executa comandos",
+      "model": "Chama modelos",
+      "fs": "Lê e escreve arquivos",
+      "mcp": "MCP"
+    },
+    "by": "por"
+  }
+}

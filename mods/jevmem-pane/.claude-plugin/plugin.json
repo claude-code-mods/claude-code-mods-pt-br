@@ -1,0 +1,24 @@
+{
+  "name": "jevmem-pane",
+  "displayName": "jevmem pane",
+  "version": "0.7.8",
+  "description": "Um painel lateral ao lado do chat no Claude Code: o que o jevmem recuperou para este prompt, o que seu guardião decidiu e o que o último turno salvou, com botões de por quê, erro e esquecer. Lê três arquivos locais em .jevmem/ e executa o comando jevmem; não envia nada a lugar nenhum. Requer a CLI jevmem e um projeto ativado.",
+  "author": {
+    "name": "Avinash Jetwani",
+    "url": "https://github.com/Avinash-jetwani"
+  },
+  "homepage": "https://avinash-jetwani.github.io/jevmem/",
+  "repository": "https://github.com/Avinash-jetwani/jevmem",
+  "privacyPolicyUrl": "https://github.com/Avinash-jetwani/jevmem/blob/main/PRIVACY.md",
+  "supportUrl": "https://github.com/Avinash-jetwani/jevmem/issues",
+  "documentationUrl": "https://avinash-jetwani.github.io/jevmem/pane/",
+  "license": "MIT",
+  "keywords": [
+    "memory",
+    "project-memory",
+    "pane",
+    "jev",
+    "claude-code"
+  ],
+  "types": "./types/index.d.ts"
+}

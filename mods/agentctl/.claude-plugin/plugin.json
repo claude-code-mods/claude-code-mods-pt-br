@@ -1,0 +1,8 @@
+{
+  "name": "agentctl",
+  "version": "0.3.1",
+  "description": "Painel de controle de agent para uma sessão do Claude Code: escopo da tarefa, evidências e passagem de bastão. Um controle e uma exibição, não um limite de isolamento.",
+  "author": {
+    "name": "sd0xdev"
+  }
+}

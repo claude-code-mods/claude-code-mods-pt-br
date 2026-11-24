@@ -1,0 +1,9 @@
+{
+  "name": "lcu-approve",
+  "version": "0.6.0",
+  "description": "Aprovação nativa por aplicativo para uso do computador com LCU no aplicativo Claude e no Claude Code (Permitir nesta conversa, Sempre permitir, Negar), além do painel /computer-use-apps com os aplicativos aprovados.",
+  "author": {
+    "name": "LCU"
+  },
+  "types": "./types/index.d.ts"
+}

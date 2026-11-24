@@ -1,0 +1,122 @@
+{
+  "fm": {
+    "pt-BR": "Animação de trabalho do veleiro e transcrição restrita à conversa, com preferência de modo calmo compartilhada entre sessões."
+  },
+  "terminal-browser": {
+    "pt-BR": "Um navegador dentro do Claude Code: visualize sites e HTML e deixe o agente controlar o navegador integrado."
+  },
+  "pebrel-prompt-suggestions": {
+    "pt-BR": "Previsões nativas de prompt no campo vazio por meio da ponte de sessão Pebrel."
+  },
+  "token-optimizer": {
+    "pt-BR": "Uma barra de status de otimização de tokens que mostra para onde os tokens vão e como gastar menos."
+  },
+  "lcu-approve": {
+    "pt-BR": "Aprovação por aplicativo para uso do computador: permitir nesta conversa, sempre permitir ou negar, além de um painel de aplicativos aprovados."
+  },
+  "fast-jev-compaction": {
+    "pt-BR": "Compactação literal guiada por Jev para sessões do Claude Code."
+  },
+  "lot-map": {
+    "pt-BR": "Um mapa ao vivo ao lado do chat: memória, arquivos, shell, web, modelo, agents, skills e hooks se acendem conforme são usados."
+  },
+  "codex-attachment-manager": {
+    "pt-BR": "Imagens antigas são enviadas como marcadores curtos e as originais são buscadas por ID, para que sessões longas com imagens mantenham o cache de prompt."
+  },
+  "storybloq": {
+    "pt-BR": "Memória de projeto: tickets, issues, entregas e lições guardados em uma pasta .story no seu repositório."
+  },
+  "shared-session": {
+    "pt-BR": "Compartilhe uma sessão por link ou com sua equipe; colegas entram com seu próprio Claude Code e acompanham cada turno ao vivo."
+  },
+  "just-do-it": {
+    "pt-BR": "Leva o trabalho autorizado até a verificação e a entrega, e mostra problemas de configuração que precisam ser corrigidos."
+  },
+  "prismantis": {
+    "pt-BR": "Renderização colorida e personalizável para respostas: tabelas, títulos, código, números, caminhos e links."
+  },
+  "filetree": {
+    "pt-BR": "Uma árvore de arquivos estilo IDE que mostra o que o Claude está fazendo e em qual arquivo."
+  },
+  "jev-auto-compact": {
+    "pt-BR": "Com 60% de contexto, remove chamadas de ferramenta obsoletas sem gerar nada; pula em vez de recorrer a um resumo de LLM."
+  },
+  "cache-tax": {
+    "pt-BR": "Mantém o cache de prompt de uma hora aquecido durante pausas, pergunta antes de um envio frio e mostra o custo da reescrita."
+  },
+  "turbo": {
+    "pt-BR": "Uma fábrica de software agêntica com controle humano: você decide o que construir e avalia o resultado, enquanto as skills constroem e entregam."
+  },
+  "agent-standup-band": {
+    "pt-BR": "Uma linha acima do campo de entrada quando outra sessão local precisa de você e um aviso quando uma termina."
+  },
+  "flightdeck": {
+    "pt-BR": "Painel ao vivo de agents: sinais vitais do modelo, arquiteto de plantão, verificações de permissão, cartões de subagentes e registro da sessão."
+  },
+  "caliber-jev-compaction": {
+    "pt-BR": "Compactação literal guiada por Jev para sessões do Claude Code."
+  },
+  "mazyos": {
+    "pt-BR": "Um sistema operacional de negócios em português para o Claude Code: a memória da sua empresa em toda sessão, identidade visual nas saídas e 17 skills de marketing e SEO."
+  },
+  "start": {
+    "pt-BR": "Comandos de orquestração de fluxos de trabalho para desenvolvimento de software agêntico."
+  },
+  "shunt": {
+    "pt-BR": "Uma faixa de uso para o gateway shunt: gasto e reinício de cada janela, além do detalhamento completo de /shunt:usage."
+  },
+  "operator": {
+    "pt-BR": "Memória durável de projeto e usuário para desenvolvimento conduzido por agents."
+  },
+  "agentctl": {
+    "pt-BR": "Um painel de controle de agent para uma sessão: escopo da tarefa, evidências e passagem de bastão."
+  },
+  "multi-core": {
+    "pt-BR": "Use modelos do ChatGPT, Cursor, OpenCode e Antigravity em uma única sessão, alternando com /model."
+  },
+  "work-mode": {
+    "pt-BR": "Modos de sessão: auto (sem perguntas no meio da tarefa), out (delegar trabalho em lote) e wrap (convergir e finalizar)."
+  },
+  "tokendoctor": {
+    "pt-BR": "Reproduz suas sessões passadas para mostrar o que cada mudança teria economizado e aplica apenas o que você escolhe."
+  },
+  "engineer": {
+    "pt-BR": "Um kit de metodologia de engenharia agêntica disciplinada: entrada, descoberta de critérios de aceite, especificação, planejamento, implementação, verificação e endurecimento."
+  },
+  "skins": {
+    "pt-BR": "Skins e quinze temas para a transcrição, com cartões ricos e uma faixa de uso; /skin troca tudo ao vivo."
+  },
+  "show-your-work": {
+    "pt-BR": "Mostra o trabalho concluído no terminal: capturas de tela, vídeos de cliques no aplicativo e verificações antes/depois sincronizadas."
+  },
+  "jevmem-pane": {
+    "pt-BR": "Um painel lateral que mostra o que o jevmem recuperou, o que seu guardião decidiu e o que o último turno salvou."
+  },
+  "ctx-handoff": {
+    "pt-BR": "Transforma o que você ensina ao Claude em notas de projeto, detecta erros comuns, mantém o cache aquecido e retoma sessões longas."
+  },
+  "inbox": {
+    "pt-BR": "Reúne as perguntas, tarefas, descobertas e PRs que esperam por você em uma sessão."
+  },
+  "lane-stack": {
+    "pt-BR": "Esteira de gerente de produto individual: agents orquestradores, cartilhas de faixa e comandos de entrada e retomada."
+  },
+  "compact-adviser": {
+    "pt-BR": "Sugere ou executa /compact em um ponto de checagem concluído, avaliado pelo TypeSafe Jev."
+  },
+  "ripple": {
+    "pt-BR": "Escolhe o esforço de raciocínio para cada prompt e um worker para cada tarefa delegada, mantém o cache aquecido e mostra para onde foi cada requisição."
+  },
+  "tavernweave-agent-skills": {
+    "pt-BR": "23 skills compartilhadas para papéis, trabalho de software e tarefas em nuvem limitadas, além de um interruptor de modo Soul acima do campo de entrada."
+  },
+  "agent-usage-guard": {
+    "pt-BR": "Contém a dispersão de subagents, prompts com contexto pesado e loops de repetição antes que consumam sua janela de uso."
+  },
+  "council": {
+    "pt-BR": "Consulte vários agents de IA ao mesmo tempo para obter perspectivas diferentes, com um painel em fluxo contínuo e uma verificação lateral opcional."
+  },
+  "carbon": {
+    "pt-BR": "Acompanha a pegada de carbono das suas sessões do Claude Code no terminal e no aplicativo desktop."
+  }
+}

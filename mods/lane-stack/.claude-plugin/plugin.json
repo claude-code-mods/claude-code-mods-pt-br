@@ -1,0 +1,19 @@
+{
+  "name": "lane-stack",
+  "version": "1.67.4",
+  "description": "Esteira de gerente de produto individual para o Claude Code: agents orquestradores, cartilhas por faixa e comandos de entrada e retomada.",
+  "author": {
+    "name": "VKirill",
+    "url": "https://github.com/VKirill/claude-lane-stack"
+  },
+  "homepage": "https://github.com/VKirill/claude-lane-stack",
+  "repository": "https://github.com/VKirill/claude-lane-stack",
+  "license": "MIT",
+  "keywords": [
+    "orchestration",
+    "dev-orchestrator",
+    "lanes",
+    "run-supervisor",
+    "claude-code"
+  ]
+}

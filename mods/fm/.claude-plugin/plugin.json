@@ -1,0 +1,9 @@
+{
+  "name": "fm",
+  "version": "1.0.0",
+  "description": "Firstmate Calm para o Claude Code: animação de trabalho do veleiro e apresentação de transcrição restrita à conversa, compartilhando a preferência config/calm por diretório inicial com a extensão Pi Calm. Seu módulo de hooks pode ser carregado por CLAUDE_CODE_ENABLE_FUNCTION_HOOKS ou pela flag de lançamento tengu_plugin_hooks_modules do Claude Code, mas o mod só é ativado quando CLAUDE_CODE_ENABLE_FUNCTION_HOOKS é exatamente 1; caso contrário, não faz nada.",
+  "author": {
+    "name": "Firstmate",
+    "url": "https://github.com/kunchenguid/firstmate"
+  }
+}
