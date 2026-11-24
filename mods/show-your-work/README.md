@@ -206,7 +206,7 @@ Ele guarda estes arquivos:
 - Quadros de vídeo e imagens convertidas vão em uma pasta temporária (`$TMPDIR/claude-show-your-work-<seu id de usuário>`), e qualquer coisa com mais de uma semana é limpa.
 - Uma cópia de cada arquivo que o Claude mostra a você vai em `.show-your-work/` no seu projeto, para você rever versões.
 - Salvar em Downloads coloca uma cópia em `~/Downloads`.
-- Se o perfil do seu shell tiver a linha que uma versão antiga acrescentou com Ativar imagens (veja [Terminais](#terminals)), ele remove aquela linha.
+- Se o perfil do seu shell tiver a linha que uma versão antiga acrescentou com Ativar imagens (veja [Terminais](#terminais)), ele remove aquela linha.
 - Com `SHOW_YOUR_WORK_DEBUG=1`, ele grava um `debug.log` na pasta temporária.
 
 Uma vez por dia, ele lê o número da versão mais recente do plugin em `raw.githubusercontent.com`.
@@ -220,7 +220,7 @@ Dentro do Claude Code, ele usa estes hooks:
 - `tool.call` cuida das próprias ferramentas `show_image`, `show_video`, `show_html`, `show_audio` e `show_document` do plugin. Nunca toca outras ferramentas.
 - `command.run` executa `/img`, `/page`, `/audio`, `/doc` e `/show-your-work`. Logo após a instalação, executa `/show-your-work tour` uma vez para mostrar os recursos.
 - `ui.render` desenha o player, os avisos, as configurações e a introdução do plugin.
-- `session.start` e `session.end` preparam a pasta temporária e o terminal no início e enviam contagens de uso pendentes no fim. Dentro do tmux, também iniciam e param a passagem de imagens do painel do plugin (veja [Terminais](#terminals)).
+- `session.start` e `session.end` preparam a pasta temporária e o terminal no início e enviam contagens de uso pendentes no fim. Dentro do tmux, também iniciam e param a passagem de imagens do painel do plugin (veja [Terminais](#terminais)).
 
 </details>
 

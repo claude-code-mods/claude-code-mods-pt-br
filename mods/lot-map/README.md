@@ -31,9 +31,9 @@ claude plugin install lot-map@lot-map
 
 No aplicativo desktop: clique em **+** ao lado da caixa de prompt, depois em **Plugins**, **Adicionar marketplace** com `alexeyw/lot-map` e então **Adicionar plugin**.
 
-O painel se abre sozinho quando a sessão começa; com `openAtStart` desligado, ele espera por `/lot-map`. Em um terminal, precisa de pelo menos 144 colunas; caso contrário, digite `/lot-map`, e ele desenha só texto, a menos que você peça o mapa como imagem ou em pontos de braille: veja [Em um terminal](#in-a-terminal). Construído e testado no Claude Code 2.1.321 no macOS; usuários relatam que funciona também no Windows e no Linux.
+O painel se abre sozinho quando a sessão começa; com `openAtStart` desligado, ele espera por `/lot-map`. Em um terminal, precisa de pelo menos 144 colunas; caso contrário, digite `/lot-map`, e ele desenha só texto, a menos que você peça o mapa como imagem ou em pontos de braille: veja [Em um terminal](#em-um-terminal). Construído e testado no Claude Code 2.1.321 no macOS; usuários relatam que funciona também no Windows e no Linux.
 
-Em um login Team ou Enterprise, a transcrição pode receber avisos como `lot-map: its classic.PreToolUse hook was skipped`. Desligue `guardedHooks` e eles param; [Opções](#what-it-shows) diz o que o mapa perde por isso.
+Em um login Team ou Enterprise, a transcrição pode receber avisos como `lot-map: its classic.PreToolUse hook was skipped`. Desligue `guardedHooks` e eles param; [Opções](#o-que-ele-mostra) diz o que o mapa perde por isso.
 
 ## Atualização
 
@@ -172,8 +172,8 @@ Cada uma delas com uma imagem de seus valores: [Como as opções aparecem](docs/
 | `coreName` | `CLAUDE` | o que o círculo do meio diz, até dez caracteres |
 | `theme` | `auto` | as cores do mapa: `dark`, `light` ou `auto`, escura em superfície escura e clara em clara |
 | `background` | `solid` | o fundo próprio do mapa, ou `transparent`, que deixa o painel atrás aparecer. A borda ao redor dos rótulos mantém a cor do fundo, então em superfície de outro tom aparece como uma aura fraca |
-| `paneBackground` | `theme` | com que o próprio painel é pintado: `theme`, o do próprio Claude Code; `transparent`, que deixa o terminal atrás aparecer, inclusive papel de parede e desfoque; ou uma cor como `#rrggbb`, para combinar com terminal opaco. Uma superfície que não consegue fazer isso mantém a sua. Veja [Em um terminal](#in-a-terminal) |
-| `colors` | nenhuma | cores suas, cada uma como `name=#rrggbb`; veja [Cores próprias](#colours-of-your-own) |
+| `paneBackground` | `theme` | com que o próprio painel é pintado: `theme`, o do próprio Claude Code; `transparent`, que deixa o terminal atrás aparecer, inclusive papel de parede e desfoque; ou uma cor como `#rrggbb`, para combinar com terminal opaco. Uma superfície que não consegue fazer isso mantém a sua. Veja [Em um terminal](#em-um-terminal) |
+| `colors` | nenhuma | cores suas, cada uma como `name=#rrggbb`; veja [Cores próprias](#cores-próprias) |
 | `layout` | `you-top` | onde você está no mapa: `you-top` ou `you-bottom`, que gira o anel meia volta para que você fique embaixo e a rede e o navegador em cima |
 | `motion` | `full` | `full` ou `reduced`: nada voa, se espalha ou gira. Uma chamada ainda acende sua estação e pisca seu raio, a rota ainda recebe seu trecho, e esses só desbotam; os ponteiros ao redor de uma estação em execução ficam, lentos como os de um relógio |
 | `textSize` | `footnote` | o tamanho das linhas sob o mapa: `caption`, `footnote` ou `body`. Um terminal tem um tamanho só e ignora isso |
@@ -187,7 +187,7 @@ Cada uma delas com uma imagem de seus valores: [Como as opções aparecem](docs/
 | `hookReasons` | `false` | mostra a primeira linha da recusa de um hook, até 72 caracteres; desligado, o mapa diz só qual ferramenta foi parada |
 | `guardedHooks` | `true` | desligue em login Team ou Enterprise em que a transcrição recebe avisos como `lot-map: its classic.PreToolUse hook was skipped`. A guarda de uma organização mantém mods longe de cinco eventos lá, e com isso desligado o mod não acrescenta hook nenhum neles. O mapa perde a estação Hooks, os registros que um hook acrescenta, a linha de um comando slash digitado e a marca de uma compactação; uma chamada que um hook recusou ainda recebe seu `✕`, como chamada falha e não bloqueada |
 | `subagentNames` | `false` | o passo do modelo de um subagente diz qual subagente é, pelas poucas palavras com que foi iniciado, até 40 caracteres; desligado, diz só que é um subagente |
-| `contextCost` | `false` | cada linha diz aproximadamente quantos tokens o contexto cresceu com a resposta de sua chamada, e o mapa soma o total de cada estação à sua contagem. Estimativa, mostrada um passo atrasada; veja [Quanto cada chamada acrescenta ao contexto](#what-each-call-adds-to-the-context) |
+| `contextCost` | `false` | cada linha diz aproximadamente quantos tokens o contexto cresceu com a resposta de sua chamada, e o mapa soma o total de cada estação à sua contagem. Estimativa, mostrada um passo atrasada; veja [Quanto cada chamada acrescenta ao contexto](#quanto-cada-chamada-acrescenta-ao-contexto) |
 | `contextWindow` | `model` | em relação ao que o anel e sua porcentagem medem o contexto: `model`, a janela inteira do modelo, como a linha de status; ou `compaction`, a janela de compactação automática, como uma definida com `autoCompactWindow`, quando menor que a do modelo. Sem uma, ou com compactação automática desligada, `compaction` mostra o mesmo que `model`. A janela é lida no primeiro passo do modelo de uma sessão, após uma compactação e numa mudança de modelo; com `guardedHooks` desligado, não após uma compactação |
 
 ### Memória e servidores
@@ -206,8 +206,8 @@ Cada uma delas com uma imagem de seus valores: [Como as opções aparecem](docs/
 
 | Opção | Padrão | Significado |
 | --- | --- | --- |
-| `terminalView` | `text` | como o mapa aparece em um terminal: `text`, só as linhas; `picture`, o mapa como imagem acima delas em terminal que mostra imagens, no iTerm2 a partir da 3.7.8; ou `braille`, o mapa acima delas em pontos de braille, em qualquer terminal cuja fonte tenha braille. Veja [Em um terminal](#in-a-terminal) |
-| `cellShape` | `2.4` | para a imagem do terminal: quantas vezes uma célula de terminal é mais alta do que larga, de 1.2 a 4, para que a imagem preencha sua caixa; veja [Em um terminal](#in-a-terminal) |
+| `terminalView` | `text` | como o mapa aparece em um terminal: `text`, só as linhas; `picture`, o mapa como imagem acima delas em terminal que mostra imagens, no iTerm2 a partir da 3.7.8; ou `braille`, o mapa acima delas em pontos de braille, em qualquer terminal cuja fonte tenha braille. Veja [Em um terminal](#em-um-terminal) |
+| `cellShape` | `2.4` | para a imagem do terminal: quantas vezes uma célula de terminal é mais alta do que larga, de 1.2 a 4, para que a imagem preencha sua caixa; veja [Em um terminal](#em-um-terminal) |
 
 Por exemplo, rótulos em russo e seu próprio servidor de memória:
 
@@ -295,7 +295,7 @@ As palavras ficam em `hooks/text.ts`; um novo idioma é mais uma tabela lá e ma
 
 A imagem do terminal é feita por três arquivos: `hooks/scene.ts` lê o desenho que `drawMap` faz, `hooks/raster.ts` o pinta e `hooks/png.ts` empacota os pixels para o terminal. Um teste pinta todo tipo de desenho e falha em qualquer coisa que o pintor não conhece, então uma mudança no desenho que precise de mais SVG aparece primeiro ali. Outro, `the terminal picture's font has every letter the map writes, in every language`, nomeia as letras que um novo idioma precisa acrescentar a `hooks/font.ts`; [FONTS.md](FONTS.md) diz como refazer esse arquivo.
 
-O mapa em braille é desenhado por `hooks/braille.ts`: um segundo desenho do mesmo tabuleiro, que toma suas estações de `STATIONS` e seus tempos de `hooks/draw.ts`. Testes em `hooks/braille.test.tsx` o mantêm fiel a toda estação nos dois layouts, e um em `hooks/lot-map.test.tsx` aos nomes de todo idioma. Algo novo no mapa ou é desenhado lá também ou entra na lista do que o braille deixa de fora, em [Em um terminal](#the-map-in-braille-dots): o `INVENTORY` em `hooks/braille.test.tsx` tem uma linha para cada coisa que o primeiro desenho mostra, um teste mantém os dois desenhos ligados a ele, e `scripts/check-surface.mjs` mantém essa lista nas mesmas linhas.
+O mapa em braille é desenhado por `hooks/braille.ts`: um segundo desenho do mesmo tabuleiro, que toma suas estações de `STATIONS` e seus tempos de `hooks/draw.ts`. Testes em `hooks/braille.test.tsx` o mantêm fiel a toda estação nos dois layouts, e um em `hooks/lot-map.test.tsx` aos nomes de todo idioma. Algo novo no mapa ou é desenhado lá também ou entra na lista do que o braille deixa de fora, em [Em um terminal](#o-mapa-em-pontos-de-braille): o `INVENTORY` em `hooks/braille.test.tsx` tem uma linha para cada coisa que o primeiro desenho mostra, um teste mantém os dois desenhos ligados a ele, e `scripts/check-surface.mjs` mantém essa lista nas mesmas linhas.
 
 Antes de enviar uma mudança, leia [CONTRIBUTING.md](CONTRIBUTING.md). A que o mod se mantém fiel, e a verificação por trás de cada ponto, está em [PRINCIPLES.md](PRINCIPLES.md).
 

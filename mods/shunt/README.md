@@ -71,7 +71,7 @@ Uma janela lê `—` quando nenhuma conta não desabilitada a informa. Contas Ch
    [server.usage]
    ```
 
-   Com `[server.gateway]` em vez de `[server.auth]`, veja as [sessões `shunt gateway claude`](#shunt-gateway-claude-sessions) abaixo. `[server.auth]` toma seus tokens do ambiente em vez do TOML — por padrão `SHUNT_CLIENT_TOKENS`, como pares `name:token` — e o gateway falha ao iniciar quando está indefinido. Exporte-o onde o gateway roda, usando o mesmo token que você definiu como `ANTHROPIC_AUTH_TOKEN` acima:
+   Com `[server.gateway]` em vez de `[server.auth]`, veja as [sessões `shunt gateway claude`](#sessões-shunt-gateway-claude) abaixo. `[server.auth]` toma seus tokens do ambiente em vez do TOML — por padrão `SHUNT_CLIENT_TOKENS`, como pares `name:token` — e o gateway falha ao iniciar quando está indefinido. Exporte-o onde o gateway roda, usando o mesmo token que você definiu como `ANTHROPIC_AUTH_TOKEN` acima:
 
    ```bash
    export SHUNT_CLIENT_TOKENS="claude-code:<seu token de cliente>"

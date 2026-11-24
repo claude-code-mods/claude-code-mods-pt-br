@@ -106,8 +106,8 @@ Uma pergunta sem provedores nomeados vai para todo provedor com chave e para tod
 | Rodar em segundo plano e buscar o resultado | [Tarefas em segundo plano](docs/USAGE.md#background-jobs---async) |
 | Exportar as respostas para um arquivo | [Exportação](docs/USAGE.md#export-to-file) |
 | Mostrar só a síntese | [Modo silencioso](docs/USAGE.md#quiet-mode) |
-| Ver as respostas chegando e repetir assentos que falharam | [O painel](#the-pane) |
-| Receber uma nota de um assento enquanto o Claude trabalha | [Verificação lateral avisada](#heads-up-side-check) |
+| Ver as respostas chegando e repetir assentos que falharam | [O painel](#o-painel) |
+| Receber uma nota de um assento enquanto o Claude trabalha | [Verificação lateral avisada](#verificação-lateral-avisada) |
 | Fazer um segundo modelo revisar o diff antes de o Claude parar | [Revisão na porta de parada](docs/USAGE.md#stop-gate-review-opt-in-off-by-default) |
 | Perguntar ao council em um chat do Claude Desktop | [Claude Desktop](#claude-desktop) |
 | Chamar os scripts sem o Claude Code | [Uso direto de script](docs/REFERENCE.md#direct-script-usage) |

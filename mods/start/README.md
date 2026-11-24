@@ -10,14 +10,14 @@ O plugin `start` oferece dez skills de fluxo invocáveis pelo usuário, cinco sk
 
 ## Índice
 
-- [Skills invocáveis pelo usuário](#user-invocable-skills) — specify, implement, validate, test, review, document, analyze, refactor, debug, constitution
-- [Skills autônomas](#autonomous-skills) — 5 skills ativadas por contexto
-- [Estrutura da documentação](#documentation-structure) — specs, domínio, padrões, interfaces
-- [Estilos de saída](#output-styles) — The Garage, The Startup, The ScaleUp
-- [Fluxo de desenvolvimento típico](#typical-development-workflow) — fluxos principais e de manutenção
-- [Skills em ação](#skills-in-action) — exemplos do mundo real
-- [Modelos](#templates) — PRD, SDD, Plan, Scenario
-- [Filosofia](#philosophy) — princípios de desenvolvimento orientado por especificações
+- [Skills invocáveis pelo usuário](#skills-invocáveis-pelo-usuário) — specify, implement, validate, test, review, document, analyze, refactor, debug, constitution
+- [Skills autônomas](#skills-autônomas) — 5 skills ativadas por contexto
+- [Estrutura da documentação](#estrutura-da-documentação) — specs, domínio, padrões, interfaces
+- [Estilos de saída](#estilos-de-saída) — The Garage, The Startup, The ScaleUp
+- [Fluxo de desenvolvimento típico](#fluxo-de-desenvolvimento-típico) — fluxos principais e de manutenção
+- [Skills em ação](#skills-em-ação) — exemplos do mundo real
+- [Modelos](#modelos) — PRD, SDD, Plan, Scenario
+- [Filosofia](#filosofia) — princípios de desenvolvimento orientado por especificações
 
 ---
 
@@ -588,7 +588,7 @@ npx the-startup
 **Flags:**
 - `--help` — mostra informações de uso
 
-**Nota:** Os estilos de saída são selecionados via `/config` — veja [Estilos de saída](#output-styles).
+**Nota:** Os estilos de saída são selecionados via `/config` — veja [Estilos de saída](#estilos-de-saída).
 
 ---
 

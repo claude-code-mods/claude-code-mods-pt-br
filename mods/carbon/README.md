@@ -12,14 +12,14 @@ O claude-carbon é um plugin de código aberto para o Claude Code que rastreia a
 
 ## O que o claude-carbon faz
 
-- `/carbon-panel`: um painel no aplicativo desktop do Claude com sua molécula de CO2, seu uso e as listras de aquecimento das sessões (no terminal, a sessão na faixa acima do prompt). Veja [o mod](#the-mod-carbon-panel-and-the-co2-of-each-answer)
+- `/carbon-panel`: um painel no aplicativo desktop do Claude com sua molécula de CO2, seu uso e as listras de aquecimento das sessões (no terminal, a sessão na faixa acima do prompt). Veja [o mod](#o-mod-carbon-panel-e-o-co2-de-cada-resposta)
 - Acrescenta uma estimativa ao vivo de CO2 à linha de status do Claude Code e o CO2 da sessão abaixo do prompt no aplicativo desktop, cada um ao lado do custo equivalente em API da sessão
 - Persiste cada sessão num banco SQLite local, para que o histórico sobreviva à limpeza de transcrições de 30 dias
 - Preenche retroativamente dados históricos a partir das transcrições `~/.claude` existentes
 - Comandos slash: `/carbon-report` (texto), `/carbon-card` (PNG), `/carbon-pr` (pegada de um pull request)
 - Um badge de README com seu total de todos os tempos e uma metodologia pública com todos os fatores referenciados
 
-> **Sobre o valor `$`.** É um equivalente de API: quanto sua sessão custaria nas tabelas de preço avulso da API da Anthropic. Numa assinatura Pro, Max ou Ultra você não paga isso; o valor mostra o que você usou, ao lado do CO2 correspondente. Veja [Como funciona](#how-it-works).
+> **Sobre o valor `$`.** É um equivalente de API: quanto sua sessão custaria nas tabelas de preço avulso da API da Anthropic. Numa assinatura Pro, Max ou Ultra você não paga isso; o valor mostra o que você usou, ao lado do CO2 correspondente. Veja [Como funciona](#como-funciona).
 
 ## Instalação
 
@@ -40,7 +40,7 @@ Depois saia completamente do Claude Code, abra-o de novo e inicie uma nova sess�
 - no terminal, na linha de status: `$0.50 · 65gCO₂`
 - no aplicativo desktop, abaixo do prompt: `This session: 3.6 gCO₂ · $0.12`
 
-O plugin define essa linha de status uma vez, no primeiro início de sessão, e só quando você não tem nenhuma: a linha de status de outra ferramenta é deixada como está (para acrescentar o CO2 a ela, veja [ccstatusline](#using-with-ccstatusline)). `/carbon-report` mostra seus totais e `/carbon-panel` abre o painel no aplicativo desktop. O `$` é um custo equivalente de API, não o que sua assinatura cobra. Para atualizar depois, execute `/carbon-update`.
+O plugin define essa linha de status uma vez, no primeiro início de sessão, e só quando você não tem nenhuma: a linha de status de outra ferramenta é deixada como está (para acrescentar o CO2 a ela, veja [ccstatusline](#uso-com-ccstatusline)). `/carbon-report` mostra seus totais e `/carbon-panel` abre o painel no aplicativo desktop. O `$` é um custo equivalente de API, não o que sua assinatura cobra. Para atualizar depois, execute `/carbon-update`.
 
 <p align="center"><img src="docs/desktop-pane.png" width="560" alt="Ilustração do aplicativo desktop do Claude com o painel claude-carbon aberto: uma molécula de pixels azul, &quot;This session: 8.2 gCO₂ · 0.04× your median&quot;, os últimos 30 dias em blocos e listras de aquecimento, um botão &quot;Get my 2026 card&quot; e &quot;This session: 8.2 gCO₂&quot; abaixo do prompt"></p>
 
@@ -321,7 +321,7 @@ A transcrição de um agente para de mudar quando ele termina, então seus totai
 
 Segmentos, da esquerda para a direita: projeto + branch git, modelo + % da janela de contexto, custo equivalente em API da sessão + CO2, % da cota da assinatura + horário de reinício. A cota é a janela de 5 horas, ou a semanal quando nenhuma janela de 5 horas está aberta (sempre, numa conta Ultra verificada; em Pro e Max, entre o reinício de uma janela de 5 horas e sua próxima requisição): `Use 41% 7d ↻Thu`, com o reinício como dia da semana quando está a mais de um dia. Um prefixo 🔥 aparece quando a taxa de consumo sustentada ultrapassaria 100% do limite até o fim da janela (uma vez que o uso chega a 15%, após uma tolerância de 15 min na janela de 5 horas e de um dia na semanal).
 
-> **Onde o CO2 aparece.** A linha de status é um recurso da interface de terminal do Claude Code. Só é exibida quando você roda `claude` num terminal, inclusive o terminal integrado do VS Code ou do JetBrains. O painel de chat das extensões de IDE não tem linha de status, então nada aparece lá, embora os hooks ainda rodem e suas sessões sejam registradas: `/carbon-report` as cobre. Se usa o painel do VS Code e quer o CO2 ao vivo, abra um terminal no VS Code (`` Ctrl+` ``) e rode `claude` ali. O aplicativo web (claude.ai/code) não roda nem a linha de status nem os hooks, então nada é exibido ou registrado lá. O aplicativo desktop também não exibe a linha de status; o [mod](#the-mod-carbon-panel-and-the-co2-of-each-answer) do plugin desenha o CO2 na aba Code.
+> **Onde o CO2 aparece.** A linha de status é um recurso da interface de terminal do Claude Code. Só é exibida quando você roda `claude` num terminal, inclusive o terminal integrado do VS Code ou do JetBrains. O painel de chat das extensões de IDE não tem linha de status, então nada aparece lá, embora os hooks ainda rodem e suas sessões sejam registradas: `/carbon-report` as cobre. Se usa o painel do VS Code e quer o CO2 ao vivo, abra um terminal no VS Code (`` Ctrl+` ``) e rode `claude` ali. O aplicativo web (claude.ai/code) não roda nem a linha de status nem os hooks, então nada é exibido ou registrado lá. O aplicativo desktop também não exibe a linha de status; o [mod](#o-mod-carbon-panel-e-o-co2-de-cada-resposta) do plugin desenha o CO2 na aba Code.
 
 **Fonte da cota.** A porcentagem é a da própria Anthropic, os mesmos dados que o Claude Code mostra em `/usage`. Sem heurística, sem arquivo de limite de tokens para inicializar. Duas fontes, em ordem:
 
@@ -410,7 +410,7 @@ O Claude Code desenha mods no terminal e na aba Code do aplicativo desktop apena
 
 O mod acompanha o plugin. Já instalado pelo marketplace: execute `/plugin marketplace update claude-carbon` e `/plugin update claude-carbon@claude-carbon`, depois reinicie o Claude Code.
 
-O plugin sozinho registra suas sessões e define a linha de status do terminal quando você não tem uma (veja [Instalação](#install)):
+O plugin sozinho registra suas sessões e define a linha de status do terminal quando você não tem uma (veja [Instalação](#instalação)):
 
 ```
 /plugin install claude-carbon --marketplace gwittebolle/claude-carbon
@@ -451,7 +451,7 @@ O Claude Code aceita um único comando `statusLine`, então a linha de status co
 
 (ajuste o caminho se instalou com `CLAUDE_CARBON_DIR`). O widget recebe o mesmo JSON de status na entrada padrão e imprime só o par custo + CO2, por exemplo `$0.68 · 35gCO₂`. O modo segmento nunca toca a rede. O registro no banco local não é afetado de qualquer forma: a persistência vem dos hooks, não da linha de status.
 
-Com o segmento no ccstatusline, a entrada da sessão do [mod](#the-mod-carbon-panel-and-the-co2-of-each-answer) abaixo do prompt mostra o total uma segunda vez. Desligue-a com a opção `showSessionTotal` em `/config`; o aplicativo desktop, que não tem linha de status, a mantém.
+Com o segmento no ccstatusline, a entrada da sessão do [mod](#o-mod-carbon-panel-e-o-co2-de-cada-resposta) abaixo do prompt mostra o total uma segunda vez. Desligue-a com a opção `showSessionTotal` em `/config`; o aplicativo desktop, que não tem linha de status, a mantém.
 
 ## Fatores de emissão
 
@@ -491,7 +491,7 @@ Quando há versão mais nova, a linha de status mostra uma dica discreta `⬆ /c
 
 - **Num terminal com instalação via git clone**, a dica aparece no fim da linha de status, nomeando a versão nova.
 - **Em todo lugar onde o mod roda** (aplicativo desktop e terminal sem a linha de status do claude-carbon), a mesma dica termina a entrada da sessão abaixo do prompt, e o painel `/carbon-panel` nomeia a versão no topo de seu rodapé. Numa instalação por plugin, a mesma verificação diária em segundo plano consulta ao GitHub só as tags de release e nunca toca o cache de plugins do Claude Code.
-- **Instalado antes do verão de 2026** (versão 1.0, sem dica alguma)? Rode a instalação de novo, pelo aplicativo ou pelo terminal, como em [Instalação](#install).
+- **Instalado antes do verão de 2026** (versão 1.0, sem dica alguma)? Rode a instalação de novo, pelo aplicativo ou pelo terminal, como em [Instalação](#instalação).
 
 Para atualizar, execute `/carbon-update` no Claude Code, seja qual for a forma de instalação: para o plugin, ele roda `claude plugin marketplace update claude-carbon` e `claude plugin update claude-carbon@claude-carbon`; para o clone do instalador, seu próprio atualizador. Reinicie o Claude Code depois. Com as duas instalações, como quando a linha de status roda de um clone, só o plugin é atualizado e o comando dá o `git pull` do clone. Você também pode executar o instalador de novo:
 
@@ -501,7 +501,7 @@ curl -fsSL https://raw.githubusercontent.com/gwittebolle/claude-carbon/main/inst
 
 - Atualizar o clone de um instalador recalcula automaticamente o histórico armazenado com os novos fatores (só CO2; os valores de custo ficam intactos); atualizar o plugin não. Rode `scripts/recompute.sh --with-cost` você mesmo só depois de uma mudança de preço.
 - Se você editou `data/factors.json` ou `data/prices.json` localmente, a atualização mantém suas edições; em conflito com o upstream, salva as suas em `*.local.bak` e avisa.
-- A atualização também atualiza a cópia do [mod](#the-mod-carbon-panel-and-the-co2-of-each-answer). Quando pedir reinício (no Windows, uma cópia em uso não pode ser substituída), reinicie o Claude Code e execute de novo; até lá, a cópia anterior permanece.
+- A atualização também atualiza a cópia do [mod](#o-mod-carbon-panel-e-o-co2-de-cada-resposta). Quando pedir reinício (no Windows, uma cópia em uso não pode ser substituída), reinicie o Claude Code e execute de novo; até lá, a cópia anterior permanece.
 - Instalado pelo marketplace de plugins, você também pode deixar o próprio Claude Code atualizá-lo: em `/plugin`, vá à aba **Marketplaces**, selecione `claude-carbon` e **Habilitar atualização automática**. A versão nova carrega na próxima sessão.
 
 ## Desinstalação

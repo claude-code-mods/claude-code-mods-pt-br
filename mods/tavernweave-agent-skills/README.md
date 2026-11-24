@@ -35,15 +35,15 @@ Todas as capacidades continuam a respeitar a linguagem simples e a explicação 
 Para criação de cartões comum ou Vibe Code:
 
 ```text
-我想用 TavernWeave 做一个【描述你想要的作品】。
-先看看已有文件，帮我整理成一个能亲手试用的小成果；用大白话说明推荐理由和我需要决定的事情。
+Quero usar a TavernWeave para criar 【descreva a obra que você quer】.
+Primeiro examine os arquivos existentes e organize algo pequeno que eu possa testar; explique em linguagem simples por que recomenda isso e o que preciso decidir.
 ```
 
 Se você já tem arquivos de cartão, pode começar assim:
 
 ```text
-我接手了这张角色卡，想【沿原作继续更新 / 做二创】。
-先帮我看懂原卡，说明有哪些材料、哪些内容需要保留，再一起选第一次改动。
+Assumi este cartão de personagem e quero 【continuar a partir do original / criar uma versão derivada】.
+Primeiro me ajude a entender o cartão original, indicando quais materiais existem e o que precisa ser preservado; depois escolhamos juntos a primeira alteração.
 ```
 
 ## Colabore no ritmo que você escolher
@@ -64,13 +64,13 @@ Os termos necessários são explicados na primeira aparição, com uma comparaç
 Versão de orientação carinhosa:
 
 ```text
-Atong助我！
+Atong, me ajude!
 ```
 
 Versão de estudo rígida:
 
 ```text
-MTTT.sir，拷打我！
+MTTT.sir, me cobre!
 ```
 
 Versão ovo de páscoa de revisão de front-end:
@@ -82,19 +82,19 @@ Matador de Almas！
 Para fechar o projeto geral e a primeira versão a partir de um desejo:
 
 ```text
-脑暴模式
+Modo brainstorm
 ```
 
 Para fazer as três lentes Soul participarem juntas do brainstorm:
 
 ```text
-脑暴模式，Soul 联席
+Modo brainstorm, com as três lentes Soul
 ```
 
 Para executar a primeira versão congelada após a confirmação do projeto:
 
 ```text
-按蓝图开跑第一版
+Execute a primeira versão conforme o blueprint
 ```
 
 Para revalidar toda a trajetória de crescimento Vibe Code a partir das evidências atuais:
@@ -106,13 +106,13 @@ Espelho
 Para gerar apenas um formulário de avaliação textual completo, copiável e salvável:
 
 ```text
-Espelho，只要文字评估表单，不要画板
+Espelho, quero apenas o formulário de avaliação em texto, sem o quadro
 ```
 
 Para sair da camada de personalidade:
 
 ```text
-Soul 归位
+Soul, volte ao lugar
 ```
 
 O Soul continua sendo uma camada portátil no nível da tarefa. Atong e MTTT.sir são duas projeções de ensino do método público MTTT; Matador de Almas revisa o front-end como um ovo de páscoa não oficial de Johnny Silverhand — pode ser sarcástico, mas precisa apresentar evidências e propor correções. A reunião dos três assentos é apenas três lentes marcadas do mesmo agente, compartilhando fatos, permissões, no máximo 1–2 decisões necessárias por rodada (no total, até 4) e o mesmo registro de fechamento; não são três modelos independentes. Ela não ganha automaticamente o histórico do ChatGPT nem RAG privado, não persiste permanentemente entre novas tarefas e não amplia permissões de arquivo, Git, rede, publicação ou produção.
@@ -136,7 +136,7 @@ A "revisão completa" olha todo o escopo acordado; a "revisão de arquitetura" a
 
 ```text
 Host Front Door（entrada local opcional）
-  -> Soul（Atong / MTTT.sir / Matador de Almas / 三席，opcional）
+  -> Soul（Atong / MTTT.sir / Matador de Almas / três lentes, opcional）
     -> Orquestração de brainstorm（projeto geral + First Playable + blueprint/conjunto de blueprints，opcional）
       -> Library（A0 + guia ST + design/animação + Wiki de origem + página de escolha）
         -> Skills de engenharia distribuídos pelo manifesto da máquina（criação, componentes, API, UI, depuração, verificação de crescimento, build, validação etc.）
@@ -201,7 +201,7 @@ Projetos longos usam Markdown + YAML front matter + blocos estruturados restrito
 As evidências são registradas por camada:
 
 ```text
-源码 -> 自动测试 -> 离线制品 -> 浏览器/桌面 -> 真实 SillyTavern -> 人工验收 -> 发布授权
+Código-fonte -> testes automatizados -> artefato offline -> navegador/desktop -> SillyTavern real -> aceitação manual -> autorização de publicação
 ```
 
 Nenhuma camada pode passar pela seguinte; automação nunca pode gravar `driver-accepted` por conta própria.
@@ -217,21 +217,21 @@ Usuários Codex podem ver primeiro [uso e instalação específicos para Codex](
 As etapas a seguir são para **instalação local** no Codex ou Claude Code. Para ativação e uso do plugin na conta dots, veja o [guia do plugin unificado](docs/plugin-guide.md); a instalação local não sincroniza automaticamente com a nuvem. O instalador deve usar como fonte o manifesto completo de `skills/` do repositório, criando diretórios ausentes, e não apenas sobrescrever Skills já existentes na máquina. Host Front Door é um reforço local opcional; antes de instalar, veja o arquivo de regras de destino e as diferenças:
 
 ```text
-请完整安装并启用这个 Skill 仓库：
+Instale e habilite este repositório de Skills por completo:
 https://github.com/LiarMTTT/TavernWeave
 
-不要只覆盖本机已经存在的 Skill。请以仓库 skills/ 的完整目录为准；安装后按机器清单核对完整数量（2.3.0 为 23/23；已发布的 1.9.1 为 22/22），并单独确认 worldbook-design-and-writing、build-work-library、activate-tavernweave-soul、consult-tavernweave-library、orchestrate-project-blueprint、reflect-on-vibe-code-growth、rewrite-natural-prose 和 Library 离线挑选页存在。
+Não sobrescreva apenas as Skills já existentes nesta máquina. Use o diretório skills/ completo do repositório como referência; após a instalação, confira a quantidade total pela lista da máquina (2.3.0: 23/23; 1.9.1 publicada: 22/22) e confirme separadamente a presença de worldbook-design-and-writing, build-work-library, activate-tavernweave-soul, consult-tavernweave-library, orchestrate-project-blueprint, reflect-on-vibe-code-growth, rewrite-natural-prose e da página de seleção offline da Library.
 
-请检测我使用的是 Codex 还是 Claude Code，说明 TavernWeave Host Front Door 是可选本地增强；先展示目标路径、受控区块和 diff，得到我确认后再安装。不要改写受控区块以外的用户规则。
+Detecte se estou usando Codex ou Claude Code, explique que o TavernWeave Host Front Door é um aprimoramento local opcional; mostre primeiro os caminhos de destino, os blocos controlados e o diff e só instale depois da minha confirmação. Não altere regras de usuário fora dos blocos controlados.
 ```
 
 Atualização:
 
 ```text
-请把已安装的 TavernWeave 完整更新到这个仓库的最新版本：
+Atualize a TavernWeave instalada por completo para a versão mais recente deste repositório:
 https://github.com/LiarMTTT/TavernWeave
 
-更新必须比较“仓库应有目录”和“实际安装目录”，创建新增 Skill，不能只修改旧目录；同时检查 Host Front Door 是否缺失、过期或漂移，明文给出“更新前门/先看 diff/仅更新 Skills”三种选择。完成后返回两份回执，再新建任务验证本地宿主发现。dots 账户导入另按插件指南验证。
+A atualização precisa comparar “quais diretórios o repositório deveria ter” com “quais estão realmente instalados”, criar as Skills novas e não apenas modificar as antigas; verifique também se a Host Front Door está ausente, desatualizada ou com divergência, e apresente explicitamente as três opções “atualizar a front door / ver o diff primeiro / atualizar apenas as Skills”. Ao concluir, devolva dois comprovantes e crie uma nova tarefa para validar a descoberta pelo host local. A importação na conta dots deve ser verificada separadamente conforme o guia do plugin.
 ```
 
 Se o host ou o agente usa o modo de instalação portátil de "copiar cada Skill para um diretório de projeto", execute na raiz do repositório:

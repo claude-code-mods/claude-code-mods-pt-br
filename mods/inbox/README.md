@@ -47,7 +47,7 @@ claude plugin marketplace update inbox
 claude plugin update inbox
 ```
 
-- Ele faz duas chamadas ao Sonnet após cada resposta do Claude, uma para as linhas e outra para a aba Status. Veja [Custo](#cost).
+- Ele faz duas chamadas ao Sonnet após cada resposta do Claude, uma para as linhas e outra para a aba Status. Veja [Custo](#custo).
 - Foi construído e testado com Claude Code 2.1.300.
 
 ### Codex
@@ -157,7 +157,7 @@ A Ajuda lista as teclas e o significado de cada marca.
 - **Terminal:** cada ação mostra a letra que a executa. As teclas numéricas trocam de aba, e `j` e `k` movem para cima e para baixo. No Status, elas movem entre as linhas que têm um botão, e a letra ao lado de um botão o pressiona. ctrl+x tab move o foco do prompt para a linha acima dele, depois para o painel e depois de volta ao prompt.
 - **Aplicativo desktop do Claude:** você clica. Digite `/inbox` para abrir o painel. Cliques no painel são verificados no engine do Claude Code 2.1.309 e posteriores. Na 2.1.295, um clique após uma pressão só podia devolver o foco ao painel.
 - **Aplicativo ChatGPT:** você clica ou pressiona as mesmas teclas do terminal. A aba não mostra letras.
-- **Aplicativo Herdr:** veja [Painel do Herdr](#herdr-app-pane).
+- **Aplicativo Herdr:** veja [Painel do Herdr](#painel-do-herdr).
 - **omp:** `/inbox` abre o painel sobre a conversa, e esc o fecha. Cada ação mostra a letra que a executa, e Responder é `t`. As setas movem entre linhas e entre os botões de uma linha, e enter pressiona o botão focado. Tab ou as teclas numéricas trocam de aba. No Status, `j` e `k` movem entre as linhas com botão, e as setas acima e abaixo rolam a página.
 
 No Claude Code, uma linha acima do prompt conta o que precisa de você e os achados esperando, com um botão que abre o painel. Quando o Claude para por erro, uma segunda linha diz o motivo, com um botão Retomar após erro de API. O aplicativo ChatGPT não tem essa linha. O omp tem uma linha com as mesmas contagens. Diz que `/inbox` abre o painel e não tem linha de parada.
@@ -216,7 +216,7 @@ Isto cobre o mod do Claude Code. [codex/README.md](codex/README.md) cobre o plug
 
 **O que sai da sua máquina.** Três coisas, e nada mais:
 
-- Após cada resposta do Claude, o inbox envia duas requisições ao Sonnet para a Anthropic pela própria conexão de modelo do Claude Code. Ambas contêm seu último prompt, a resposta do Claude, os itens abertos do inbox e uma linha para cada ferramenta que o Claude rodou. Uma linha de ferramenta diz algo como `ran: npm test` ou `edited src/app.ts`. [Custo](#cost) dá o tamanho da requisição.
+- Após cada resposta do Claude, o inbox envia duas requisições ao Sonnet para a Anthropic pela própria conexão de modelo do Claude Code. Ambas contêm seu último prompt, a resposta do Claude, os itens abertos do inbox e uma linha para cada ferramenta que o Claude rodou. Uma linha de ferramenta diz algo como `ran: npm test` ou `edited src/app.ts`. [Custo](#custo) dá o tamanho da requisição.
 - Quando o inbox pode ter perdido um turno, ele pede ao mesmo modelo, com as mesmas duas chamadas, para atualizá-lo a partir da conversa inteira. Ele faz fork da conversa para isso, ou lê a transcrição após uma retomada.
 - Para preencher a aba PRs, ele roda consultas `gh` somente leitura: `gh pr view` e `gh api graphql` para threads de revisão. Elas chegam ao GitHub com seu próprio login `gh`. O inbox nunca lê seu token do GitHub.
 

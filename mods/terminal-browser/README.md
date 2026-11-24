@@ -1,6 +1,6 @@
 # plugin terminal-browser para o Claude Code
 
-> Este plugin é experimental e tem algumas [limitações conhecidas](#caveats).
+> Este plugin é experimental e tem algumas [limitações conhecidas](#ressalvas).
 
 
 

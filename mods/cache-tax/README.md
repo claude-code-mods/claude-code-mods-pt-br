@@ -9,7 +9,7 @@
 
 O Cache Tax é um mod do Claude Code que atualiza seu cache de prompt enquanto você se ausenta e mostra o custo estimado de reescrita antes de um envio com cache frio. Execute `/keepwarm 90m` antes de uma pausa. Os pings custam tokens; escolha uma janela na qual você espera voltar.
 
-**[Instalação](#install)** · [Site](https://cachetax.aidojo.si/) · [Como funciona](#how-it-works) · [Custos e limites](#cost-and-the-plan-limit-question) · [Comandos](#commands)
+**[Instalação](#instalação)** · [Site](https://cachetax.aidojo.si/) · [Como funciona](#como-funciona) · [Custos e limites](#custo-e-a-questão-do-limite-do-plano) · [Comandos](#comandos)
 
 ![Gravação real do cache-tax impedindo um envio com cache frio com estimativa de US$ 6,61](site/assets/refusal.gif)
 
@@ -28,7 +28,7 @@ Reinicie o Claude Code ou execute `/reload-plugins` numa sessão aberta. Não pr
 
 Numa sessão aquecida, execute `/keepwarm` para armar seis horas. Use `/keepwarm 90m` para uma janela mais curta ou `/keepwarm off` para parar.
 
-**Confira a duração do cache principal.** O uso incluído na assinatura tem uma hora por padrão. Sessões com chave de API, créditos de uso e provedores de nuvem têm cinco minutos por padrão, então defina [`promptCacheTtl`](https://code.claude.com/docs/en/prompt-caching#choose-the-ttl-yourself) como `"1h"` para essas formas de cobrança. Um timer de 50 minutos não protege um cache principal de cinco minutos. Veja [Limites](#limits) para as evidências do fork.
+**Confira a duração do cache principal.** O uso incluído na assinatura tem uma hora por padrão. Sessões com chave de API, créditos de uso e provedores de nuvem têm cinco minutos por padrão, então defina [`promptCacheTtl`](https://code.claude.com/docs/en/prompt-caching#choose-the-ttl-yourself) como `"1h"` para essas formas de cobrança. Um timer de 50 minutos não protege um cache principal de cinco minutos. Veja [Limites](#limites) para as evidências do fork.
 
 **Prefere um hook de configuração?** A [versão hook](https://github.com/karanb192/claude-code-hooks/tree/main/plugins/cache-tax) avisa por padrão, recusa uma vez com `CACHE_TAX_BLOCK=1` e oferece uma contagem regressiva independente na linha de status. O aquecimento faz parte deste mod.
 
@@ -61,7 +61,7 @@ Display escolhe onde o estado aparece enquanto o keepwarm está armado. `band` (
 
 Uma recusa headless devolve seu motivo e o registra na transcrição/log de depuração. Use `--debug-file` do Claude Code ao diagnosticar um script. A API de mods não consegue definir o código de saída do processo nem escrever uma recusa no stderr; uma recusa não precisa gerar saída diferente de zero nem motivo no stdout. Uma execução opt-in que atinge um piso em dólares ainda precisa ser tentada deliberadamente.
 
-Por padrão, uma escrita fria detectada arma automaticamente pelo menos três horas de keepwarm, a janela always (seis horas, a menos que você defina outra) com `always` ligado, e imprime o que custou; a [opção](#options) Auto keepwarm desliga a parte automática. `/cache-tax` mostra a estimativa atual de cache, a janela de aquecimento e a contagem de escritas frias desta sessão.
+Por padrão, uma escrita fria detectada arma automaticamente pelo menos três horas de keepwarm, a janela always (seis horas, a menos que você defina outra) com `always` ligado, e imprime o que custou; a [opção](#opções) Auto keepwarm desliga a parte automática. `/cache-tax` mostra a estimativa atual de cache, a janela de aquecimento e a contagem de escritas frias desta sessão.
 
 A contagem acompanha recibos de cache. Para cada requisição, estima o contexto antigo reescrito como o menor valor entre a escrita informada e o contexto anterior menos a leitura informada. Uma cauda ausente menor que 10% da leitura é tratada como cache hit. Novo conteúdo num hit não conta nem arma o keepwarm; uma reescrita parcial substancial ainda pode. Cada reescrita usa o modelo e a faixa de preço daquela requisição.
 
@@ -81,7 +81,7 @@ Sonnet 5, 16 de setembro de 2026: o status informou **75k tokens lidos por US$ 0
 
 ## Por que uma mensagem curta pode custar tanto
 
-Quando o prefixo em cache expira, até "me faça um resumo" pode disparar uma reescrita do contexto antigo antes da resposta. A linha de preço do Fable 5.1 do Cache Tax compara uma escrita de uma hora a US$ 20 com uma leitura de cache a US$ 0,25 por milhão de tokens: 80x por token, não 80x de economia total. Veja as [suposições de preço](#cost-and-the-plan-limit-question) e [a tabela de preços da Anthropic](https://platform.claude.com/docs/en/about-claude/pricing).
+Quando o prefixo em cache expira, até "me faça um resumo" pode disparar uma reescrita do contexto antigo antes da resposta. A linha de preço do Fable 5.1 do Cache Tax compara uma escrita de uma hora a US$ 20 com uma leitura de cache a US$ 0,25 por milhão de tokens: 80x por token, não 80x de economia total. Veja as [suposições de preço](#custo-e-a-questão-do-limite-do-plano) e [a tabela de preços da Anthropic](https://platform.claude.com/docs/en/about-claude/pricing).
 
 [Assista à visão geral de 23 segundos](docs/assets/cache-cost-explainer.mp4). Suas cenas desenhadas rotulam os preços de tabela do Fable 5.1; cada pixel de terminal e linha de status vem da gravação real da recusa e do recibo de aquecimento acima. A recusa foi gravada na 2.1.1 e o recorte do aquecimento na 2.0.0.
 
@@ -172,7 +172,7 @@ De um checkout local, carregue-o por uma sessão:
 
     claude --plugin-dir .
 
-Para mantê-lo instalado, use os [comandos de marketplace](#install).
+Para mantê-lo instalado, use os [comandos de marketplace](#instalação).
 
 Enviando uma mudança? [CONTRIBUTING.md](CONTRIBUTING.md) diz que evidência um PR precisa.
 
@@ -210,7 +210,7 @@ Os [366 testes](tests/register.test.ts) usam relógio e engine falsos. Cobrem:
 - **Preferências:** uma leitura por sessão, atualizações imediatas de tema, mudanças negadas e o tema efetivo devolvido pelo gravador de configurações.
 - **Falhas de fork:** API ocupada é tentada de novo enquanto o cache está quente, uma tentativa que acorda tarde demais é descartada, nada para fork espera o próximo turno, um ping por vez, uma resposta que chega após uma requisição, `/clear` ou compactação é descartada e outras falhas e o resultado nulo retornado por versões antigas param sem tentar de novo.
 
-Os testes de renderização verificam a árvore de elementos, não pixels nativos de terminal ou desktop. Não validam retenção de cache no lado do servidor. Veja [a verificação ao vivo](#prove-it-on-your-own-session).
+Os testes de renderização verificam a árvore de elementos, não pixels nativos de terminal ou desktop. Não validam retenção de cache no lado do servidor. Veja [a verificação ao vivo](#comprove-na-sua-própria-sessão).
 
 ### Verificação de tipos
 

@@ -24,7 +24,7 @@ Normalmente, um agente reenvia todas as imagens anteriores a cada mensagem, ent�
 
 - **O modelo busca o que precisa**: quando precisa ver uma imagem antiga novamente, ele recebe a original pelo ID.
 - **Ele consegue distinguir as imagens**: o modelo anota uma linha sobre o que cada imagem mostra, além dos seus comentários sobre ela. Isso permanece nos marcadores, inclusive após a compactação do chat.
-- **O cache continua funcionando**: um marcador é escrito uma vez e depois permanece igual, então o chat anterior ainda é lido do cache de prompt do modelo. Veja [o projeto](#design-keep-the-cache-working).
+- **O cache continua funcionando**: um marcador é escrito uma vez e depois permanece igual, então o chat anterior ainda é lido do cache de prompt do modelo. Veja [o projeto](#projeto-manter-o-cache-funcionando).
 - **Nada é excluído**: suas imagens originais e o histórico do chat permanecem como estão.
 
 Ele vem ligado por padrão; você não precisa abrir o painel. Usos típicos: criação de imagens e vídeos, documentos escaneados, uso de computador e de navegador.
@@ -37,7 +37,7 @@ Envie isto ao seu agente. Ele identifica a plataforma e instala a configuração
 Install Context Attachment Manager for me, following https://github.com/chipfighter/context-attachment-manager/blob/main/INSTALL.md
 ```
 
-Depois reinicie o agente (no Claude Desktop, inicie uma nova sessão Code). Veja [agentes suportados](#works-with) e [instalação, atualizações e desinstalação](INSTALL.md).
+Depois reinicie o agente (no Claude Desktop, inicie uma nova sessão Code). Veja [agentes suportados](#funciona-com) e [instalação, atualizações e desinstalação](INSTALL.md).
 
 ## O painel, quando você quiser controlar
 
@@ -130,6 +130,6 @@ Codex e Claude Code foram testados. WorkBuddy, OpenCode, Gemini CLI, pi, DeepSee
 
 ### Como instalo o Context Attachment Manager? Preciso de um terminal?
 
-Não. Envie ao seu agente a frase única da seção [Instalação](#install) acima: ele identifica a plataforma e faz a configuração sozinho, e você só precisa reiniciar o agente depois (no Claude Desktop, inicie uma nova sessão Code). No Codex também é possível instalar pela página de Plugins com alguns cliques. Se preferir fazer manualmente, são um comando no Codex e dois comandos `claude` no Claude Desktop; veja [INSTALL.md](INSTALL.md).
+Não. Envie ao seu agente a frase única da seção [Instalação](#instalação) acima: ele identifica a plataforma e faz a configuração sozinho, e você só precisa reiniciar o agente depois (no Claude Desktop, inicie uma nova sessão Code). No Codex também é possível instalar pela página de Plugins com alguns cliques. Se preferir fazer manualmente, são um comando no Codex e dois comandos `claude` no Claude Desktop; veja [INSTALL.md](INSTALL.md).
 
 <p align="center"><sub><a href="CHANGELOG.md">Changelog</a> · <a href="CONTRIBUTING.md">Contribuindo</a> · <a href="LICENSE">Licença MIT</a></sub></p>
