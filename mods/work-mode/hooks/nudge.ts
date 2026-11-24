@@ -39,9 +39,11 @@ export const WHY_CLAUDE = /^\s*(?:<[^>]*>\s*)?why-claude:\s*([^\n]*)/i
 /** The refusal of an Agent call under out when subagents spend the main quota (dispatch.subagentsDelegate false). */
 export function agentText(cfg: WorkModeConfig = getConfig()): string {
   const hint = cfg.dispatch.pickerHint
-  return cfg.locale === 'zh-TW'
-    ? `[dispatch-gate] out 模式：Claude 子代理花的是同一份週額度。這件事如果是讀取、抽取、分類、摘要、核對這類能驗收的批次工作，改交外部 CLI（${hint}）。真的需要 Claude（要改檔、要 MCP 或憑證、要判斷力、接續主線已讀的脈絡），在 prompt 第一行寫 \`why-claude: <一句理由>\` 再派一次就放行，理由會記錄。`
-    : `[dispatch-gate] out is on: a Claude subagent spends the same weekly quota as this thread. If this job is reading, extraction, classification, summarising or checking that a spot check can verify, send it to an external CLI (${hint}) instead. If it really needs Claude (edits, MCP or credentials, judgement, context already read here), put \`why-claude: <one-line reason>\` on the first line of the prompt and call again; it then passes and the reason is logged.`
+  if (cfg.locale === 'zh-TW')
+    return `[dispatch-gate] out 模式：Claude 子代理花的是同一份週額度。這件事如果是讀取、抽取、分類、摘要、核對這類能驗收的批次工作，改交外部 CLI（${hint}）。真的需要 Claude（要改檔、要 MCP 或憑證、要判斷力、接續主線已讀的脈絡），在 prompt 第一行寫 \`why-claude: <一句理由>\` 再派一次就放行，理由會記錄。`
+  if (cfg.locale === 'pt-BR')
+    return `[dispatch-gate] o modo out está ativo: um subagent do Claude usa a mesma cota semanal desta sessão. Se este trabalho é leitura, extração, classificação, resumo ou verificação que pode ser conferida por amostragem, envie-o a uma CLI externa (${hint}). Se realmente precisa do Claude (editar arquivos, MCP ou credenciais, julgamento ou contexto já lido aqui), escreva \`why-claude: <motivo em uma linha>\` na primeira linha do prompt e chame novamente; a chamada passa e o motivo é registrado.`
+  return `[dispatch-gate] out is on: a Claude subagent spends the same weekly quota as this thread. If this job is reading, extraction, classification, summarising or checking that a spot check can verify, send it to an external CLI (${hint}) instead. If it really needs Claude (edits, MCP or credentials, judgement, context already read here), put \`why-claude: <one-line reason>\` on the first line of the prompt and call again; it then passes and the reason is logged.`
 }
 
 export function responseLength(v: unknown): number {
@@ -53,6 +55,8 @@ export function nudgeText(n: number, cfg: WorkModeConfig = getConfig()): string 
   if (cfg.dispatch.nudgeTemplate) return cfg.dispatch.nudgeTemplate.split('{chars}').join(String(n))
   if (cfg.locale === 'zh-TW')
     return `[dispatch-nudge] 這一回合主線已讀進約 ${n} 字元的原始內容、還沒外派。剩下的逐條分類、核對、抽取、摘要若能用檢查器或抽查驗收，改派背景子代理（Agent 工具）或外部 CLI（${cfg.dispatch.pickerHint}）處理，主線只驗收結果。已經快做完、或必須由主模型判斷的，照常繼續。`
+  if (cfg.locale === 'pt-BR')
+    return `[dispatch-nudge] Nesta rodada a linha principal leu cerca de ${n} caracteres de material bruto sem delegar nada. Se a classificação, verificação, extração ou o resumo restantes puderem ser validados por um verificador ou por amostragem, envie-os a um subagent em segundo plano (ferramenta Agent) ou a uma CLI externa (${cfg.dispatch.pickerHint}) e verifique apenas o resultado aqui. Se o trabalho está quase pronto ou exige julgamento do modelo principal, continue.`
   return `[dispatch-nudge] This turn the main thread has read about ${n} characters of raw material without delegating anything. If the remaining classification, checking, extraction or summarising can be verified by a checker or a spot check, hand it to a background subagent (the Agent tool) or an external CLI (${cfg.dispatch.pickerHint}) and only verify the result here. If it is nearly done or needs the main model's judgement, carry on.`
 }
 
@@ -63,14 +67,20 @@ export function gateText(n: number, corpus: string | undefined, cfg: WorkModeCon
   const how =
     cfg.locale === 'zh-TW'
       ? `要繼續在主線讀，先跑一個空指令宣告理由：\`: # work-mode: inline <一句理由>\`，這一回合之後的讀取就放行（理由會記錄下來）。`
-      : `To keep reading inline, first run a no-op Bash declaring why: \`: # work-mode: inline <one-line reason>\`; reads then pass for the rest of this turn (the reason is logged).`
+      : cfg.locale === 'pt-BR'
+        ? `Para continuar lendo diretamente, execute primeiro um comando Bash sem efeito declarando o motivo: \`: # work-mode: inline <motivo em uma linha>\`; as leituras seguintes desta rodada serão permitidas (o motivo é registrado).`
+        : `To keep reading inline, first run a no-op Bash declaring why: \`: # work-mode: inline <one-line reason>\`; reads then pass for the rest of this turn (the reason is logged).`
   if (corpus)
     return cfg.locale === 'zh-TW'
       ? `[dispatch-gate] out 模式：\`${corpus}\` 是整批原始材料（對話紀錄、逐字稿、傾印檔），主線不直接讀。把要查的問題寫成一句話，交給背景子代理或外部 CLI（${hint}）去讀，主線只驗收結果。${how}`
-      : `[dispatch-gate] out is on: \`${corpus}\` is batch material (transcripts, dumps, logs); the main thread does not read it. Put the question in one line and hand the reading to a background subagent or an external CLI (${hint}); verify the result here. ${how}`
-  return cfg.locale === 'zh-TW'
-    ? `[dispatch-gate] out 模式：這一回合主線已讀進約 ${n} 字元、還沒外派，再讀下去就是整批讀取。把剩下的讀取、抽取、分類、核對交給背景子代理或外部 CLI（${hint}），主線只驗收結果。${how}`
-    : `[dispatch-gate] out is on: this turn the main thread has read about ${n} characters without delegating; reading on is batch work. Hand the remaining reading, extraction, classification or checking to a background subagent or an external CLI (${hint}) and verify the result here. ${how}`
+      : cfg.locale === 'pt-BR'
+        ? `[dispatch-gate] o modo out está ativo: \`${corpus}\` é material bruto em lote (transcrições, despejos, logs); a linha principal não lê diretamente. Escreva a pergunta em uma linha e passe a leitura a um subagent em segundo plano ou a uma CLI externa (${hint}); verifique apenas o resultado aqui. ${how}`
+        : `[dispatch-gate] out is on: \`${corpus}\` is batch material (transcripts, dumps, logs); the main thread does not read it. Put the question in one line and hand the reading to a background subagent or an external CLI (${hint}); verify the result here. ${how}`
+  if (cfg.locale === 'zh-TW')
+    return `[dispatch-gate] out 模式：這一回合主線已讀進約 ${n} 字元、還沒外派，再讀下去就是整批讀取。把剩下的讀取、抽取、分類、核對交給背景子代理或外部 CLI（${hint}），主線只驗收結果。${how}`
+  if (cfg.locale === 'pt-BR')
+    return `[dispatch-gate] o modo out está ativo: nesta rodada a linha principal leu cerca de ${n} caracteres sem delegar; continuar lendo é trabalho em lote. Passe as leituras, extração, classificação e verificação restantes a um subagent em segundo plano ou a uma CLI externa (${hint}) e verifique apenas o resultado aqui. ${how}`
+  return `[dispatch-gate] out is on: this turn the main thread has read about ${n} characters without delegating; reading on is batch work. Hand the remaining reading, extraction, classification or checking to a background subagent or an external CLI (${hint}) and verify the result here. ${how}`
 }
 
 let patternSource = ''

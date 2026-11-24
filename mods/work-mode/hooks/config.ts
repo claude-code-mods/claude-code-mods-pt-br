@@ -4,7 +4,7 @@ import type { EngineInterface } from 'claude-code'
 // (or $WORK_MODE_CONFIG). Without it the mod runs on neutral English or Traditional
 // Chinese defaults, picked from the Claude Code `language` setting and the locale env.
 
-export type Locale = 'en' | 'zh-TW'
+export type Locale = 'en' | 'zh-TW' | 'pt-BR'
 export type Pronouns = 'they' | 'he' | 'she'
 
 export interface PoolRouting {
@@ -108,6 +108,21 @@ export const DEFAULT_CONFIG_ZH: WorkModeConfig = {
   },
 }
 
+export const DEFAULT_CONFIG_PT_BR: WorkModeConfig = {
+  ...DEFAULT_CONFIG_EN,
+  locale: 'pt-BR',
+  dispatch: {
+    ...DEFAULT_CONFIG_EN.dispatch,
+    pickerHint: 'subagentes / CLI externo',
+  },
+  converge: {
+    sectionHeading: 'Decisões pendentes',
+    decisionLabels: ['externo', 'pagamento', 'exclusão', 'permissão', 'tradeoff'],
+    tradeoffLabel: 'tradeoff',
+    autoCloseCommand: null,
+  },
+}
+
 export const DEFAULT_POOL_ROUTING: PoolRouting = {
   bothBlocked: 'Both pools are past the floor: keep batches inline or in a background subagent.',
   agyBlocked: 'agy is past the floor: send that batch work to codex or a background subagent instead.',
@@ -139,6 +154,7 @@ export function resolvePath(p: string, homeDir: string): string {
 export function localeFrom(value: unknown): Locale | undefined {
   if (typeof value !== 'string' || value.trim() === '') return undefined
   if (/zh|中文|繁體|台灣|臺灣|chinese/i.test(value)) return 'zh-TW'
+  if (/^pt|portugu[êe]s|portuguese/i.test(value)) return 'pt-BR'
   if (/^en|english/i.test(value)) return 'en'
   return undefined
 }
@@ -165,8 +181,8 @@ export function validPattern(p: unknown): string | undefined {
 /** Merges a parsed config file over the locale's defaults; anything malformed falls back field by field. */
 export function resolveConfig(raw: unknown, fallbackLocale: Locale = 'en'): WorkModeConfig {
   const r = isObj(raw) ? raw : {}
-  const locale = r.locale === 'en' || r.locale === 'zh-TW' ? r.locale : fallbackLocale
-  const base = locale === 'zh-TW' ? DEFAULT_CONFIG_ZH : DEFAULT_CONFIG_EN
+  const locale = r.locale === 'en' || r.locale === 'zh-TW' || r.locale === 'pt-BR' ? r.locale : fallbackLocale
+  const base = locale === 'zh-TW' ? DEFAULT_CONFIG_ZH : locale === 'pt-BR' ? DEFAULT_CONFIG_PT_BR : DEFAULT_CONFIG_EN
   const a = isObj(r.autonomous) ? r.autonomous : {}
   const d = isObj(r.dispatch) ? r.dispatch : {}
   const c = isObj(r.converge) ? r.converge : {}
@@ -227,7 +243,7 @@ async function detectLocale($: EngineInterface): Promise<Locale> {
     // No settings access: fall through to the environment.
   }
   const env = (await $.env.get('LC_ALL')) ?? (await $.env.get('LANG')) ?? ''
-  return /^zh/i.test(env) ? 'zh-TW' : 'en'
+  return /^zh/i.test(env) ? 'zh-TW' : /^pt|portugu[êe]s/i.test(env) ? 'pt-BR' : 'en'
 }
 
 /** Reads the config file again; a missing or broken file resets to the defaults. */
@@ -241,7 +257,7 @@ export async function loadConfig($: EngineInterface): Promise<WorkModeConfig> {
   } catch {
     raw = undefined
   }
-  const fileLocale = isObj(raw) && (raw.locale === 'en' || raw.locale === 'zh-TW') ? raw.locale : undefined
+  const fileLocale = isObj(raw) && (raw.locale === 'en' || raw.locale === 'zh-TW' || raw.locale === 'pt-BR') ? raw.locale : undefined
   current = resolveConfig(raw, fileLocale ?? (await detectLocale($)))
   loaded = true
   return current

@@ -57,7 +57,7 @@ export function words(cfg: WorkModeConfig): Words {
   return { who, Who: who.charAt(0).toUpperCase() + who.slice(1), subj, obj, poss, is: p === 'they' ? 'are' : 'is' }
 }
 
-const plain = (cfg: WorkModeConfig) => (cfg.locale === 'zh-TW' ? 'plain Traditional Chinese' : 'plain language')
+const plain = (cfg: WorkModeConfig) => (cfg.locale === 'zh-TW' ? 'plain Traditional Chinese' : cfg.locale === 'pt-BR' ? 'linguagem simples em português' : 'plain language')
 
 // ---- mode texts --------------------------------------------------------------------------
 
@@ -75,11 +75,13 @@ export function convergeText(cfg: WorkModeConfig = getConfig()): string {
   const w = words(cfg)
   const c = cfg.converge
   const labels = c.decisionLabels.map(l => `[${l}]`).join(' ')
-  const example = cfg.locale === 'zh-TW' ? '"A 的好處…；B 的好處…"' : '"Option A pros: ...; Option B pros: ..."'
+  const example = cfg.locale === 'zh-TW' ? '"A 的好處…；B 的好處…"' : cfg.locale === 'pt-BR' ? '"Prós da opção A: ...; prós da opção B: ..."' : '"Option A pros: ...; Option B pros: ..."'
   const reply =
     cfg.locale === 'zh-TW'
       ? 'written in plain Traditional Chinese (台灣用語, no jargon)'
-      : 'written in plain language, no jargon'
+      : cfg.locale === 'pt-BR'
+        ? 'escrita em português simples, sem jargões'
+        : 'written in plain language, no jargon'
   const close = c.autoCloseCommand
     ? `When nothing is open (all work done and verified, no background task, subagent or pane still running, no pending decision), run ${c.autoCloseCommand} yourself without asking. If anything is still running or awaiting the user, do not run it.`
     : 'When nothing is open (all work done and verified, no background task or subagent still running, no pending decision), say in one line that the work is complete and stop.'
@@ -306,7 +308,9 @@ export function pickerLabels(current: readonly TempoMode[], cfg: WorkModeConfig 
   const hint = cfg.dispatch.pickerHint.replace(/,/g, zh ? '／' : '/')
   const labels = zh
     ? ['auto 自主（中途不問）', `out 外派（${hint}）`, 'wrap 收斂（不開新方向）', 'off 關閉']
-    : ['auto - autonomous (no mid-task questions)', `out - delegate (${hint})`, 'wrap - converge (no new branches)', 'off - turn off']
+    : cfg.locale === 'pt-BR'
+      ? ['auto - autônomo (sem perguntas durante a tarefa)', `out - delegar (${hint})`, 'wrap - convergir (sem novas frentes)', 'off - desativar']
+      : ['auto - autonomous (no mid-task questions)', `out - delegate (${hint})`, 'wrap - converge (no new branches)', 'off - turn off']
   return current.length > 0 ? labels : labels.slice(0, 3)
 }
 
@@ -317,6 +321,7 @@ export function pickedArgs(answer: string, cfg: WorkModeConfig = getConfig()): s
   const labels = new Set([
     ...pickerLabels(['autonomous'], { ...cfg, locale: 'en' }),
     ...pickerLabels(['autonomous'], { ...cfg, locale: 'zh-TW' }),
+    ...pickerLabels(['autonomous'], { ...cfg, locale: 'pt-BR' }),
   ])
   return answer
     .split(',')
@@ -471,7 +476,9 @@ export function registerTempo(on: On): void {
         const question =
           cfg.locale === 'zh-TW'
             ? `Work mode 目前：${label}。勾選要開的模式（可複選，會取代目前的設定）：`
-            : `Work mode is now: ${label}. Tick the modes to turn on (any mix; it replaces the current set):`
+            : cfg.locale === 'pt-BR'
+              ? `Modo de trabalho atual: ${label}. Marque os modos a ativar (qualquer combinação; substitui a seleção atual):`
+              : `Work mode is now: ${label}. Tick the modes to turn on (any mix; it replaces the current set):`
         const answer = await $.ui.ask(question, {
           options: pickerLabels(current, cfg),
           header: 'Work mode',
