@@ -21,28 +21,28 @@
   "hooks": "./hooks/hooks.json",
   "userConfig": {
     "sidebar": {
-      "title": "Ledger dashboard",
+      "title": "Painel do ledger",
       "type": "boolean",
       "default": true,
-      "description": "Draw the .story/ ledger in a pane beside the transcript. On by default; turn it off with /plugin configure storybloq. Projects with no .story/ directory show nothing either way (T-508, T-516)."
+      "description": "Desenha o ledger .story/ em um painel ao lado da transcrição. Ativado por padrão; desligue com /plugin configure storybloq. Projetos sem um diretório .story/ não mostram nada de qualquer forma (T-508, T-516)."
     },
     "startupLogo": {
-      "title": "Storyfield startup logo",
+      "title": "Logo de inicialização do Storyfield",
       "type": "boolean",
       "default": true,
-      "description": "Show a brief copper dot-wave logo before the dashboard. Turn off to show the board immediately."
+      "description": "Mostra um breve logo de onda de pontos em cobre antes do painel. Desligue para mostrar o painel imediatamente."
     },
     "motion": {
-      "title": "Dashboard motion",
+      "title": "Movimento do painel",
       "type": "boolean",
       "default": true,
-      "description": "Animate startup, phase progress, story updates, activity, and the context meter. Turn off for a static dashboard that still shows current status and activity."
+      "description": "Anima a inicialização, o progresso das fases, as atualizações das histórias, a atividade e o medidor de contexto. Desligue para um painel estático que ainda mostra o estado e a atividade atuais."
     },
     "changeHighlights": {
-      "title": "Story status highlights",
+      "title": "Destaques do status das histórias",
       "type": "boolean",
       "default": true,
-      "description": "Briefly highlight changed stories and destination counts, and show Ready when a blocker clears. Requires Dashboard motion."
+      "description": "Destaca por um instante histórias alteradas e contagens de destino, e mostra Ready quando um bloqueio é removido. Requer Movimento do painel."
     }
   },
   "metadata": {

@@ -20,14 +20,14 @@
   "userConfig": {
     "slide": {
       "type": "boolean",
-      "title": "Slide the window instead of compacting",
-      "description": "Where Claude Code would summarize the conversation, elide old tool outputs instead (they can be read again): no summary request, every prompt and answer kept word for word. /compact still summarizes.",
+      "title": "Deslizar a janela em vez de compactar",
+      "description": "Onde o Claude Code resumiria a conversa, omitem-se as saídas antigas de ferramentas (podem ser lidas novamente): nenhuma solicitação de resumo, cada prompt e resposta mantidos palavra por palavra. /compact ainda resume.",
       "default": false
     },
     "slideTo": {
       "type": "number",
-      "title": "Slide down to (% of where Claude Code compacts)",
-      "description": "How far a slide frees the context, as a percent of the point where Claude Code compacts (20 to 90). Lower leaves less behind and more turns before the next slide.",
+      "title": "Deslizar até (% do ponto em que o Claude Code compacta)",
+      "description": "Quanto um deslizamento libera de contexto, como percentual do ponto em que o Claude Code compacta (20 a 90). Valores menores deixam menos para trás e dão mais turnos antes do próximo deslizamento.",
       "default": 25
     }
   }

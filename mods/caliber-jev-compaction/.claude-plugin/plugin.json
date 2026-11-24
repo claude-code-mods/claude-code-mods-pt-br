@@ -6,67 +6,67 @@
   "userConfig": {
     "apiKey": {
       "type": "string",
-      "title": "Your TypeSafe API key",
-      "description": "Your own TypeSafe API key from typesafe.ai (direct System One). A Vercel AI Gateway key is not a TypeSafe key — use gatewayApiKey or AI_GATEWAY_API_KEY instead. Leave unset to use TYPESAFE_API_KEY. Caliber does not provide a key.",
+      "title": "Sua chave de API do TypeSafe",
+      "description": "Sua própria chave de API do TypeSafe de typesafe.ai (System One direto). Uma chave do Vercel AI Gateway não é uma chave TypeSafe — use gatewayApiKey ou AI_GATEWAY_API_KEY. Deixe em branco para usar TYPESAFE_API_KEY. A Caliber não fornece uma chave.",
       "sensitive": true
     },
     "gatewayApiKey": {
       "type": "string",
-      "title": "Your Vercel AI Gateway API key",
-      "description": "Your own Vercel AI Gateway key (AI_GATEWAY_API_KEY). This is not a TypeSafe key. Leave unset to use AI_GATEWAY_API_KEY from the environment. Caliber does not provide a key.",
+      "title": "Sua chave de API do Vercel AI Gateway",
+      "description": "Sua própria chave do Vercel AI Gateway (AI_GATEWAY_API_KEY). Esta não é uma chave TypeSafe. Deixe em branco para usar AI_GATEWAY_API_KEY do ambiente. A Caliber não fornece uma chave.",
       "sensitive": true
     },
     "gatewayBaseUrl": {
       "type": "string",
-      "title": "Vercel AI Gateway evaluation base URL",
-      "description": "Override the Gateway evaluation prefix. Defaults to https://ai-gateway.vercel.sh/v4/ai — not the OpenAI-compatible /v1 path."
+      "title": "URL base de avaliação do Vercel AI Gateway",
+      "description": "Substitui o prefixo de avaliação do Gateway. O padrão é https://ai-gateway.vercel.sh/v4/ai — não o caminho /v1 compatível com OpenAI."
     },
     "keepThreshold": {
       "type": "number",
-      "title": "Keep threshold",
-      "description": "Minimum Jev probability that a tool call or tool result is still needed; below it the item is removed.",
+      "title": "Limite de retenção",
+      "description": "Probabilidade mínima do Jev de que uma chamada ou resultado de ferramenta ainda seja necessário; abaixo dela, o item é removido.",
       "default": 0.5
     },
     "preserveRecentMessages": {
       "type": "number",
-      "title": "Recent messages to preserve",
-      "description": "Number of newest messages pinned from compaction.",
+      "title": "Mensagens recentes a preservar",
+      "description": "Número de mensagens mais recentes fixadas fora da compactação.",
       "default": 6
     },
     "compactAtPercent": {
       "type": "number",
-      "title": "Compaction percentage",
-      "description": "Context percentage at which turn.complete requests compaction.",
+      "title": "Percentual de compactação",
+      "description": "Percentual de contexto no qual turn.complete solicita a compactação.",
       "default": 60
     },
     "minReductionRatio": {
       "type": "number",
-      "title": "Minimum reduction ratio",
-      "description": "Minimum estimated character reduction required to replace history.",
+      "title": "Taxa mínima de redução",
+      "description": "Redução estimada mínima de caracteres necessária para substituir o histórico.",
       "default": 0.25
     },
     "maxStateTokens": {
       "type": "number",
-      "title": "Maximum Jev state tokens",
-      "description": "Estimated token budget for the conversation state sent with every Jev request.",
+      "title": "Tokens máximos do estado do Jev",
+      "description": "Orçamento estimado de tokens para o estado da conversa enviado a cada solicitação ao Jev.",
       "default": 25000
     },
     "maxRequestTokens": {
       "type": "number",
-      "title": "Maximum Jev request tokens",
-      "description": "Estimated token budget for state plus questions in one Jev request.",
+      "title": "Tokens máximos por solicitação ao Jev",
+      "description": "Orçamento estimado de tokens para estado mais perguntas em uma única solicitação ao Jev.",
       "default": 30000
     },
     "truncateHeadChars": {
       "type": "number",
-      "title": "Truncated tool result head",
-      "description": "Characters of a tool result kept when Jev decides its full output is no longer needed; 0 keeps only the note.",
+      "title": "Início truncado do resultado da ferramenta",
+      "description": "Caracteres de um resultado de ferramenta mantidos quando o Jev decide que a saída completa não é mais necessária; 0 mantém apenas a nota.",
       "default": 300
     },
     "model": {
       "type": "string",
-      "title": "Jev model",
-      "description": "Jev model. Direct TypeSafe uses jev-latest; Vercel AI Gateway remaps jev / jev-latest to the canonical typesafe-ai/jev (the only Jev id on GET /v1/models).",
+      "title": "Modelo Jev",
+      "description": "Modelo Jev. O TypeSafe direto usa jev-latest; o Vercel AI Gateway remapeia jev / jev-latest para o canônico typesafe-ai/jev (o único id Jev em GET /v1/models).",
       "default": "jev-latest"
     }
   }

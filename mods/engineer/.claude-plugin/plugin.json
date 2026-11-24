@@ -28,14 +28,14 @@
   "userConfig": {
     "economyModel": {
       "type": "string",
-      "title": "Economy model alias",
-      "description": "The model alias the economy class resolves to for the mod's own dispatches (model-classes.md). Change it when the lineup changes.",
+      "title": "Alias do modelo econômico",
+      "description": "O alias de modelo para o qual a classe econômica resolve nas próprias dispatches do mod (model-classes.md). Altere quando a formação mudar.",
       "default": "sonnet"
     },
     "frontierModels": {
       "type": "string",
-      "title": "Frontier model aliases",
-      "description": "Comma-separated aliases (or id fragments) that count as the frontier class for the loop guard.",
+      "title": "Aliases de modelos de fronteira",
+      "description": "Aliases separados por vírgulas (ou fragmentos de id) contados como classe de fronteira pelo protetor de loop.",
       "default": "fable"
     }
   }
