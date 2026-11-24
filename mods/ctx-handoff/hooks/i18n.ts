@@ -2,7 +2,7 @@
 // 不放這裡：給模型的提示、經驗檔的格式與標記（NOTE_TAG、標題、做法／理由／根據、規則行）、store 的鍵——那些是資料，改了會讀不了舊檔。
 // 有參數的訊息寫成函式；zh-TW 是原文，en 的型別跟著它，少一條就編譯不過。
 
-export type Lang = 'en' | 'zh-TW'
+export type Lang = 'en' | 'zh-TW' | 'pt-BR'
 
 let current: Lang = 'en'
 export const setLang = (lang: Lang) => { current = lang }
@@ -15,8 +15,16 @@ export const isChinese = (s: string) => /^zh|chinese|中文|繁體|繁体|台灣
 // 選介面語言：Claude Code 的 language 設定（使用者明確選的）優先，沒設就看系統語系。
 // 系統語系在 Linux／macOS 跟著 LANG，在 Windows 是作業系統的顯示語言；Git Bash 的 LANG 常是 en_US，不能拿來判斷
 export const pickLang = (setting: unknown, systemLocale: string | undefined): Lang => {
-  if (typeof setting === 'string' && setting.trim()) return isChinese(setting) ? 'zh-TW' : 'en'
-  return systemLocale && isChinese(systemLocale) ? 'zh-TW' : 'en'
+  const norm = (x: unknown) => (typeof x === 'string' ? x.trim().toLowerCase() : '')
+  const isTarget = (x: unknown) => /^pt|portugu[êe]s|portuguese/i.test(norm(x))
+  if (typeof setting === 'string' && setting.trim()) {
+    if (isChinese(setting)) return 'zh-TW'
+    if (isTarget(setting)) return 'pt-BR' as Lang
+    return 'en'
+  }
+  if (systemLocale && isChinese(systemLocale)) return 'zh-TW'
+  if (systemLocale && isTarget(systemLocale)) return 'pt-BR' as Lang
+  return 'en'
 }
 
 const s = (n: number) => (n === 1 ? '' : 's')
@@ -829,4 +837,396 @@ const en: Messages = {
   },
 }
 
-const MSG: Record<Lang, Messages> = { 'zh-TW': zh, en }
+const ptBR: Messages = {
+  ind: '  ',
+  bullet: '- ',
+  list: ', ',
+  slashList: ' / ',
+  // 面板展開時，經驗檔裡的欄位標籤（做法／理由／根據）顯示成英文；檔案本身不變
+  fieldLabel: line => line.replace(/^做法：/, 'Como: ').replace(/^理由：/, 'Por que: ').replace(/^根據：/, 'Evidencia: '),
+  guardMatch: (tool, match, unless) => `${tool} matches /${match}/${unless ? ` and not /${unless}/` : ''}`,
+
+  usage: (input, read, ratio, write, plain, output, sec) =>
+    `input ${input} (cache read ${read} = ${ratio}%, written ${write}, uncached ${plain}) · output ${output} · ${sec}s`,
+
+  fork: {
+    timeout: 'timeout: the fork did not answer in tempo, gave up waiting',
+    nothingToFork: 'nothing-to-fork: this sessao was just restarted or cleared, so there is nothing to build on yet. Send a mensagem, wait for the resposta, then try again',
+  },
+
+  handoff: {
+    failedLog: why => `handoff falhou: ${why}`,
+    failedToast: 'handoff falhou',
+    failGenerate: why => `generation falhou: ${why}`,
+    savedLog: (kind, usage) => `handoff (${kind}) ${usage}`,
+    dropped: reason => `dropped: ${reason}`,
+    reasonClear: r => `clear falhou: ${r}`,
+    reasonSubmit: r => `submit falhou: ${r}`,
+    reasonException: r => `exception: ${r}`,
+    reasonStage: (stage, r) => `${stage} falhou: ${r}`,
+    resubmitFailed: r => `could not resend the mensagens received during handoff: ${r}`,
+    clearFailedLog: r => `/clear falhou: ${r}`,
+    submitFailedLog: r => `submit falhou: ${r}`,
+    submitFailedToast: 'handoff created but not sent. Run /handoff resend to send it again',
+    failedAll: r => `handoff falhou: ${r}`,
+    failedCleanup: r => `cleanup after the falhou handoff also falhou: ${r}`,
+    whyManual: 'the user ran /handoff now',
+    whyTokens: tokens => `contexto reached ${tokens} tokens`,
+    intro: why =>
+      `The previous conversation was cleared automatically because ${why}. Here is the handoff: read it, tell me in a few lines the current state and proximo step as you understand them, then wait for the user's instructions. Do not start working yet.`,
+    introHeld: why =>
+      `The previous conversation was cleared automatically because ${why}. Here is the handoff and the mensagens the user sent during the handoff: respond to the user's ultimo mensagem below, using the handoff as contexto.`,
+    note: note => ` (${note})`,
+    heldHead: '---\\nMessages the user sent during the handoff:',
+  },
+
+  background: {
+    pause: 'Pause ausencia work for this sessao',
+    resume: 'Resume ausencia work for this sessao',
+    bound: (file, sid) => `espaco de trabalho notas: ${file}; this sessao ${sid}`,
+    away: (paused, next) => `ausencia work ${paused ? 'paused' : 'enabled'}; ${next === undefined ? 'no timer scheduled' : `next ${new Date(next).toLocaleString()}`}`,
+    task: (label, sid, phase, at) => `${label}: ${phase} (source ${sid}, started ${new Date(at).toLocaleTimeString()})`,
+    distill: 'notas update', handoff: 'handoff / refresh', idle: 'ocioso',
+    idleTask: label => `${label}: ocioso`,
+    phases: { refresh: 'refreshing cache', generating: 'generating summary', submitting: 'submitting handoff' },
+    collected: (at, usage, unknown) => `sessao background uso (collected since ${new Date(at).toLocaleString()} after this update, not a bill): ${usage}; ${unknown} requests with desconhecido uso`,
+    uncollected: 'No background uso collected for this sessao yet; earlier cost is not known to be zero',
+    pending: sid => `Undelivered handoff source ${sid}; /handoff resend ${sid}`,
+    history: 'Recent records (diagnostic history is not a recoverable summary)',
+  },
+  distill: {
+    why: {
+      idle: 'ocioso refresh',
+      away: 'ausencia',
+      before: 'before handoff',
+      manual: 'manual',
+      every: n => `every ${n} mensagens`,
+    },
+    failLog: (why, reason) => `notas update falhou (${why}): ${reason}`,
+    timeout: min => `timeout: no answer after ${min} minutos, gave up`,
+    edited: file => `the notas file was edited during the update, skipped this tempo: ${file}`,
+    skipLog: (why, reason) => `notas update (${why}): ${reason}`,
+    waiting: why => `notas update (${why}): another update is running, queued after it; this part of the conversation is already captured`,
+    doneLog: (why, changes, rejected, file) =>
+      `notas update (${why}): ${changes} change${s(changes)}${rejected ? `, dropped ${rejected} invalid line${s(rejected)}` : ''}${changes ? `; wrote ${file}` : ''}`,
+    queued: n => `${n} change${s(n)} queued for your proximo mensagem`,
+    toast: (n, queued, file) => `notas updated: ${n} change${s(n)}${queued ? ', sent along with your next message' : ''}: ${file}`,
+    writeFailed: err => `could not write the file: ${err}`,
+    noUsableActions: 'No usable actions in the notas output; the conversation is kept for retry',
+    retryLost: 'The previous partial update endpoint is ausente; notas and progresso were not changed',
+    retryCleanup: err => `notas updated, but retry endpoint cleanup falhou: ${err}`,
+  },
+
+  status: {
+    running: 'Updating notas…',
+    left: n => `${n} more mensagem${s(n)} until notas update`,
+    short: 'Conversation is short, notas not updated yet',
+    next: 'notas update after the proximo mensagem',
+    deferred: parts => `handoff delayed: ${parts}`,
+  },
+
+  distillStatus: {
+    head: (on, every) => `Background notas ${on} (ocioso refresh, ausencia, before handoff, every ${every} mensagens)`,
+    next: (left, idleMin) => `proximo: in ${left} mensagem${s(left)}, after ${idleMin} min ocioso, or before a handoff`,
+    last: (at, why, n) => `ultimo: ${at} · ${why} · ${n} change${s(n)}`,
+    lastNone: 'ultimo: nenhum',
+    rejected: (n, samples) => `Dropped ${n} invalido linha${s(n)}: ${samples}`,
+    failed: (at, why, reason) => `ultimo falha: ${at} · ${why} · ${reason}`,
+    notes: (file, memory, rules, injected) =>
+      `espaco de trabalho notas: ${file} (${memory} memor${memory === 1 ? 'y' : 'ies'}, ${rules} regra${s(rules)}, ${injected} regra${s(injected)} carried into novo conversations)`,
+    procedures: (n, inProject) => `espaco de trabalho procedures: ${n} (${inProject} already in a projeto skill or doc; procedures are not carried into novo conversations)`,
+    tiers: (full, titles, archived, days) =>
+      `Memories carried in: ${full} preference${s(full)} and correction${s(full)} in full, ${titles} fact${s(titles)} and location${s(titles)} as titles apenas, ${archived} archived (not confirmed for over ${days} dias, not carried in)`,
+  },
+
+  idle: {
+    refreshSkipped: 'cache refresh skipped: this process has no request to fork; ocioso timing resumes after the proximo main conversation response',
+    refresh: (n, max, read, create) => `cache refresh ${n}/${max} cache_read=${read} cache_creation=${create}`,
+    refreshFailed: (n, max, reason) => `cache refresh ${n}/${max} falhou: ${reason}`,
+    awaySavedLog: tokens => `ausencia handoff saved (${tokens} tokens), will not /clear automatically`,
+    awaySavedToast: 'ausencia handoff saved',
+    outdated: 'the conversation went on, deleted the outdated ausencia handoff',
+  },
+
+  stop: {
+    tasks: n => `${n} background tarefa${s(n)}`,
+    oneShot: n => `${n} one-off schedule${s(n)}`,
+    agents: n => `${n} subagent${s(n)}`,
+    deferral: (parts, cap) => `${parts} still running, waiting for them to finish before handoff (limite ${cap} tokens)`,
+    deferLog: (tokens, parts) => `contexto ${tokens} reached the limite, but ${parts} still running; waiting for them to finish before handoff`,
+    note: (parts, cap) => `${parts} still running at handoff; contexto reached the limite of ${cap}`,
+    capLog: (tokens, cap, parts) => `contexto ${tokens} reached the limite of ${cap}; not waiting for ${parts} any longer, handing off now`,
+    retryLog: tokens => `contexto ${tokens} reached the limite, but the ultimo handoff falhou recently; will try again later`,
+    stopFailed: err => `Stop check falhou: ${err}`,
+  },
+
+  loops: {
+    doneLog: 'Said concluido, but no test or check ran after the edits this turn; asked Claude to verify primeiro',
+    rewriteLog: 'The final resposta was not in the set idioma; asked Claude to rewrite it once',
+    status: (retry, done, reply) => `Nudges: repeated falha ${retry}, verify before concluido ${done}, resposta idioma ${reply}`,
+  },
+
+  progress: {
+    status: (at, task, state, hintOff) => `Latest progresso: ${at}, ${task} (${state})${hintOff ? ', not offered to new chats (resume_hint is off)' : ''}`,
+    states: { done: 'concluido', in_progress: 'in progresso', blocked: 'blocked' },
+  },
+
+  start: {
+    description: 'ctx-handoff: status; painel / now / dry / distill / resume / continue / resend / ausencia / guard / refresh',
+    taken: err => `/handoff is already taken (${err}), using /ctx-handoff instead`,
+    registerFailed: err => `could not register the command: ${err}`,
+    resumeFailed: err => `could not restore the ocioso timer: ${err}`,
+    pruneFailed: err => `could not tidy the store at startup: ${err}`,
+  },
+
+  submit: {
+    wait: (sec, max) => `${sec}s so far, usually concluido within a minute, up to about ${max} minutos`,
+    attach: 'Images and other attachments cannot be held. Paste them again after the handoff.',
+    busy: (wait, attach) => `handoff in progresso (${wait}).${attach ? ` ${attach}` : ''}`,
+    dup: (wait, attach) => `handoff in progresso (${wait}). This mensagem is already held and will not be sent twice.${attach ? ` ${attach}` : ''}`,
+    held: (wait, attach) => `handoff in progresso (${wait}). This mensagem is held and will be sent in the novo conversation.${attach ? ` ${attach}` : ''}`,
+    pendingToast: 'A handoff was not delivered. Run /handoff resend to send it again',
+    awayAttach: 'There is an ausencia handoff and the antigo conversation\\\'s cache has expired. Attachments cannot be held: run /handoff resume (novo conversation) or /handoff continue (stay in the antigo one) primeiro, then paste again.',
+    awayHeld: hasAttach =>
+      'There is an ausencia handoff and the antigo conversation\\\'s cache has expired. /handoff resume: continue in a novo conversation and include this mensagem; /handoff continue: send this mensagem in the antigo conversation (or just send it again).' +
+      (hasAttach ? 'There is an ausencia handoff and the antigo conversation\\\'s cache has expired. /handoff resume: continue in a novo conversation and include this mensagem; /handoff continue: send this mensagem in the antigo conversation (or just send it again).' : 'There is an ausencia handoff and the antigo conversation\\\'s cache has expired. /handoff resume: continue in a novo conversation and include this mensagem; /handoff continue: send this mensagem in the antigo conversation (or just send it again).'),
+  },
+
+  guard: {
+    state: { proposed: 'rascunho', on: 'on', off: 'off' },
+    mode: { deny: 'bloquear', remind: 'lembrar' },
+    checkFailed: err => `guard check falhou, letting the call through: ${err}`,
+    head: (id, rule, message) => `guard #${id} (${rule}): ${message}`,
+    denyToast: (id, tool, rule) => `guard #${id} blocked ${tool}: ${rule}`,
+    denyHint: id => `If the user really wants this to run as is, ask them to run /handoff guard off ${id} primeiro.`,
+    noCandidates: min => `No regra without a guard was corrected again after going into the repo, or came up ${min}+ vezes while kept out of it`,
+    suggestFailed: reason => `guard suggestion falhou: ${reason}`,
+    autoFailed: reason => `Drafting guards falhou: ${reason}`,
+    autoDrafted: n => `Drafted ${n} guard${n === 1 ? '' : 's'}; the proximo conversation will have Claude ask whether to use them`,
+    suggested: (rules, drafts) => `Looked at ${rules} regra${s(rules)} and drafted ${drafts} guard${s(drafts)} (not active yet; approve with /handoff guard on N)`,
+    droppedLines: (n, list) => `Dropped ${n} linha${s(n)}: ${list}`,
+    none: min => `Guards: nenhum (regras corrected again after going into the repo, or said ${min}+ vezes while kept out of it, get drafted and Claude asks you; or run /handoff guard suggest)`,
+    listHead: 'Guards:',
+    entry: (id, state, mode, rule, hits) => `#${id} [${state} · ${mode}] ${rule} (triggered ${hits} tempo${s(hits)})`,
+    example: (bad, good) => `Example: blocks "${bad}", allows "${good}"`,
+    replay: (calls, hits) => `Trial match on this conversation when drafted: ${hits} of ${calls} tool call${s(calls)}`,
+    recentHits: 'Recent hits (check they should really fire; if most are false alarms, narrow the guard or turn it off):',
+    usage: 'uso: /handoff guard [suggest | on N | off N | mode N deny|lembrar | drop N]',
+    missing: id => `No guard #${id}`,
+    changed: (id, dropped) => `guard #${id} ${dropped ? 'deleted' : 'updated'}`,
+    summary: (on, draft, off) => `Guards: ${on} on, ${draft} rascunho, ${off} off`,
+    summaryMore: (n, min) => `; ${n} regra${s(n)} appeared ${min}+ vezes without a guard (/handoff guard suggest)`,
+    panelDone: (id, action) => `guard #${id} ${action === 'on' ? 'approved' : action === 'off' ? 'turned off' : 'deleted'}`,
+    parse: {
+      noMarker: 'ACTIONS marker not found',
+      notCandidate: 'regra is not a candidate',
+      badTool: 'bad tool format',
+      missingFields: 'ausente match / mensagem / mode',
+      tooLong: 'regex too long',
+      missingExamples: 'ausente bad / good examples',
+      badNotBlocked: 'the bad example is not blocked',
+      goodBlocked: 'the good example would be blocked too',
+      duplicate: 'same regra repeated',
+      wrap: (line, why) => `${line} (${why})`,
+    },
+  },
+
+  panelCmd: {
+    opened: 'painel opened above the input. Click the buttons, or press ctrl+x tab to use the keyboard. Run /handoff painel again to close it',
+    closed: 'painel closed',
+    readFailed: err => `Could not read painel data: ${err}`,
+    failed: err => `falhou: ${err}`,
+    busyKeep: 'notas are being updated, try again in a moment',
+    busyDrop: 'notas are being updated, try deleting again in a moment',
+    notFound: 'Could not find this entry. The notas file may have just been edited',
+    kept: title => `Kept: ${title} (carried into novo conversations again)`,
+    deleted: (kind, name, dir) =>
+      `Deleted ${kind === 'm' ? 'the memory' : kind === 'r' ? `the rule "${name}"` : `the procedure "${name}"`} (original backed up to ${dir}/.ctx-handoff-backup/)`,
+    settingSet: (name, value) => `${name}: ${value} (other sessions pick it up on their proximo mensagem)`,
+    settingReset: (name, value) => `${name} back to configuracoes.json or the default: ${value}`,
+  },
+
+  change: {
+    addMemory: head => `Added memoria: ${head}`,
+    updateMemory: head => `Updated memoria: ${head}`,
+    confirmMemory: head => `memoria confirmed: ${head}`,
+    deleteMemory: head => `Deleted memoria: ${head}`,
+    addRule: (name, rule) => `novo regra: ${name} (seen 1 tempo): ${rule}`,
+    confirmRule: (name, count) => `regra confirmed: ${name} → seen ${count} vezes`,
+    updateRule: name => `Updated regra: ${name}`,
+    deleteRule: name => `Deleted regra: ${name}`,
+    addProcedure: (name, steps) => `novo procedure: ${name} (${steps} etapas, seen 1 tempo)`,
+    confirmProcedure: (name, count) => `Procedure confirmed: ${name} → seen ${count} vezes`,
+    updateProcedure: name => `Updated procedure: ${name}`,
+    deleteProcedure: name => `Deleted procedure: ${name}`,
+    inProject: (name, where) => `Now in the repo: ${name} → ${where}`,
+    notInProject: name => `Not moving to the repo (you said no): ${name}`,
+    guardApproved: (id, rule) => `guard #${id} turned on (you said yes): ${rule}`,
+    guardDeclined: (id, rule) => `guard #${id} turned down (you said no): ${rule}`,
+  },
+
+  reject: {
+    over: (k, max) => `${k} over ${max} caracteres`,
+    overJoin: ', ',
+    idNot: kind => `id is not ${kind}#`,
+    noId: id => `no such id ${id}`,
+    whereMissing: where => `${where} is not in the repo`,
+    buried: title => `"${title}" was deleted by the user and no novo citacao from the user brings it back`,
+    badType: type => `invalido type (${type})`,
+    missing: names => `ausente ${names}`,
+    quoteNotFound: 'citacao is not in the user\\\'s mensagens',
+    quoteMissing: type => `${type} entries need a citacao from the user`,
+    badOp: op => `desconhecido op (${op})`,
+    badSteps: (min, max) => `etapas must be ${min} to ${max} non-empty strings`,
+    noMarker: marker => `${marker} marker not found`,
+    badJson: msg => `invalido JSON (${msg})`,
+    notObject: 'not a JSON object',
+    secret: 'looks like a segredo',
+    badState: v => `invalido state (${v})`,
+    badFiles: 'files is not a list',
+    badList: field => `${field} is not a list`,
+    tooMany: (k, max) => `${k} has more than ${max} itens`,
+    overTotal: max => `progresso note over ${max} caracteres in total`,
+    noRecord: '(content not recorded)',
+    sample: (why, line) => `${why}: ${line}`,
+  },
+
+  cmd: {
+    unknown: sub => `desconhecido subcommand "${sub}"`,
+    usageHead: 'uso:',
+    usageLines: [
+      '  /handoff                  status',
+      '  /handoff                  status',
+      '  /handoff                  status',
+      '  /handoff                  status',
+      '  /handoff                  status',
+      '  /handoff                  status',
+      '  /handoff                  status',
+      '  /handoff                  status',
+      '  /handoff                  status',
+      '  /handoff                  status',
+      '  /handoff                  status',
+      '  /handoff                  status',
+    ],
+    context: (tokens, threshold, window) => `contexto ${tokens} / limite ${threshold} (window ${window})`,
+    refresh: (on, n, max, timer) => `cache refresh ${on}, refreshed ${n}/${max} this ocioso period, timer ${timer ? 'waiting' : 'not started'}`,
+    away: state => `ausencia handoff: ${state === 'none' ? 'none' : state === 'yes' ? 'yes' : 'yes (one message held)'}`,
+    latest: last => `Latest handoff: ${last ? `${last.at} ${last.kind}, context ${last.tokens}` : 'none'}`,
+    latestFailure: (at, kind, reason) => `Latest falha: ${at} ${kind}, ${reason}`,
+    undelivered: 'Undelivered handoff: yes (/handoff resend to send it again)',
+    deferred: deferral => `handoff delayed: ${deferral}`,
+    background: (tasks, oneShot, recurring) => `Background (ultimo Stop): ${tasks} tarefa${s(tasks)}, ${oneShot} one-off schedule${s(oneShot)}, ${recurring} recurring schedule${s(recurring)}`,
+    busy: 'Another handoff is in progresso',
+    nowStarted: 'Creating the handoff, then /clear and send it',
+    dryFailed: 'Trial run falhou, see the log above for the motivo',
+    dryDone: tokens => `Trial run concluido (no /clear), contexto ${tokens}`,
+    distillSet: arg => `Background notas set to ${arg}`,
+    distillUsage: 'uso: /handoff distill (update now) or /handoff distill on|off',
+    distilling: 'Already updating notas',
+    distillNone: 'notas not updated: no novo mensagens since the ultimo update, or it falhou',
+    distillDone: 'notas updated',
+    refreshNow: on => `Currently ${on}. uso: /handoff refresh on|off`,
+    refreshSet: (arg, minutes) => `cache refresh set to ${arg}${arg === 'off' ? ` (an away handoff is created after ${minutes} idle minutes)` : ''}`,
+    noAway: 'No ausencia handoff',
+    resumeIntro: 'The previous conversation went ocioso and a handoff was created, so this is a novo conversation to continue it. Read the handoff, tell me in a few lines the current state and proximo step as you understand them, then wait for the user\\\'s instructions.',
+    resumeIntroHeld: 'The previous conversation went ocioso and a handoff was created, so this is a novo conversation to continue it. Respond to the user\\\'s mensagem at the end, using the handoff as contexto.',
+    resumeHeld: '---\\nThe user\\\'s primeiro mensagem after coming back:',
+    resumeFailedLog: r => `/clear or submit falhou: ${r}`,
+    resumeClearFailed: '/clear falhou. The ausencia handoff is kept, you can run /handoff resume again',
+    resuming: 'About to /clear and send the ausencia handoff',
+    resendIntro: 'Resending the previous handoff. Read it, tell me in a few lines the current state and proximo step as you understand them, then wait for the user\\\'s instructions. Do not start working yet.',
+    nothingToResend: 'No handoff to resend in this sessao',
+    pendingUnbound: 'This older pending record has no espaco de trabalho source and cannot be resent safely; it is kept unchanged',
+    awayUsage: 'uso: /handoff ausencia pause|resume (this sessao apenas; notas updates keep running)',
+    commandFailed: err => `Command falhou; completion was not reported: ${err}`,
+    awayChanged: paused => paused ? 'ausencia work paused for this sessao. Requests already sent cannot be cancelled and may still cost tokens; late results are ignored. notas updates keep running' : 'ausencia work paused for this sessao. Requests already sent cannot be cancelled and may still cost tokens; late results are ignored. notas updates keep running',
+    resendFailed: err => `resend falhou: ${err}`,
+    resending: 'Resending the handoff (no /clear)',
+    discarded: 'ausencia handoff discarded, staying in the antigo conversation',
+    discardedSend: 'ausencia handoff discarded, sending your ultimo mensagem in the antigo conversation',
+    sendHeldFailed: err => `could not send the held mensagem: ${err}`,
+  },
+
+  panel: {
+    title: ' · projeto notas and guards',
+    close: 'Close',
+    more: 'More',
+    less: 'Less',
+    del: 'Delete',
+    confirmDel: 'Confirm',
+    cancel: 'Cancel',
+    keep: 'Keep',
+    off: 'Turn off',
+    approve: 'Approve',
+    draftBtn: 'rascunho guards',
+    buttonsCells: 32,
+    tabGuard: n => `Guards ${n}`,
+    tabMemory: n => `memoria ${n}`,
+    tabRules: (r, p = 0) => (p > 0 ? `regras ${r} / Proc ${p}` : `regras ${r} / Proc ${p}`),
+    tabDistill: 'ultimo update',
+    tabSettings: 'configuracoes',
+    settingsHint: 'Values set here win over configuracoes.json and apply to every espaco de trabalho. Press More for detalhes',
+    source: { panel: 'painel', file: 'configuracoes.json', default: 'default' },
+    on: 'on',
+    offValue: 'off',
+    toggleBtn: 'Toggle',
+    resetBtn: 'Reset',
+    minutes: n => `${n} min`,
+    settingName: {
+      auto_handoff: 'Hand off at the limite',
+      threshold: 'handoff limite',
+      window_ratio: 'limite ratio on pequeno windows',
+      refresh: 'Keep the cache warm while ausencia',
+      idle_minutes: 'ocioso tempo before a refresh',
+      max_refresh: 'Refreshes per ocioso period',
+      away_handoff: 'ausencia handoff',
+      distill: 'projeto notas (background)',
+      distill_every: 'mensagens between notas updates',
+      min_tokens: 'Smallest conversation handled',
+      notes_model: 'modelo for notas',
+      resume_hint: 'Tell novo chats where you stopped',
+      retry_nudge: 'Repeated falha nudge',
+      done_check: 'Check before "concluido"',
+      reply_language: 'resposta idioma reminder',
+      language: 'mensagem idioma',
+    },
+    settingHelp: {
+      auto_handoff: '"When off, nothing happens at the limite and Claude Code\'s own compact takes over"',
+      threshold: 'Hand off to a novo conversation when the contexto reaches this many tokens (needs automatic handoff on)',
+      window_ratio: 'On windows smaller than the limite, hand off at this share of the window',
+      refresh: 'While you are ausencia, send a tiny request now and then so the cache does not expire',
+      idle_minutes: 'minutos after the cache was ultimo used before refreshing (the cache expires at 60)',
+      max_refresh: 'After this many, write an ausencia handoff to pick up from when you return',
+      away_handoff: 'When refreshes run out or are off, write an ausencia handoff and offer /handoff resume or continue on return; off does nothing',
+      distill: 'Update the projeto notas in the background every N mensagens, when ocioso and before a handoff',
+      distill_every: 'Update the notas after this many of your mensagens; fewer is fresher but makes more requests',
+      min_tokens: 'Smaller conversations are cheap to rebuild: no refresh, notas or ausencia handoff',
+      notes_model: 'modelo for background notas (Sonnet 5.5 at least); configuracoes.json can name another modelo',
+      resume_hint: 'A novo chat in the same folder within 7 dias is told where the ultimo one stopped',
+      retry_nudge: 'When a tool fails twice in a row for the same motivo, ask Claude to change approach',
+      done_check: 'When Claude says concluido after editing code with no passing test or check, ask it to verify once',
+      reply_language: '"lembrar Claude once when its explanation is not in this idioma; auto follows Claude Code\'s idioma"',
+      language: '"idioma of the status linha, notices and painel; auto follows Claude Code\'s idioma, then the sistema"',
+    },
+    noGuards: 'No guards yet. Once a regra appears 3+ vezes you can ask the modelo to rascunho one.',
+    guardMeta: (id, mode, hits) => `#${id} · ${mode} · ${hits} hit${s(hits)}`,
+    blockLabel: 'Blocks ',
+    allowLabel: 'Allows ',
+    replay: (calls, hits) => `Trial match on this conversation: ${hits} of ${calls} tool call${s(calls)}`,
+    recentHits: 'Recent hits (if most are false alarms, narrow or turn off):',
+    suggesting: 'Asking the modelo for drafts…',
+    candidates: n => `${n} regra${s(n)} appeared 3+ vezes without a guard `,
+    memoryHint: (shown, total) => `Latest ${shown} of ${total} · preferences and corrections go into novo conversations in full, facts and locations as titles apenas`,
+    archived: (n, days) => `${n} archived: not confirmed for over ${days} dias, not carried into novo conversations`,
+    noRules: 'No regras yet',
+    ruleCount: n => `${n}x`,
+    proceduresHint: n => `${n} procedure${s(n)} · not carried into novo conversations; at 3+ vezes the AI is asked to turn them into projeto skills`,
+    inProject: project => (project.startsWith('已在 ') ? `in ${project.slice(3)}` : 'in ${project.slice(3)}'),
+    distillLine: (at, why, n) => `${at} · ${why} · ${n} change${s(n)}`,
+    noDistill: 'No notas updates yet',
+    footer: file => `After ctrl+x tab, press 1–5 to switch tabs · ${file}`,
+    typeLabel: { user: 'Preference', feedback: 'Correction', project: 'Fact', reference: 'Location' },
+  },
+}
+
+const MSG: Record<Lang, Messages> = { 'zh-TW': zh, en, 'pt-BR': ptBR }
