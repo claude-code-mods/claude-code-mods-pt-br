@@ -32,7 +32,7 @@ export function unseenRun(entries: readonly DirEntry[], shown: ReadonlySet<strin
 // What a seat row's digit does now: end the seat, re-query it, or open or
 // close the text under it.
 type SeatAction = { press: 'cancel' | 'retry' | 'open' | 'fold'; seat: string }
-type SeatNote = '' | 'cached' | 'fell back'
+type SeatNote = '' | 'em cache' | 'usou fallback'
 
 export type Section =
   | { kind: 'summary'; text: string }
@@ -63,8 +63,8 @@ const SEAT_LOOKS: Record<string, SeatLook> = {
   querying: LIVE,
   retrying: LIVE,
   complete: { color: COLOR.success, note: '', fill: FULL },
-  cached: { color: COLOR.info, note: 'cached', fill: FULL },
-  fallback: { color: COLOR.accent, note: 'fell back', fill: FULL },
+  cached: { color: COLOR.info, note: 'em cache', fill: FULL },
+  fallback: { color: COLOR.accent, note: 'usou fallback', fill: FULL },
   error: { color: COLOR.danger, note: '', fill: () => ({ kind: 'stub' }) },
   cancelled: SET_ASIDE,
   cancelling: SET_ASIDE,
@@ -114,11 +114,11 @@ function summaryText(providers: ProviderStatus[]): string {
   const tally = (state: string, word: string) => (count(providers, state) > 0 ? `${count(providers, state)} ${word}` : '')
   const slowest = Math.max(0, ...providers.map(provider => provider.ms ?? 0))
   return [
-    `${count(providers, ...ANSWERED_STATES)} of ${providers.length} answered`,
-    tally('error', 'error'),
-    tally('cancelled', 'cancelled'),
-    tally('fallback', 'fell back'),
-    tally('cached', 'cached'),
+    `${count(providers, ...ANSWERED_STATES)} de ${providers.length} responderam`,
+    tally('error', count(providers, 'error') === 1 ? 'erro' : 'erros'),
+    tally('cancelled', count(providers, 'cancelled') === 1 ? 'cancelado' : 'cancelados'),
+    tally('fallback', 'usou fallback'),
+    tally('cached', 'em cache'),
     slowest > 0 ? seconds(slowest) : '',
   ].filter(Boolean).join(' \u00b7 ')
 }
@@ -194,7 +194,7 @@ export function paneSections(
   { collapsesWhenDone = true, nowMs = 0, frame = 0, fitText = (text: string) => text, closed = new Set<string>(), columns }: { collapsesWhenDone?: boolean; nowMs?: number; frame?: number; fitText?: (text: string) => string; closed?: ReadonlySet<string>; columns?: number } = {},
 ): Section[] {
   if (providers.length === 0) {
-    return [{ kind: 'note', text: isDone ? 'Council finished with no answers.' : 'Waiting for the council...' }]
+    return [{ kind: 'note', text: isDone ? 'O conselho terminou sem respostas.' : 'Aguardando o conselho...' }]
   }
   const shownState = (provider: ProviderStatus) => seatState(provider, { cancels, retries, retriable, isDone })
   // A querying provider's time runs from when the pane first saw it, in whole tenths.
@@ -220,7 +220,7 @@ export function paneSections(
       // pane's width before the budget is counted: a wide table becomes
       // records that repeat every header, which can lengthen it several times over.
       return () => [
-        ...(state === 'fallback' && error !== undefined ? [{ kind: 'reason' as const, text: noticeText(`${name} fell back: ${error}`) }] : []),
+        ...(state === 'fallback' && error !== undefined ? [{ kind: 'reason' as const, text: noticeText(`${name} usou fallback: ${error}`) }] : []),
         { kind: 'body', text: fitText(response) },
       ]
     }
@@ -306,7 +306,7 @@ export function seatFolds(sections: Section[]): string[] {
 // text and draws its own. The budget sits under that with room for what the
 // pane draws around the sections (the retry row, the action labels, the footer's keys).
 const PANE_TEXT_BUDGET = 80000
-const CLIPPED = (more: number) => `\n\n_\u2026 ${more} more characters; the whole answer is in the result (/claude-council:result)_`
+const CLIPPED = (more: number) => `\n\n_\u2026 ${more} caracteres a mais; a resposta completa está no resultado (/claude-council:result)_`
 
 // An error or a fallback reason is drawn as its opening only: a provider can
 // hand back a whole HTML error page. The section carries what is drawn, so

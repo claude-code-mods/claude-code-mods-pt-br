@@ -32,12 +32,12 @@ export function parseStatus(log: string): ProviderStatus[] {
 }
 
 const EVENT: Record<string, (name: string) => string> = {
-  complete: name => `${name} answered`,
-  cached: name => `${name} answered from cache`,
-  error: name => `${name} failed`,
+  complete: name => `${name} respondeu`,
+  cached: name => `${name} respondeu do cache`,
+  error: name => `${name} falhou`,
   // Not always a failure: a CLI that cannot read an image is routed to its API by design.
-  fallback: name => `${name} answered through its API`,
-  querying: name => `asking ${name}`,
+  fallback: name => `${name} respondeu pela API`,
+  querying: name => `consultando ${name}`,
 }
 
 // The band's latest event: the last whole line of the log, in words. A line
@@ -46,7 +46,7 @@ export function lastEvent(log: string): string | undefined {
   const lines = log.split('\n').map(line => line.replace(/\r$/, '').split('\t'))
   for (const [name, state] of lines.reverse()) {
     if (!name || !state) continue
-    return (EVENT[state] ?? (n => `${n} ${state}`))(name)
+    return (EVENT[state] ?? (n => `${n}: ${state}`))(name)
   }
   return undefined
 }

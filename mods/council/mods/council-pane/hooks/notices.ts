@@ -10,9 +10,9 @@ export function finishNotice({ providers }: RunProgress, jobId = ''): string {
   const errors = count(providers, 'error')
   const cancelled = count(providers, 'cancelled')
   // The band draws the COUNCIL label ahead of this, so the text does not repeat the name.
-  const subject = jobId ? `job ${jobId} finished` : 'finished'
-  const answered = `${count(providers, ...ANSWERED_STATES)} of ${providers.length} answered`
-  return `${subject}: ${answered}${errors > 0 ? `, ${errors} error` : ''}${cancelled > 0 ? `, ${cancelled} cancelled` : ''}`
+  const subject = jobId ? `tarefa ${jobId} concluída` : 'concluído'
+  const answered = `${count(providers, ...ANSWERED_STATES)} de ${providers.length} responderam`
+  return `${subject}: ${answered}${errors > 0 ? `, ${errors} ${errors === 1 ? 'erro' : 'erros'}` : ''}${cancelled > 0 ? `, ${cancelled} ${cancelled === 1 ? 'cancelado' : 'cancelados'}` : ''}`
 }
 
 
@@ -40,14 +40,14 @@ export function progressBand(
   return {
     bar: bar({ kind: 'sweep', frame }, BAND_CELLS),
     ...(startedAtMs === undefined ? {} : { clock: runClock(startedAtMs, nowMs) }),
-    event: `${finished} of ${providers.length} done${latest ? ` \u00b7 ${latest}` : ''}`,
+    event: `${finished} de ${providers.length} concluídos${latest ? ` \u00b7 ${latest}` : ''}`,
   }
 }
 
 // A run whose process died without writing .done: what the band says instead.
 export function abandonedNotice({ providers }: RunProgress, jobId = ''): string {
-  const subject = jobId ? `job ${jobId} stopped` : 'stopped'
-  return `${subject} before it finished: ${count(providers, ...ANSWERED_STATES)} of ${providers.length} answered`
+  const subject = jobId ? `tarefa ${jobId} interrompida` : 'interrompida'
+  return `${subject} antes de terminar: ${count(providers, ...ANSWERED_STATES)} de ${providers.length} responderam`
 }
 
 // The pid a run left in its watch dir, fit to hand to kill -0: digits, not zero.
@@ -63,8 +63,8 @@ export function wakePrompt(jobId: string): string | undefined {
 
 export function reopenReply(hasRun: boolean): string {
   return hasRun
-    ? 'Council pane reopened with the last run.'
-    : 'No council run in this session yet. Start one with /claude-council:ask.'
+    ? 'Painel do conselho reaberto com a última execução.'
+    : 'Ainda não houve uma execução do conselho nesta sessão. Inicie uma com /claude-council:ask.'
 }
 
 export type FinishNotice = { text: string; untilMs: number; isFailure?: boolean }
